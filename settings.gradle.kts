@@ -24,3 +24,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "MedsyPahrm"
 include(":app")
+include(":presentation")
+include(":data")
+include(":domain")
