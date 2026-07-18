@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
@@ -28,7 +29,7 @@ class SplashViewModel @Inject constructor(
         viewModelScope.launch {
             val session = async { observeSession().firstOrNull() }
             val preferences = async { observePreferences().firstOrNull() }
-            delay(MINIMUM_SPLASH_MILLIS)
+            delay(SplashConstants.MIN_SPLASH_DURATION_MS.milliseconds)
 
             val currentSession = session.await()
             val currentPreferences = preferences.await()
@@ -46,10 +47,6 @@ class SplashViewModel @Inject constructor(
             }
             mutableEffect.send(destination)
         }
-    }
-
-    private companion object {
-        const val MINIMUM_SPLASH_MILLIS = 900L
     }
 }
 

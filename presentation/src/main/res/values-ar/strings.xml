@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">ميدزي</string>
     <string name="splash_logo_description">شعار ميدزي للصيدليات</string>
+    <string name="splash_tagline">صيدليتك، بكل سهولة.</string>
+
 
     <string name="onboarding_title">أدر صيدليتك مع ميدزي</string>
     <string name="onboarding_supporting">استجب لطلبات الأدوية القريبة وأدر تجهيزها من مكان واحد.</string>
