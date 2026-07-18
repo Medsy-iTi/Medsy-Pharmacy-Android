@@ -1,15 +1,14 @@
 package com.medsy.presentation.splash
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,44 +19,97 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.medsy.designsystem.components.MedsyShimmer
 import com.medsy.designsystem.ui.theme.extendedColors
+import com.medsy.designsystem.R as DesignR
 import com.medsy.presentation.R
 import com.medsy.presentation.splash.components.SplashWaves
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun SplashRoot(
     openOnBoarding: () -> Unit,
     openLogin: () -> Unit,
     openHome: () -> Unit,
+    viewModel: SplashViewModel = hiltViewModel(),
 ) {
+    LaunchedEffect(viewModel) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                SplashUIEffect.OpenHome -> openHome()
+                SplashUIEffect.OpenLogin -> openLogin()
+                SplashUIEffect.OpenOnboarding -> openOnBoarding()
+                SplashUIEffect.OpenPendingApproval -> {}
+                SplashUIEffect.OpenRejected -> {}
+                SplashUIEffect.OpenSuspended -> {}
+            }
+        }
+    }
     SplashScreen()
 }
 
 @Composable
 fun SplashScreen() {
-    var medVisible by remember { mutableStateOf(false) }
-    var syVisible by remember { mutableStateOf(false) }
-    var subTextVisible by remember { mutableStateOf(false) }
+    val logoScale = remember { Animatable(0.55f) }
+    val logoAlpha = remember { Animatable(0f) }
+    val textAlpha = remember { Animatable(0f) }
+    val textTranslationY = remember { Animatable(SplashConstants.TEXT_SLIDE_START_OFFSET) }
 
     LaunchedEffect(Unit) {
-        delay(400)
-        medVisible = true
-        delay(600)
-        syVisible = true
-        delay(600)
-        subTextVisible = true
+        launch {
+            logoScale.animateTo(
+                targetValue = 1f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessMedium,
+                ),
+            )
+        }
+        launch {
+            logoAlpha.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(
+                    durationMillis = SplashConstants.LOGO_ANIMATION_DURATION,
+                    easing = FastOutSlowInEasing
+                ),
+            )
+        }
+
+        delay(SplashConstants.LOGO_ANIMATION_DELAY.milliseconds)
+
+        launch {
+            textAlpha.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(
+                    durationMillis = SplashConstants.TEXT_ANIMATION_DURATION,
+                    easing = FastOutSlowInEasing
+                ),
+            )
+        }
+        launch {
+            textTranslationY.animateTo(
+                targetValue = SplashConstants.TEXT_SLIDE_END_OFFSET,
+                animationSpec = tween(
+                    durationMillis = SplashConstants.TEXT_ANIMATION_DURATION,
+                    easing = FastOutSlowInEasing
+                ),
+            )
+        }
     }
 
     Box(
@@ -76,72 +128,49 @@ fun SplashScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.splash_logo),
-                contentDescription = stringResource(R.string.splash_logo_description),
-                modifier = Modifier.size(160.dp)
-            )
+            MedsyShimmer(
+                modifier = Modifier
+                    .size(160.dp)
+                    .scale(logoScale.value)
+                    .alpha(logoAlpha.value),
+            ) {
+                Image(
+                    painter = painterResource(id = DesignR.drawable.ic_logo_transparent),
+                    contentDescription = stringResource(R.string.splash_logo_description),
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                AnimatedVisibility(
-                    visible = medVisible,
-                    enter = slideInVertically(
-                        initialOffsetY = { it },
-                        animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing)
-                    ) + fadeIn()
-                ) {
-                    Text(
-                        text = "Med",
-                        style = MaterialTheme.typography.displayMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    )
-                }
-
-                AnimatedVisibility(
-                    visible = syVisible,
-                    enter = fadeIn(animationSpec = tween(durationMillis = 800))
-                ) {
-                    Text(
-                        text = "sy",
-                        style = MaterialTheme.typography.displayMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.extendedColors.blueContent
-                        )
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            AnimatedVisibility(
-                visible = subTextVisible,
-                enter = fadeIn(animationSpec = tween(durationMillis = 800))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .graphicsLayer(translationY = textTranslationY.value)
+                    .alpha(textAlpha.value)
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = stringResource(R.string.splash_subtitle),
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground
-                        ),
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = stringResource(R.string.splash_description),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        ),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 40.dp)
-                    )
-                }
+                Text(
+                    text = stringResource(R.string.splash_app_name),
+                    style = MaterialTheme.typography.displaySmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.extendedColors.blueContent,
+                        letterSpacing = (-0.5).sp
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = stringResource(R.string.splash_tagline),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        letterSpacing = 0.3.sp
+                    ),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 40.dp)
+                )
             }
         }
     }
 }
-
