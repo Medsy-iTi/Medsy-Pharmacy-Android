@@ -71,11 +71,21 @@
     <string name="orders_active_empty">No active orders are connected yet.</string>
     <string name="orders_history_empty">No completed orders are connected yet.</string>
 
-    <string name="profile_title">Pharmacy profile</string>
-    <string name="profile_supporting">Manage local preferences and view pharmacy account placeholders.</string>
-    <string name="profile_account_placeholder">Pharmacy details and license information will appear here.</string>
-    <string name="profile_approval_placeholder">Approval status: placeholder</string>
-    <string name="profile_receiving_placeholder">Receiving-status management will be connected to the server.</string>
+    <string name="profile_title">Profile</string>
+    <string name="profile_supporting">Manage pharmacy configuration and settings.</string>
+    <string name="profile_verified_pharmacy">Verified pharmacy</string>
+    <string name="profile_ratings_count">(128 ratings)</string>
+    <string name="profile_phone_number">Phone number</string>
+    <string name="profile_change">Change</string>
+    <string name="profile_license">License</string>
+    <string name="profile_license_view">View professional license</string>
+    <string name="profile_registered_location">Registered location</string>
+    <string name="profile_location_value">Nile St, Maadi, Cairo</string>
+    <string name="profile_edit_request">Data modification request</string>
+    <string name="profile_edit_request_sub">Request data modification from admin</string>
+    <string name="profile_receiving_status">Order receiving status</string>
+    <string name="profile_status_open">Open</string>
+    <string name="profile_status_closed">Closed</string>
     <string name="profile_theme">Appearance</string>
     <string name="profile_theme_system">System</string>
     <string name="profile_theme_light">Light</string>
