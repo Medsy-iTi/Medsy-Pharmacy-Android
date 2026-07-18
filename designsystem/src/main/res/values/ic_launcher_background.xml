@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#FFFFFF</color>
-    <color name="splash_background">#1E7B4D</color>
+    <!-- Launcher adaptive icon background — brand blue -->
+    <color name="ic_launcher_background">#1B6FD8</color>
+    <!-- Native OS splash screen background (light mode) — brand blue -->
+    <color name="splash_background">#1B6FD8</color>
 </resources>
