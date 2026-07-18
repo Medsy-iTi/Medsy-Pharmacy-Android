@@ -125,6 +125,7 @@ fun ProfileScreen(
                         icon = Icons.Outlined.Phone,
                         title = stringResource(R.string.profile_phone_number),
                         subtitle = "010 1234 5678",
+                        showChevron = false,
                         trailing = {
                             TextButton(onClick = { /* Change Action */ }) {
                                 Text(
@@ -193,10 +194,11 @@ fun ProfileScreen(
                         icon = Icons.Outlined.Storefront,
                         title = stringResource(R.string.profile_receiving_status),
                         subtitle = null,
+                        showChevron = false,
                         trailing = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Box(
-                                 modifier = Modifier
+                                    modifier = Modifier
                                         .background(
                                             color = if (state.isReceivingOrders) {
                                                 MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)

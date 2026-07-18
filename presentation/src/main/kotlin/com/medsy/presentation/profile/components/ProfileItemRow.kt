@@ -27,7 +27,8 @@ fun ProfileItemRow(
     title: String,
     subtitle: String?,
     modifier: Modifier = Modifier,
-    trailing: @Composable (() -> Unit)? = null,
+    showChevron: Boolean = true,
+    trailing: @Composable () -> Unit = {},
     onClick: (() -> Unit)? = null
 ) {
     val clickableModifier = if (onClick != null) modifier.clickable(onClick = onClick) else modifier
@@ -66,14 +67,14 @@ fun ProfileItemRow(
             }
         }
 
-        if (trailing != null) {
-            trailing()
-        } else if (onClick != null) {
+        if (onClick != null && showChevron) {
             Icon(
                 imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
             )
+        } else {
+            trailing()
         }
     }
 }
