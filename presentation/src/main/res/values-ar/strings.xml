@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="splash_logo_description">شعار ميدزي للصيدليات</string>
+
+    <string name="onboarding_title">أدر صيدليتك مع ميدزي</string>
+    <string name="onboarding_supporting">استجب لطلبات الأدوية القريبة وأدر تجهيزها من مكان واحد.</string>
+    <string name="onboarding_receive_requests">استقبل طلبات المرضى القريبة والمؤهلة.</string>
+    <string name="onboarding_send_offers">سجّل التوفر وأرسل عروضًا واضحة بالأسعار الثابتة.</string>
+    <string name="onboarding_manage_orders">جهّز الطلبات المختارة وحدّث حالتها بأمان.</string>
+    <string name="action_get_started">ابدأ الآن</string>
+
+    <string name="auth_login_title">تسجيل دخول الصيدلية</string>
+    <string name="auth_login_supporting">سجّل الدخول باستخدام حساب الصيدلية المسجل.</string>
+    <string name="auth_phone">رقم الهاتف</string>
+    <string name="auth_password">كلمة المرور</string>
+    <string name="auth_login_action">تسجيل الدخول</string>
+    <string name="auth_register_action">تسجيل صيدلية</string>
+    <string name="auth_placeholder_notice">هذه واجهة مؤقتة قابلة للتنقل. ستتم إضافة الاتصال بالخادم بعد تثبيت عقد واجهة الصيدليات.</string>
+
+    <string name="registration_title">سجّل صيدليتك</string>
+    <string name="registration_supporting">أدخل بيانات الصيدلية ومستندات التحقق المطلوبة لموافقة الإدارة.</string>
+    <string name="registration_pharmacy_name">اسم الصيدلية</string>
+    <string name="registration_license_number">رقم الترخيص</string>
+    <string name="registration_phone">رقم الهاتف</string>
+    <string name="registration_contact_person">مسؤول التواصل</string>
+    <string name="registration_password">كلمة المرور</string>
+    <string name="registration_map_location">الموقع الدقيق على الخريطة — واجهة مؤقتة</string>
+    <string name="registration_documents">مستندات التحقق — واجهة مؤقتة</string>
+    <string name="registration_continue">المتابعة إلى التحقق</string>
+
+    <string name="verification_title">تحقق من وسيلة التواصل</string>
+    <string name="verification_supporting">أدخل رمز التحقق المرسل إلى جهة تواصل الصيدلية المسجلة.</string>
+    <string name="verification_code">رمز التحقق</string>
+    <string name="verification_action">التحقق والإرسال للموافقة</string>
+
+    <string name="approval_pending_title">الموافقة قيد المراجعة</string>
+    <string name="approval_pending_supporting">تتم مراجعة مستنداتك. لن تتوفر الطلبات الجديدة حتى تتم الموافقة على الصيدلية.</string>
+    <string name="approval_rejected_title">تم رفض التسجيل</string>
+    <string name="approval_rejected_supporting">تم رفض تسجيل الصيدلية. راجع سبب الإدارة قبل إرسال البيانات المصححة.</string>
+    <string name="approval_suspended_title">الحساب موقوف</string>
+    <string name="approval_suspended_supporting">لا يمكن لهذه الصيدلية استقبال طلبات جديدة أثناء الإيقاف. يخضع الوصول للطلبات الحالية لصلاحيات الخادم.</string>
+    <string name="approval_back_to_login">العودة لتسجيل الدخول</string>
+
+    <string name="home_title">لوحة الصيدلية</string>
+    <string name="home_supporting">ملخص تشغيلي للطلبات والعروض وطلبات الشراء.</string>
+    <string name="home_receiving_status">حالة استقبال الطلبات</string>
+    <string name="home_receiving_placeholder">واجهة محلية مؤقتة فقط. سيحفظ الخادم الحالة الفعلية.</string>
+    <string name="home_incoming_requests">الطلبات الواردة</string>
+    <string name="home_incoming_requests_value">لم يتم ربط بيانات الطلبات</string>
+    <string name="home_offers_sent">العروض المرسلة</string>
+    <string name="home_offers_sent_value">لم يتم ربط بيانات العروض</string>
+    <string name="home_offers_selected">العروض المختارة</string>
+    <string name="home_offers_selected_value">لا توجد عروض مختارة</string>
+    <string name="home_active_orders">الطلبات النشطة</string>
+    <string name="home_active_orders_value">لا توجد طلبات نشطة</string>
+    <string name="home_completed_orders">الطلبات المكتملة</string>
+    <string name="home_completed_orders_value">لا توجد طلبات مكتملة</string>
+    <string name="home_notifications">الإشعارات التشغيلية</string>
+    <string name="home_notifications_value">لم يتم ربط الإشعارات بعد</string>
+
+    <string name="orders_title">الطلبات</string>
+    <string name="orders_supporting">أدر فقط الطلبات المسندة إلى هذه الصيدلية.</string>
+    <string name="orders_active">النشطة</string>
+    <string name="orders_history">السجل</string>
+    <string name="orders_active_empty">لم يتم ربط طلبات نشطة بعد.</string>
+    <string name="orders_history_empty">لم يتم ربط طلبات مكتملة بعد.</string>
+
+    <string name="profile_title">ملف الصيدلية</string>
+    <string name="profile_supporting">أدر التفضيلات المحلية واعرض بيانات حساب الصيدلية المؤقتة.</string>
+    <string name="profile_account_placeholder">ستظهر هنا بيانات الصيدلية والترخيص.</string>
+    <string name="profile_approval_placeholder">حالة الموافقة: واجهة مؤقتة</string>
+    <string name="profile_receiving_placeholder">سيتم ربط إدارة استقبال الطلبات بالخادم.</string>
+    <string name="profile_theme">المظهر</string>
+    <string name="profile_theme_system">النظام</string>
+    <string name="profile_theme_light">فاتح</string>
+    <string name="profile_theme_dark">داكن</string>
+    <string name="profile_language">اللغة</string>
+    <string name="profile_language_arabic">العربية</string>
+    <string name="profile_language_english">English</string>
+    <string name="profile_logout">تسجيل الخروج</string>
+</resources>

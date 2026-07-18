@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="splash_logo_description">Medsy Pharmacy logo</string>
+
+    <string name="onboarding_title">Run your pharmacy with Medsy</string>
+    <string name="onboarding_supporting">Respond to nearby medicine requests and manage fulfillment from one place.</string>
+    <string name="onboarding_receive_requests">Receive eligible nearby patient requests.</string>
+    <string name="onboarding_send_offers">Report availability and send clear, fixed-price offers.</string>
+    <string name="onboarding_manage_orders">Prepare and progress selected orders safely.</string>
+    <string name="action_get_started">Get started</string>
+
+    <string name="auth_login_title">Pharmacy sign in</string>
+    <string name="auth_login_supporting">Sign in with the registered pharmacy account.</string>
+    <string name="auth_phone">Phone number</string>
+    <string name="auth_password">Password</string>
+    <string name="auth_login_action">Sign in</string>
+    <string name="auth_register_action">Register a pharmacy</string>
+    <string name="auth_placeholder_notice">This is a navigable placeholder. Backend submission will be added after the pharmacy API contract is frozen.</string>
+
+    <string name="registration_title">Register your pharmacy</string>
+    <string name="registration_supporting">Provide the pharmacy and verification information required for admin approval.</string>
+    <string name="registration_pharmacy_name">Pharmacy name</string>
+    <string name="registration_license_number">License number</string>
+    <string name="registration_phone">Phone number</string>
+    <string name="registration_contact_person">Contact person</string>
+    <string name="registration_password">Password</string>
+    <string name="registration_map_location">Precise map location — placeholder</string>
+    <string name="registration_documents">Verification documents — placeholder</string>
+    <string name="registration_continue">Continue to verification</string>
+
+    <string name="verification_title">Verify your contact</string>
+    <string name="verification_supporting">Enter the verification code sent to the registered pharmacy contact.</string>
+    <string name="verification_code">Verification code</string>
+    <string name="verification_action">Verify and submit for approval</string>
+
+    <string name="approval_pending_title">Approval pending</string>
+    <string name="approval_pending_supporting">Your documents are under review. New requests remain unavailable until the pharmacy is approved.</string>
+    <string name="approval_rejected_title">Registration rejected</string>
+    <string name="approval_rejected_supporting">The pharmacy registration was rejected. Review the administrator reason before submitting corrected information.</string>
+    <string name="approval_suspended_title">Account suspended</string>
+    <string name="approval_suspended_supporting">This pharmacy cannot receive new requests while suspended. Existing order access is subject to backend authorization.</string>
+    <string name="approval_back_to_login">Back to sign in</string>
+
+    <string name="home_title">Pharmacy dashboard</string>
+    <string name="home_supporting">Operational summary for requests, offers, and orders.</string>
+    <string name="home_receiving_status">Receiving status</string>
+    <string name="home_receiving_placeholder">Local placeholder only. The real status will be persisted by the server.</string>
+    <string name="home_incoming_requests">Incoming requests</string>
+    <string name="home_incoming_requests_value">No request data connected</string>
+    <string name="home_offers_sent">Offers sent</string>
+    <string name="home_offers_sent_value">No offer data connected</string>
+    <string name="home_offers_selected">Offers selected</string>
+    <string name="home_offers_selected_value">No selected offers</string>
+    <string name="home_active_orders">Active orders</string>
+    <string name="home_active_orders_value">No active orders</string>
+    <string name="home_completed_orders">Completed orders</string>
+    <string name="home_completed_orders_value">No completed orders</string>
+    <string name="home_notifications">Operational notifications</string>
+    <string name="home_notifications_value">Push notifications are not connected yet</string>
+
+    <string name="orders_title">Orders</string>
+    <string name="orders_supporting">Manage only the orders assigned to this pharmacy.</string>
+    <string name="orders_active">Active</string>
+    <string name="orders_history">History</string>
+    <string name="orders_active_empty">No active orders are connected yet.</string>
+    <string name="orders_history_empty">No completed orders are connected yet.</string>
+
+    <string name="profile_title">Pharmacy profile</string>
+    <string name="profile_supporting">Manage local preferences and view pharmacy account placeholders.</string>
+    <string name="profile_account_placeholder">Pharmacy details and license information will appear here.</string>
+    <string name="profile_approval_placeholder">Approval status: placeholder</string>
+    <string name="profile_receiving_placeholder">Receiving-status management will be connected to the server.</string>
+    <string name="profile_theme">Appearance</string>
+    <string name="profile_theme_system">System</string>
+    <string name="profile_theme_light">Light</string>
+    <string name="profile_theme_dark">Dark</string>
+    <string name="profile_language">Language</string>
+    <string name="profile_language_arabic">العربية</string>
+    <string name="profile_language_english">English</string>
+    <string name="profile_logout">Log out</string>
+</resources>

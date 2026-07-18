@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">MedsyPahrm</string>
+    <string name="app_name">Medsy Pharmacy</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_orders">Orders</string>
+    <string name="nav_profile">Profile</string>
 </resources>
