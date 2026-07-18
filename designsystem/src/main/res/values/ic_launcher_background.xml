@@ -2,6 +2,6 @@
 <resources>
     <!-- Launcher adaptive icon background — brand blue -->
     <color name="ic_launcher_background">#1B6FD8</color>
-    <!-- Native OS splash screen background (light mode) — brand blue -->
-    <color name="splash_background">#1B6FD8</color>
+    <!-- Native OS splash screen background (light mode) — white -->
+    <color name="splash_background">#FFFFFF</color>
 </resources>

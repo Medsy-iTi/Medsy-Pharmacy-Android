@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
@@ -29,7 +28,7 @@ class SplashViewModel @Inject constructor(
         viewModelScope.launch {
             val session = async { observeSession().firstOrNull() }
             val preferences = async { observePreferences().firstOrNull() }
-            delay(SplashConstants.MIN_SPLASH_DURATION_MS.milliseconds)
+            delay(SplashConstants.MIN_SPLASH_DURATION_MS)
 
             val currentSession = session.await()
             val currentPreferences = preferences.await()
@@ -39,10 +38,13 @@ class SplashViewModel @Inject constructor(
                 currentSession == null -> SplashUIEffect.OpenLogin
                 currentSession.account.approvalStatus == PharmacyApprovalStatus.Approved ->
                     SplashUIEffect.OpenHome
+
                 currentSession.account.approvalStatus == PharmacyApprovalStatus.PendingApproval ->
                     SplashUIEffect.OpenPendingApproval
+
                 currentSession.account.approvalStatus == PharmacyApprovalStatus.Rejected ->
                     SplashUIEffect.OpenRejected
+
                 else -> SplashUIEffect.OpenSuspended
             }
             mutableEffect.send(destination)
@@ -50,11 +52,3 @@ class SplashViewModel @Inject constructor(
     }
 }
 
-sealed interface SplashUIEffect {
-    data object OpenOnboarding : SplashUIEffect
-    data object OpenLogin : SplashUIEffect
-    data object OpenHome : SplashUIEffect
-    data object OpenPendingApproval : SplashUIEffect
-    data object OpenRejected : SplashUIEffect
-    data object OpenSuspended : SplashUIEffect
-}
