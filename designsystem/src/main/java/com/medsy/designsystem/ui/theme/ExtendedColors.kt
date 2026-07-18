@@ -50,7 +50,6 @@ val MaterialTheme.extendedColors: ExtendedColors
     @Composable
     get() = LocalExtendedColors.current
 
-// ─── Light extended colours ───────────────────────────────────────────────────
 internal val lightExtendedColors = ExtendedColors(
     success = SuccessGreen,
     onSuccess = Color.White,
@@ -87,12 +86,11 @@ internal val lightExtendedColors = ExtendedColors(
     prescriptionScanBorder = MedsyBlueBorder,
 )
 
-// ─── Dark extended colours (Aligned with new slate-gray/navy dark mode) ───────
 internal val darkExtendedColors = ExtendedColors(
     success = SuccessGreen,
     onSuccess = Color.White,
     // Category chips
-    blueContainer = Color(0xFF1E2E4A),          // Mapped to optimized primaryContainer
+    blueContainer = Color(0xFF1E2E4A),
     blueContent = Color(0xFF93C5FD),
     orangeContainer = Color(0xFF431407),
     orangeContent = Color(0xFFFB923C),
@@ -103,7 +101,7 @@ internal val darkExtendedColors = ExtendedColors(
     neutralContainer = Color(0xFF1F2937),
     neutralContent = Color(0xFF9CA3AF),
 
-    categoryMoreBg = Color(0xFF2D3349),          // Mapped to optimized surfaceVariant
+    categoryMoreBg = Color(0xFF2D3349),
     categoryMoreIcon = Color(0xFF93C5FD),
 
     // Prescription — dark-mode blue family
@@ -118,8 +116,8 @@ internal val darkExtendedColors = ExtendedColors(
     prescriptionWarningBorder = Color(0xFF854D0E),
     prescriptionErrorContainer = Color(0xFF450A0A),
     prescriptionErrorContent = Color(0xFFFCA5A5),
-    prescriptionDisabledContainer = Color(0xFF2D3349), // Mapped to optimized surfaceVariant
-    prescriptionGalleryContainer = Color(0xFF1E2E4A), // Mapped to optimized primaryContainer
+    prescriptionDisabledContainer = Color(0xFF2D3349),
+    prescriptionGalleryContainer = Color(0xFF1E2E4A),
     prescriptionGalleryContent = Color(0xFF93C5FD),
-    prescriptionScanBorder = Color(0xFF3B4461),       // Mapped to optimized outline
+    prescriptionScanBorder = Color(0xFF3B4461),
 )

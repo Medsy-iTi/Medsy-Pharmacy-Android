@@ -38,6 +38,7 @@ import com.medsy.designsystem.R as DesignR
 import com.medsy.presentation.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun SplashRoot(
@@ -65,14 +66,12 @@ fun SplashRoot(
 fun SplashScreen() {
     val isDark = isSystemInDarkTheme()
 
-    // ── Animation state ────────────────────────────────────────────────────────
     val logoScale = remember { Animatable(0.55f) }
     val logoAlpha = remember { Animatable(0f) }
     val taglineAlpha = remember { Animatable(0f) }
     val taglineTranslationY = remember { Animatable(SplashConstants.TEXT_SLIDE_START_OFFSET) }
 
     LaunchedEffect(Unit) {
-        // Logo: Spring scale-in + simultaneous fade-in
         launch {
             logoScale.animateTo(
                 targetValue = 1f,
@@ -93,7 +92,7 @@ fun SplashScreen() {
         }
 
         // Tagline & App Name text slide + fade with configured delay
-        delay(SplashConstants.LOGO_ANIMATION_DELAY)
+        delay(SplashConstants.LOGO_ANIMATION_DELAY.milliseconds)
 
         launch {
             taglineAlpha.animateTo(
@@ -115,10 +114,9 @@ fun SplashScreen() {
         }
 
         // Hold duration after animation finishes
-        delay(SplashConstants.HOLD_DURATION)
+        delay(SplashConstants.HOLD_DURATION.milliseconds)
     }
 
-    // ── Background gradient (Using Material Theme tokens dynamically) ──────────
     val backgroundBrush = if (isDark) {
         Brush.radialGradient(
             colors = listOf(
@@ -147,7 +145,6 @@ fun SplashScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            // ── Shimmer logo ───────────────────────────────────────────────────
             MedsyShimmer(
                 modifier = Modifier
                     .size(180.dp)
@@ -163,14 +160,12 @@ fun SplashScreen() {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Container for animating App Name and Tagline together
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .graphicsLayer(translationY = taglineTranslationY.value)
                     .alpha(taglineAlpha.value)
             ) {
-                // ── App name ───────────────────────────────────────────────────────
                 Text(
                     text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.headlineMedium.copy(
@@ -183,7 +178,6 @@ fun SplashScreen() {
 
                 Spacer(modifier = Modifier.height(6.dp))
 
-                // ── Tagline ────────────────────────────────────────────────────────
                 Text(
                     text = stringResource(R.string.splash_tagline),
                     style = MaterialTheme.typography.bodyMedium.copy(
