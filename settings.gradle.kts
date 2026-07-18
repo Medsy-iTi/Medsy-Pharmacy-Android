@@ -22,8 +22,9 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "MedsyPahrm"
+rootProject.name = "MedsyPharmacy"
 include(":app")
 include(":presentation")
 include(":data")
 include(":domain")
+include(":designsystem")
