@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="splash_logo_description">Medsy Pharmacy logo</string>
+    <string name="splash_subtitle">Platform for doctors and pharmacists</string>
+    <string name="splash_description">Everything you need to manage your healthcare business in one place</string>
 
     <string name="onboarding_title">Run your pharmacy with Medsy</string>
     <string name="onboarding_supporting">Respond to nearby medicine requests and manage fulfillment from one place.</string>

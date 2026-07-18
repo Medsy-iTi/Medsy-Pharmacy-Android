@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="splash_logo_description">شعار ميدزي للصيدليات</string>
+    <string name="splash_subtitle">منصة الأطباء والصيادلة</string>
+    <string name="splash_description">كل ما تحتاجه لإدارة عملك الصحي في مكان واحد</string>
 
     <string name="onboarding_title">أدر صيدليتك مع ميدزي</string>
     <string name="onboarding_supporting">استجب لطلبات الأدوية القريبة وأدر تجهيزها من مكان واحد.</string>
