@@ -26,7 +26,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -69,10 +69,10 @@ fun SplashScreen() {
     val logoScale = remember { Animatable(0.55f) }
     val logoAlpha = remember { Animatable(0f) }
     val taglineAlpha = remember { Animatable(0f) }
-    val taglineTranslationY = remember { Animatable(20f) }
+    val taglineTranslationY = remember { Animatable(SplashConstants.TEXT_SLIDE_START_OFFSET) }
 
     LaunchedEffect(Unit) {
-        // Logo: spring scale-in + simultaneous fade-in
+        // Logo: Spring scale-in + simultaneous fade-in
         launch {
             logoScale.animateTo(
                 targetValue = 1f,
@@ -85,31 +85,45 @@ fun SplashScreen() {
         launch {
             logoAlpha.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(durationMillis = 450, easing = FastOutSlowInEasing),
+                animationSpec = tween(
+                    durationMillis = SplashConstants.LOGO_ANIMATION_DURATION,
+                    easing = FastOutSlowInEasing
+                ),
             )
         }
-        // Tagline: slide-up + fade-in after a short delay
-        delay(380)
+
+        // Tagline & App Name text slide + fade with configured delay
+        delay(SplashConstants.LOGO_ANIMATION_DELAY)
+
         launch {
             taglineAlpha.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(durationMillis = 450, easing = FastOutSlowInEasing),
+                animationSpec = tween(
+                    durationMillis = SplashConstants.TEXT_ANIMATION_DURATION,
+                    easing = FastOutSlowInEasing
+                ),
             )
         }
         launch {
             taglineTranslationY.animateTo(
-                targetValue = 0f,
-                animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing),
+                targetValue = SplashConstants.TEXT_SLIDE_END_OFFSET,
+                animationSpec = tween(
+                    durationMillis = SplashConstants.TEXT_ANIMATION_DURATION,
+                    easing = FastOutSlowInEasing
+                ),
             )
         }
+
+        // Hold duration after animation finishes
+        delay(SplashConstants.HOLD_DURATION)
     }
 
-    // ── Background gradient ────────────────────────────────────────────────────
+    // ── Background gradient (Using Material Theme tokens dynamically) ──────────
     val backgroundBrush = if (isDark) {
         Brush.radialGradient(
             colors = listOf(
-                Color(0xFF0D2A5E),  // Deep navy centre
-                Color(0xFF060D1A),  // Near-black edge
+                MaterialTheme.colorScheme.primaryContainer,
+                MaterialTheme.colorScheme.background,
             ),
             center = Offset(0.5f, 0.35f),
             radius = 1200f,
@@ -117,8 +131,8 @@ fun SplashScreen() {
     } else {
         Brush.verticalGradient(
             colors = listOf(
-                Color(0xFFEEF4FF),  // Light blue top
-                Color(0xFFFFFFFF),  // White bottom
+                MaterialTheme.colorScheme.surfaceVariant,
+                MaterialTheme.colorScheme.surface,
             ),
         )
     }
@@ -149,32 +163,35 @@ fun SplashScreen() {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // ── App name ───────────────────────────────────────────────────────
-            Text(
-                text = "Medsy",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 32.sp,
-                    letterSpacing = (-0.5).sp,
-                ),
-                color = if (isDark) Color(0xFF93C5FD) else MaterialTheme.colorScheme.primary,
+            // Container for animating App Name and Tagline together
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .alpha(logoAlpha.value)
-                    .scale(logoScale.value),
-            )
+                    .graphicsLayer(translationY = taglineTranslationY.value)
+                    .alpha(taglineAlpha.value)
+            ) {
+                // ── App name ───────────────────────────────────────────────────────
+                Text(
+                    text = stringResource(R.string.app_name),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 32.sp,
+                        letterSpacing = (-0.5).sp,
+                    ),
+                    color = if (isDark) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary,
+                )
 
-            Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
-            // ── Tagline ────────────────────────────────────────────────────────
-            Text(
-                text = stringResource(R.string.splash_tagline),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    letterSpacing = 0.3.sp,
-                ),
-                color = if (isDark) Color(0xFF60A5FA) else MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
-                modifier = Modifier
-                    .alpha(taglineAlpha.value),
-            )
+                // ── Tagline ────────────────────────────────────────────────────────
+                Text(
+                    text = stringResource(R.string.splash_tagline),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        letterSpacing = 0.3.sp,
+                    ),
+                    color = if (isDark) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+                )
+            }
         }
     }
 }
