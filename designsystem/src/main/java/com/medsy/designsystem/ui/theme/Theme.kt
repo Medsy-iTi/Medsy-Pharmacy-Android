@@ -15,40 +15,52 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+// ─── Dark colour scheme ───────────────────────────────────────────────────────
 private val DarkColorScheme = darkColorScheme(
-    primary = PrimaryGreen,
+    primary = MedsyBlue,
     onPrimary = NeutralWhite,
-    secondary = DarkGreen,
+    primaryContainer = Color(0xFF0D2A5E),      // Deep navy container
+    onPrimaryContainer = Color(0xFFBDD8FF),
+    secondary = MedsyBlueDark,
     onSecondary = NeutralWhite,
-    tertiary = LightGreen,
-    background = PrimaryText, // Dark background
+    secondaryContainer = Color(0xFF0B1A4D),
+    onSecondaryContainer = Color(0xFFB0C4FF),
+    tertiary = MedsyBlueLight,
+    onTertiary = NeutralWhite,
+    background = Color(0xFF0A0F1E),            // Deep dark with blue undertone
     onBackground = NeutralWhite,
-    surface = PrimaryText, // Dark surface
+    surface = Color(0xFF111827),               // Dark surface
     onSurface = NeutralWhite,
-    surfaceVariant = PrimaryText,
+    surfaceVariant = Color(0xFF1C2A45),        // Slightly lighter dark surface
     onSurfaceVariant = SecondaryText,
     error = ErrorRed,
     errorContainer = Color(0xFF450A0A),
     onErrorContainer = Color(0xFFFCA5A5),
-    outline = BorderGreen
+    outline = Color(0xFF2A3F6A),               // Dark-mode blue outline
 )
 
+// ─── Light colour scheme ──────────────────────────────────────────────────────
 private val LightColorScheme = lightColorScheme(
-    primary = PrimaryGreen,
+    primary = MedsyBlue,
     onPrimary = NeutralWhite,
-    secondary = DarkGreen,
+    primaryContainer = MedsyBlueSurface,
+    onPrimaryContainer = MedsyBlueDark,
+    secondary = MedsyBlueDark,
     onSecondary = NeutralWhite,
-    tertiary = LightGreen,
+    secondaryContainer = Color(0xFFE0E9FF),
+    onSecondaryContainer = Color(0xFF0D1E5E),
+    tertiary = MedsyBlueLight,
+    onTertiary = NeutralWhite,
     background = OffWhiteBg,
     onBackground = PrimaryText,
     surface = NeutralWhite,
     onSurface = PrimaryText,
-    surfaceVariant = NeutralWhite,
+    surfaceVariant = MedsyBlueSurface,
     onSurfaceVariant = SecondaryText,
     error = ErrorRed,
     errorContainer = Color(0xFFFEF2F2),
     onErrorContainer = ErrorRed,
-    outline = BorderGreen
+    outline = MedsyBlueBorder,
 )
 
 @Composable
