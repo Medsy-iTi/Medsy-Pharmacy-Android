@@ -1,11 +1,14 @@
 package com.medsy.pharmacy.nav.root
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -19,6 +22,7 @@ import com.medsy.presentation.auth.login.LoginRoot
 import com.medsy.presentation.auth.register.RegistrationRoot
 import com.medsy.presentation.auth.verification.VerificationRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
+import com.medsy.presentation.orderdetails.OrderDetailsRoot
 import com.medsy.presentation.splash.SplashRoot
 import com.medsy.presentation.splash.SplashUIEffect
 
@@ -106,8 +110,25 @@ fun RootNavDisplay() {
                 NestedNavDisplay(
                     navigateBack = { backStack.removeLastOrNull() },
                     openLogin = { replaceWith(Route.Login) },
+                    openOrderDetails = { orderId ->
+                        backStack.navigateSingleTop(Route.OrderDetails(orderId))
+                    },
+                )
+            }
+            entry<Route.OrderDetails> { route ->
+                val context = LocalContext.current
+                OrderDetailsRoot(
+                    orderId = route.orderId,
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onDialPhoneNumber = { phoneNumber ->
+                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
+                        context.startActivity(intent)
+                    },
+                    onOpenLocationOnMap = { /* TODO: pass real coordinates once the order model carries them */ },
+                    onOpenPaymentSummary = { /* TODO: navigate once a payment summary route exists */ },
+                    onOpenCustomerChat = { /* TODO: navigate once a customer chat route exists */ },
                 )
             }
         },
-    )
+        )
 }

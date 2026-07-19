@@ -29,6 +29,9 @@ sealed interface Route : NavKey {
     data object Suspended : Route
 
     @Serializable
+    data class OrderDetails(val orderId: String) : Route
+
+    @Serializable
     data object NestedNav : Route {
         @Serializable
         data object Home : Route
