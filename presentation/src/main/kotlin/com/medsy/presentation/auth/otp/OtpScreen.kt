@@ -85,9 +85,9 @@ fun OtpRoot(
     }
 
     OtpScreen(
-        state = state,
-        onIntent = viewModel::onIntent,
-        onNavigateBack = onNavigateBack,
+        state = state, 
+        onIntent = viewModel::onIntent, 
+        onNavigateBack = onNavigateBack, 
         snackbarHostState = snackbarHostState
     )
 }
@@ -99,111 +99,110 @@ fun OtpScreen(
     onNavigateBack: () -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
-    Scaffold(
-        snackbarHost = { MedsySnackbarHost(snackbarHostState) },
-        containerColor = MaterialTheme.colorScheme.background
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .statusBarsPadding()
-                .imePadding()
-                .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            containerColor = MaterialTheme.colorScheme.background
+        ) { paddingValues ->
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .statusBarsPadding()
+                    .imePadding()
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.content_desc_back),
-                        tint = MaterialTheme.colorScheme.onBackground
-                    )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.content_desc_back),
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            OtpEmailIllustration()
+                OtpEmailIllustration()
 
-            Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-            Text(
-                text = stringResource(R.string.otp_title),
-                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = stringResource(R.string.otp_subtitle, state.email),
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            OtpInputField(
-                code = state.code,
-                hasError = state.hasError,
-                onCodeChanged = { if (it.length <= OTP_LENGTH) onIntent(OtpUIIntent.CodeChanged(it)) }
-            )
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            MedsyButton(
-                onClick = { onIntent(OtpUIIntent.Submit) },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = state.code.length == OTP_LENGTH,
-                isLoading = state.isLoading
-            ) {
-                if (state.isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        strokeWidth = 2.5.dp
-                    )
-                } else {
-                    Text(
-                        text = stringResource(R.string.auth_verify_otp),
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            if (state.countdown > 0) {
                 Text(
-                    text = stringResource(
-                        R.string.auth_resend_cooldown,
-                        formatCountdown(state.countdown)
-                    ),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    text = stringResource(R.string.otp_title),
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center
                 )
-            } else {
-                TextButton(onClick = { onIntent(OtpUIIntent.Resend) }) {
-                    Text(
-                        text = stringResource(R.string.auth_resend_otp),
-                        style = MaterialTheme.typography.labelLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text(
+                    text = stringResource(R.string.otp_subtitle, state.email),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                OtpInputField(
+                    code = state.code,
+                    hasError = state.hasError,
+                    onCodeChanged = { if (it.length <= OTP_LENGTH) onIntent(OtpUIIntent.CodeChanged(it)) }
+                )
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                MedsyButton(
+                    onClick = { onIntent(OtpUIIntent.Submit) },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = state.code.length == OTP_LENGTH,
+                    isLoading = state.isLoading
+                ) {
+                    if (state.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            strokeWidth = 2.5.dp
                         )
+                    } else {
+                        Text(
+                            text = stringResource(R.string.auth_verify_otp),
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                if (state.countdown > 0) {
+                    Text(
+                        text = stringResource(R.string.auth_resend_cooldown, formatCountdown(state.countdown)),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
                     )
+                } else {
+                    TextButton(onClick = { onIntent(OtpUIIntent.Resend) }) {
+                        Text(
+                            text = stringResource(R.string.auth_resend_otp),
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        )
+                    }
                 }
             }
         }
+        MedsySnackbarHost(hostState = snackbarHostState)
     }
 }
 

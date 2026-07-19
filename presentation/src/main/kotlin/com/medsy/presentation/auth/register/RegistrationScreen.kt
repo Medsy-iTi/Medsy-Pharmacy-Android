@@ -88,7 +88,6 @@ fun RegistrationScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.background,
-            snackbarHost = { MedsySnackbarHost(hostState = snackbarHostState) }
         ) { innerPadding ->
             Column(
                 modifier = Modifier
@@ -192,5 +191,6 @@ fun RegistrationScreen(
                 )
             }
         }
+        MedsySnackbarHost(hostState = snackbarHostState)
     }
 }
