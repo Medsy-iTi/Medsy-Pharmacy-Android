@@ -44,4 +44,8 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+
+    implementation(libs.coil.compose.v300rc01)
+    implementation(libs.coil.network.okhttp.v300rc01)
 }

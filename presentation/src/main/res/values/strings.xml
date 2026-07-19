@@ -94,4 +94,25 @@
     <string name="profile_language_arabic">العربية</string>
     <string name="profile_language_english">English</string>
     <string name="profile_logout">Log out</string>
+
+
+    <!--  Order Details  -->
+    <string name="order_details_title">Order Details</string>
+    <string name="order_details_new_badge">New</string>
+    <string name="order_details_back_desc">Back</string>
+    <string name="order_details_call_desc">Call customer</string>
+    <string name="order_details_location_desc">Open location</string>
+    <string name="order_details_order_number_format">#%1$s</string>
+    <string name="order_details_minutes_ago">%1$d min ago</string>
+    <string name="order_details_price_egp">%1$d EGP</string>
+    <string name="order_details_requested_medicines">Requested medicines</string>
+    <string name="order_details_customer_notes">Customer notes</string>
+    <string name="order_details_total">Order total</string>
+    <string name="order_details_view_payment_summary">View payment summary</string>
+    <string name="order_details_reject">Reject order</string>
+    <string name="order_details_contact_customer">Contact customer</string>
+    <string name="order_details_accept">Accept order</string>
+    <string name="order_details_accepted_message">Order accepted</string>
+    <string name="order_details_rejected_message">Order rejected</string>
+    <string name="orders_view_sample_order">Sample Order</string>
 </resources>
