@@ -94,4 +94,25 @@
     <string name="profile_language_arabic">العربية</string>
     <string name="profile_language_english">English</string>
     <string name="profile_logout">تسجيل الخروج</string>
+
+
+    <!--  Order Details  -->
+    <string name="order_details_title">تفاصيل الطلب</string>
+    <string name="order_details_new_badge">جديد</string>
+    <string name="order_details_back_desc">رجوع</string>
+    <string name="order_details_call_desc">اتصال بالعميل</string>
+    <string name="order_details_location_desc">فتح الموقع</string>
+    <string name="order_details_order_number_format">#%1$s</string>
+    <string name="order_details_minutes_ago">منذ %1$d دقائق</string>
+    <string name="order_details_price_egp">%1$d جنيه</string>
+    <string name="order_details_requested_medicines">الأدوية المطلوبة</string>
+    <string name="order_details_customer_notes">ملاحظات العميل</string>
+    <string name="order_details_total">إجمالي الطلب</string>
+    <string name="order_details_view_payment_summary">عرض ملخص الدفع</string>
+    <string name="order_details_reject">رفض الطلب</string>
+    <string name="order_details_contact_customer">تواصل مع العميل</string>
+    <string name="order_details_accept">قبول الطلب</string>
+    <string name="order_details_accepted_message">تم قبول الطلب</string>
+    <string name="order_details_rejected_message">تم رفض الطلب</string>
+    <string name="orders_view_sample_order">طلب تجريبي</string>
 </resources>

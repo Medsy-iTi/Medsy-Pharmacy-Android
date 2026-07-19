@@ -1,5 +1,7 @@
 [versions]
 agp = "9.2.1"
+coilCompose = "3.0.0-rc01"
+coilNetworkOkhttp = "3.0.0-rc01"
 converterMoshi = "3.0.0"
 coreKtx = "1.19.0"
 hiltNavigationCompose = "1.4.0"
@@ -36,6 +38,8 @@ material3 = "1.4.0"
 securityCrypto = "1.1.0-alpha06"
 
 [libraries]
+coil-compose-v300rc01 = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+coil-network-okhttp-v300rc01 = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
 moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 androidx-compose-material3-v130 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }

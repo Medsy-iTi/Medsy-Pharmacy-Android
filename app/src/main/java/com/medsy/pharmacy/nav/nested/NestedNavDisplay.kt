@@ -34,7 +34,9 @@ import kotlinx.serialization.modules.polymorphic
 fun NestedNavDisplay(
     navigateBack: () -> Unit,
     openLogin: () -> Unit,
-) {
+    openOrderDetails: (String) -> Unit,
+
+    ) {
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration {
             serializersModule = SerializersModule {
@@ -101,7 +103,7 @@ fun NestedNavDisplay(
             },
             entryProvider = entryProvider {
                 entry<Route.NestedNav.Home> { HomeRoot() }
-                entry<Route.NestedNav.Orders> { OrdersRoot() }
+                entry<Route.NestedNav.Orders> { OrdersRoot(onOrderClick = openOrderDetails) }
                 entry<Route.NestedNav.Profile> { ProfileRoot(openLogin = openLogin) }
             },
         )
