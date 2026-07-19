@@ -21,7 +21,6 @@ import com.medsy.presentation.auth.register.professional.ProfessionalInfoRoot
 import com.medsy.presentation.auth.otp.OtpRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
 import com.medsy.presentation.splash.SplashRoot
-import com.medsy.presentation.splash.SplashUIEffect
 
 @Composable
 fun RootNavDisplay() {
@@ -67,7 +66,7 @@ fun RootNavDisplay() {
                 )
             }
             entry<Route.Onboarding> {
-                OnboardingRoot(openLogin = { replaceWith(Route.Registration) })
+                OnboardingRoot(openLogin = { replaceWith(Route.Login) })
             }
             entry<Route.Login> {
                 LoginRoot(
