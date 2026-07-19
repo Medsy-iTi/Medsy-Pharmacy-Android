@@ -13,6 +13,12 @@
     <string name="onboarding_desc_3">حدّث حالة الطلب بضغطة واحدة، ويصل التحديث للمريض تلقائيًا في كل خطوة.</string>
     <string name="action_get_started">ابدأ الآن</string>
     <string name="auth_documents_description">ارفع تراخيص الصيدلية والمستندات المهنية للتحقق من حسابك.</string>
+    <string name="registration_pharmacy_license">ترخيص الصيدلية</string>
+    <string name="registration_pharmacy_license_desc">صورة واضحة لترخيص الصيدلية الرسمي</string>
+    <string name="registration_identity_document">وثيقة الهوية</string>
+    <string name="registration_identity_document_desc">جواز السفر أو بطاقة الرقم القومي</string>
+    <string name="registration_tax_card">البطاقة الضريبية</string>
+    <string name="registration_tax_card_desc">وثيقة التعريف الضريبي الرسمية</string>
     <string name="registration_address_placeholder">عنوان الصيدلية بالتفصيل</string>
     <string name="action_next">التالي</string>
     <string name="action_skip">تخطي</string>

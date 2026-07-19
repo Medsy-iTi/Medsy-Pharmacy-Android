@@ -13,6 +13,12 @@
     <string name="onboarding_desc_3">Update order status with one click, and the patient receives the update automatically at every step.</string>
     <string name="action_get_started">Get started</string>
     <string name="auth_documents_description">Upload pharmacy license and professional documents to verify your account.</string>
+    <string name="registration_pharmacy_license">Pharmacy License</string>
+    <string name="registration_pharmacy_license_desc">A clear photo of your official license</string>
+    <string name="registration_identity_document">Identity Document</string>
+    <string name="registration_identity_document_desc">Passport or National ID card</string>
+    <string name="registration_tax_card">Tax Card</string>
+    <string name="registration_tax_card_desc">Official tax identification document</string>
     <string name="registration_address_placeholder">Pharmacy full address</string>
     <string name="action_next">Next</string>
     <string name="action_skip">Skip</string>
