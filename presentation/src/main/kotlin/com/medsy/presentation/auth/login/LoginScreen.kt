@@ -34,7 +34,7 @@ fun LoginScreen(
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     PlaceholderScaffold(
-        title = stringResource(R.string.auth_login_title),
+        title = stringResource(R.string.action_get_started),
         supportingText = stringResource(R.string.auth_login_supporting),
         modifier = modifier,
     ) {
