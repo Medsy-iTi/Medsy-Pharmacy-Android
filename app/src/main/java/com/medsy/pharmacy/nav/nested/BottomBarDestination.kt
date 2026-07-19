@@ -11,13 +11,13 @@ enum class BottomBarDestination(
     val route: Route,
 ) {
     Home(
-        title = AppR.string.nav_home,
+        title = PresentationR.string.home_nav_home,
         icon = PresentationR.drawable.home,
         selectedIcon = PresentationR.drawable.home,
         route = Route.NestedNav.Home,
     ),
     Orders(
-        title = AppR.string.nav_orders,
+        title = PresentationR.string.home_nav_orders,
         icon = PresentationR.drawable.orderlist,
         selectedIcon = PresentationR.drawable.orderlist,
         route = Route.NestedNav.Orders,
