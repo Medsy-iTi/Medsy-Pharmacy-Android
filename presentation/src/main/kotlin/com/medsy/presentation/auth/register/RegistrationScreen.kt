@@ -58,8 +58,8 @@ fun RegistrationRoot(
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is RegisterEffect.NavigateToOtp -> onNavigateToOtp(effect.email)
-                is RegisterEffect.ShowError -> snackbarHostState.showError(
+                is RegisterUIEffect.NavigateToOtp -> onNavigateToOtp(effect.email)
+                is RegisterUIEffect.ShowError -> snackbarHostState.showError(
                     message = context.getString(effect.messageRes)
                 )
             }
