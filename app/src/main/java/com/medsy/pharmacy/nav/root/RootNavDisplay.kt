@@ -17,7 +17,8 @@ import com.medsy.presentation.auth.approval.ApprovalRoot
 import com.medsy.presentation.auth.approval.ApprovalScreenStatus
 import com.medsy.presentation.auth.login.LoginRoot
 import com.medsy.presentation.auth.register.RegistrationRoot
-import com.medsy.presentation.auth.verification.VerificationRoot
+import com.medsy.presentation.auth.register.professional.ProfessionalInfoRoot
+import com.medsy.presentation.auth.otp.OtpRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
 import com.medsy.presentation.splash.SplashRoot
 import com.medsy.presentation.splash.SplashUIEffect
@@ -66,7 +67,7 @@ fun RootNavDisplay() {
                 )
             }
             entry<Route.Onboarding> {
-                OnboardingRoot(openLogin = { replaceWith(Route.Login) })
+                OnboardingRoot(openLogin = { replaceWith(Route.Registration) })
             }
             entry<Route.Login> {
                 LoginRoot(
@@ -76,13 +77,22 @@ fun RootNavDisplay() {
             }
             entry<Route.Registration> {
                 RegistrationRoot(
-                    openVerification = { backStack.navigateSingleTop(Route.Verification) },
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToSignIn = { replaceWith(Route.Login) },
+                    onNavigateToOtp = { email ->
+                        backStack.navigateSingleTop(Route.Verification(email))
+                    }
                 )
             }
-            entry<Route.Verification> {
-                VerificationRoot(
-                    openPendingApproval = { replaceWith(Route.PendingApproval) },
+            entry<Route.Verification> { route ->
+                OtpRoot(
+                    email = route.email,
+                    onNavigateToProfessionalInfo = { replaceWith(Route.ProfessionalInfo) },
+                    onNavigateBack = { backStack.removeLastOrNull() }
                 )
+            }
+            entry<Route.ProfessionalInfo> {
+                ProfessionalInfoRoot()
             }
             entry<Route.PendingApproval> {
                 ApprovalRoot(
