@@ -33,8 +33,10 @@ object NetworkModule {
     @RefreshClient
     fun provideRefreshClient(
         localeInterceptor: LocaleInterceptor,
+        authInterceptor: AuthInterceptor,
     ): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(localeInterceptor)
+        .addInterceptor(authInterceptor)
         .addSafeLogging()
         .build()
 
@@ -86,12 +88,16 @@ object NetworkModule {
         @AuthenticatedRetrofit retrofit: Retrofit,
     ): ApiService = retrofit.create(ApiService::class.java)
 
-    private fun retrofit(moshi: Moshi, client: OkHttpClient): Retrofit =
-        Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
+    private fun retrofit(moshi: Moshi, client: OkHttpClient): Retrofit {
+        val baseUrl = BuildConfig.BASE_URL.let { 
+            if (it.startsWith("http://")) it.replace("http://", "https://") else it 
+        }
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
+    }
 
     private fun OkHttpClient.Builder.addSafeLogging(): OkHttpClient.Builder = apply {
         if (BuildConfig.DEBUG) {

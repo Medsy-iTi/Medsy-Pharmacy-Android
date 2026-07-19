@@ -8,19 +8,23 @@ import com.medsy.data.remote.auth.dto.VerifyOtpRequestDto
 import com.medsy.data.remote.network.ApiResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface AuthApi {
+    @Headers("No-Auth: true", "Accept: */*")
     @POST("api/v1/auth/register")
     suspend fun register(@Body body: RegisterRequestDto): Response<ApiResponse<Any>>
 
+    @Headers("No-Auth: true", "Accept: */*")
     @POST("api/v1/auth/verify")
     suspend fun verify(@Body body: VerifyOtpRequestDto): Response<ApiResponse<AuthDataDto>>
 
+    @Headers("No-Auth: true", "Accept: */*")
     @POST("api/v1/auth/login")
     suspend fun login(@Body body: LoginRequestDto): Response<ApiResponse<AuthDataDto>>
 
-    @retrofit2.http.Headers("No-Auth: true")
+    @Headers("No-Auth: true")
     @POST("api/v1/auth/refresh")
     suspend fun refresh(@Body body: RefreshRequestDto): Response<ApiResponse<AuthDataDto>>
 
