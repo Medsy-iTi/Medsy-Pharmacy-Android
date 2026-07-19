@@ -7,6 +7,7 @@ import com.medsy.data.remote.auth.LocaleInterceptor
 import com.medsy.data.remote.auth.TokenAuthenticator
 import com.medsy.data.remote.auth.api.AuthApi
 import com.medsy.data.remote.auth.api.RefreshApi
+import com.medsy.data.remote.pharmacy.api.PharmacyApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -88,12 +89,17 @@ object NetworkModule {
         @AuthenticatedRetrofit retrofit: Retrofit,
     ): ApiService = retrofit.create(ApiService::class.java)
 
+    @Provides
+    @Singleton
+    fun providePharmacyApi(
+        @AuthenticatedRetrofit retrofit: Retrofit,
+    ): PharmacyApi =
+        retrofit.create(PharmacyApi::class.java)
+
     private fun retrofit(moshi: Moshi, client: OkHttpClient): Retrofit {
-        val baseUrl = BuildConfig.BASE_URL.let { 
-            if (it.startsWith("http://")) it.replace("http://", "https://") else it 
-        }
+
         return Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
