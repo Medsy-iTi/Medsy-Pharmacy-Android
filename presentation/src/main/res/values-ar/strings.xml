@@ -71,11 +71,21 @@
     <string name="orders_active_empty">لم يتم ربط طلبات نشطة بعد.</string>
     <string name="orders_history_empty">لم يتم ربط طلبات مكتملة بعد.</string>
 
-    <string name="profile_title">ملف الصيدلية</string>
-    <string name="profile_supporting">أدر التفضيلات المحلية واعرض بيانات حساب الصيدلية المؤقتة.</string>
-    <string name="profile_account_placeholder">ستظهر هنا بيانات الصيدلية والترخيص.</string>
-    <string name="profile_approval_placeholder">حالة الموافقة: واجهة مؤقتة</string>
-    <string name="profile_receiving_placeholder">سيتم ربط إدارة استقبال الطلبات بالخادم.</string>
+    <string name="profile_title">الملف الشخصي</string>
+    <string name="profile_supporting">إدارة إعدادات وبيانات الصيدلية.</string>
+    <string name="profile_verified_pharmacy">صيدلية معتمدة</string>
+    <string name="profile_ratings_count">(128 تقييم)</string>
+    <string name="profile_phone_number">رقم الهاتف</string>
+    <string name="profile_change">تغيير</string>
+    <string name="profile_license">الترخيص</string>
+    <string name="profile_license_view">عرض رخصة مزاولة المهنة</string>
+    <string name="profile_registered_location">الموقع المسجل</string>
+    <string name="profile_location_value">شارع النيل، المعادي، القاهرة</string>
+    <string name="profile_edit_request">طلب تعديل بيانات</string>
+    <string name="profile_edit_request_sub">طلب تعديل البيانات من الإدارة</string>
+    <string name="profile_receiving_status">حالة استقبال الطلبات</string>
+    <string name="profile_status_open">مفتوح</string>
+    <string name="profile_status_closed">مغلق</string>
     <string name="profile_theme">المظهر</string>
     <string name="profile_theme_system">النظام</string>
     <string name="profile_theme_light">فاتح</string>
