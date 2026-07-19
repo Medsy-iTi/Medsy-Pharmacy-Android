@@ -27,6 +27,8 @@ suspend fun <T> safeApiCall(
         body.data
             ?.let { MedsyResult.Success(it) }
             ?: MedsyResult.Error(MedsyError.Remote.EmptyResponse)
+    }.also {
+        Log.d("auth", "SafeApiCall: Result: $it")
     }
 
 suspend fun <T> safeEmptyRestCall(
@@ -34,6 +36,8 @@ suspend fun <T> safeEmptyRestCall(
 ): EmptyMedsyResult<MedsyError.Remote> =
     executeRestCall(apiCall) {
         MedsyResult.Success(Unit)
+    }.also {
+        Log.d("auth", "SafeEmptyRestCall: Result: $it")
     }
 
 private suspend fun <T, R> executeRestCall(
@@ -42,29 +46,42 @@ private suspend fun <T, R> executeRestCall(
 ): MedsyResult<R, MedsyError.Remote> =
     try {
         val response = apiCall()
+        Log.d("auth", "SafeRestCall: Executing call to ${response.raw().request.url}")
         val body = response.body()
 
         when {
-            !response.isSuccessful -> MedsyResult.Error(
-                MedsyError.Remote.Http(
-                    statusCode = response.code(),
-                    serverMessage = response.errorBody()
-                        ?.string()
-                        ?.let(::parseServerMessage)
-                        ?: response.message().takeIf(String::isNotBlank),
+            !response.isSuccessful -> {
+                Log.e("auth", "SafeRestCall: HTTP Error code: ${response.code()}")
+                MedsyResult.Error(
+                    MedsyError.Remote.Http(
+                        statusCode = response.code(),
+                        serverMessage = response.errorBody()
+                            ?.string()
+                            ?.let(::parseServerMessage)
+                            ?: response.message().takeIf(String::isNotBlank),
+                    )
                 )
-            )
+            }
 
-            body == null -> MedsyResult.Error(MedsyError.Remote.EmptyResponse)
+            body == null -> {
+                Log.e("auth", "SafeRestCall: Body is null")
+                MedsyResult.Error(MedsyError.Remote.EmptyResponse)
+            }
 
-            !body.success -> MedsyResult.Error(
-                MedsyError.Remote.Http(
-                    statusCode = response.code(),
-                    serverMessage = body.message,
+            !body.success -> {
+                Log.e("auth", "SafeRestCall: API Error message: ${body.message}")
+                MedsyResult.Error(
+                    MedsyError.Remote.Http(
+                        statusCode = response.code(),
+                        serverMessage = body.message,
+                    )
                 )
-            )
+            }
 
-            else -> successResult(body)
+            else -> {
+                Log.d("auth", "SafeRestCall: Call successful")
+                successResult(body)
+            }
         }
     } catch (error: CancellationException) {
         throw error
