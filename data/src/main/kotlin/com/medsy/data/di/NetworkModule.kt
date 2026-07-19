@@ -5,6 +5,7 @@ import com.medsy.data.remote.api.ApiService
 import com.medsy.data.remote.auth.AuthInterceptor
 import com.medsy.data.remote.auth.LocaleInterceptor
 import com.medsy.data.remote.auth.TokenAuthenticator
+import com.medsy.data.remote.auth.api.AuthApi
 import com.medsy.data.remote.auth.api.RefreshApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -50,6 +51,12 @@ object NetworkModule {
     fun provideRefreshApi(
         @RefreshRetrofit retrofit: Retrofit,
     ): RefreshApi = retrofit.create(RefreshApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideAuthApi(
+        @RefreshRetrofit retrofit: Retrofit,
+    ): AuthApi = retrofit.create(AuthApi::class.java)
 
     @Provides
     @Singleton
