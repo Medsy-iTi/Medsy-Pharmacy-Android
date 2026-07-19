@@ -28,7 +28,7 @@ import com.medsy.presentation.splash.SplashUIEffect
 
 @Composable
 fun RootNavDisplay() {
-    val backStack = rememberNavBackStack(Route.NestedNav)
+    val backStack = rememberNavBackStack(Route.Splash)
 
     fun replaceWith(route: Route) {
         backStack.clear()
