@@ -47,6 +47,36 @@
     <string name="approval_suspended_supporting">لا يمكن لهذه الصيدلية استقبال طلبات جديدة أثناء الإيقاف. يخضع الوصول للطلبات الحالية لصلاحيات الخادم.</string>
     <string name="approval_back_to_login">العودة لتسجيل الدخول</string>
 
+    <string name="home_role_pharmacist">صيدلي</string>
+    <string name="home_pharmacy_name">صيدلية الأمل</string>
+    <string name="home_pharmacy_address">شارع النيل، المعادي، القاهرة</string>
+    <string name="home_pharmacy_status_open">مفتوح الآن حتى 11:00 مساءً</string>
+    <string name="home_pharmacy_id_label">رقم الصيدلية</string>
+    <string name="home_pharmacy_id_value">PH123456</string>
+    <string name="home_ratings_format">%1$s (%2$s تقييم)</string>
+
+    <string name="home_overview_title">نظرة عامة</string>
+    <string name="home_stat_new_orders">طلبات جديدة</string>
+    <string name="home_stat_in_progress">قيد التجهيز</string>
+    <string name="home_stat_delivered_today">تم التوصيل اليوم</string>
+    <string name="home_stat_total_sales">إجمالي المبيعات</string>
+    <string name="home_stat_total_sales_value">3,240</string>
+
+    <string name="home_latest_orders_title">أحدث الطلبات</string>
+    <string name="home_action_view_all">عرض الكل</string>
+    <string name="home_action_view_all_orders">عرض جميع الطلبات</string>
+
+    <string name="home_order_status_new">جديد</string>
+    <string name="home_order_status_preparing">قيد التجهيز</string>
+    <string name="home_order_status_delivered">تم التوصيل</string>
+    <string name="home_order_time_ago">منذ %1$d دقائق</string>
+
+    <string name="home_nav_home">الرئيسية</string>
+    <string name="home_nav_orders">الطلبات</string>
+    <string name="home_nav_products">المنتجات</string>
+    <string name="home_nav_customers">العملاء</string>
+    <string name="home_nav_more">المزيد</string>
+
     <string name="home_title">لوحة الصيدلية</string>
     <string name="home_supporting">ملخص تشغيلي للطلبات والعروض وطلبات الشراء.</string>
     <string name="home_receiving_status">حالة استقبال الطلبات</string>
