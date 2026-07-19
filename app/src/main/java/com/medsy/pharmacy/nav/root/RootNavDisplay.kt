@@ -18,6 +18,7 @@ import com.medsy.presentation.auth.approval.ApprovalScreenStatus
 import com.medsy.presentation.auth.login.LoginRoot
 import com.medsy.presentation.auth.register.RegistrationRoot
 import com.medsy.presentation.auth.register.professional.ProfessionalInfoRoot
+import com.medsy.presentation.auth.register.documents.DocumentsRoot
 import com.medsy.presentation.auth.otp.OtpRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
 import com.medsy.presentation.splash.SplashRoot
@@ -63,6 +64,10 @@ fun RootNavDisplay() {
                     openOnBoarding = { replaceWith(Route.Onboarding) },
                     openLogin = { replaceWith(Route.Login) },
                     openHome = { replaceWith(Route.NestedNav) },
+                    openPendingApproval = { replaceWith(Route.PendingApproval) },
+                    openRejected = { replaceWith(Route.Rejected) },
+                    openSuspended = { replaceWith(Route.Suspended) },
+                    openProfessionalInfo = { replaceWith(Route.ProfessionalInfo) },
                 )
             }
             entry<Route.Onboarding> {
@@ -91,7 +96,16 @@ fun RootNavDisplay() {
                 )
             }
             entry<Route.ProfessionalInfo> {
-                ProfessionalInfoRoot()
+                ProfessionalInfoRoot(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToDocuments = { replaceWith(Route.Documents) }
+                )
+            }
+            entry<Route.Documents> {
+                DocumentsRoot(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToReview = { /* TODO */ }
+                )
             }
             entry<Route.PendingApproval> {
                 ApprovalRoot(
