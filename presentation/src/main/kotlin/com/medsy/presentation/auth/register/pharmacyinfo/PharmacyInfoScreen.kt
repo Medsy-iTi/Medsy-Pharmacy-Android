@@ -1,4 +1,4 @@
-package com.medsy.presentation.auth.register.professional
+package com.medsy.presentation.auth.register.pharmacyinfo
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -109,7 +109,7 @@ fun ProfessionalInfoScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                SectionTitle(textRes = R.string.auth_step_professional_info)
+                SectionTitle(textRes = R.string.auth_section_pharmacy_info)
 
                 Spacer(modifier = Modifier.height(12.dp))
 
