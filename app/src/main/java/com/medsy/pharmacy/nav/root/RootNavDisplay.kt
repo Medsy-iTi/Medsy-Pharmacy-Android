@@ -17,7 +17,7 @@ import com.medsy.presentation.auth.approval.ApprovalRoot
 import com.medsy.presentation.auth.approval.ApprovalScreenStatus
 import com.medsy.presentation.auth.login.LoginRoot
 import com.medsy.presentation.auth.register.RegistrationRoot
-import com.medsy.presentation.auth.register.professional.ProfessionalInfoRoot
+import com.medsy.presentation.auth.register.pharmacyinfo.ProfessionalInfoRoot
 import com.medsy.presentation.auth.register.documents.DocumentsRoot
 import com.medsy.presentation.auth.otp.OtpRoot
 import com.medsy.presentation.onboarding.OnboardingRoot

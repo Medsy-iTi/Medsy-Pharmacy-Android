@@ -12,13 +12,16 @@
     <string name="onboarding_title_3">تابع كل طلب حتى اكتماله</string>
     <string name="onboarding_desc_3">حدّث حالة الطلب بضغطة واحدة، ويصل التحديث للمريض تلقائيًا في كل خطوة.</string>
     <string name="action_get_started">ابدأ الآن</string>
+    <string name="auth_documents_description">ارفع تراخيص الصيدلية والمستندات المهنية للتحقق من حسابك.</string>
+    <string name="registration_address_placeholder">عنوان الصيدلية بالتفصيل</string>
     <string name="action_next">التالي</string>
     <string name="action_skip">تخطي</string>
 
     <string name="auth_register_provider_title">إنشاء حساب مقدم خدمة</string>
     <string name="auth_register_provider_subtitle">أكمل خطوات التسجيل لتفعيل حسابك</string>
     <string name="auth_step_personal_data">البيانات\nالشخصية</string>
-    <string name="auth_step_professional_info">المعلومات\nالمهنية</string>
+    <string name="auth_step_pharmacy_info">بيانات\nالصيدلية</string>
+    <string name="auth_section_pharmacy_info">بيانات الصيدلية</string>
     <string name="auth_step_documents">المستندات</string>
     <string name="auth_step_review">مراجعة</string>
     <string name="auth_section_personal_data">البيانات الشخصية</string>
