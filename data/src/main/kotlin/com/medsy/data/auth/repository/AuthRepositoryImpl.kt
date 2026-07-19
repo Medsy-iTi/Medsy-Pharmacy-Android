@@ -6,13 +6,13 @@ import com.medsy.data.mapper.auth.toDomain
 import com.medsy.data.mapper.auth.toDto
 import com.medsy.data.remote.auth.api.AuthApi
 import com.medsy.data.remote.auth.dto.LoginRequestDto
-import com.medsy.data.remote.auth.dto.PharmacyRequestDto
 import com.medsy.data.remote.auth.dto.RefreshRequestDto
-import com.medsy.data.remote.auth.dto.RegisterPharmacyRequestDto
 import com.medsy.data.remote.auth.dto.VerifyOtpRequestDto
 import com.medsy.data.remote.network.safeApiCall
 import com.medsy.data.remote.network.safeEmptyRestCall
-import com.medsy.data.remote.pharmacy.PharmacyApi
+import com.medsy.data.remote.pharmacy.api.PharmacyApi
+import com.medsy.data.remote.pharmacy.dto.PharmacyRequestDto
+import com.medsy.data.remote.pharmacy.dto.RegisterPharmacyRequestDto
 import com.medsy.domain.auth.model.AuthSession
 import com.medsy.domain.auth.model.RegisterParams
 import com.medsy.domain.auth.model.RegisterPharmacyParams

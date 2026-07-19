@@ -59,9 +59,12 @@ fun RegistrationRoot(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is RegisterUIEffect.NavigateToOtp -> onNavigateToOtp(effect.email)
-                is RegisterUIEffect.ShowError -> snackbarHostState.showError(
-                    message = context.getString(effect.messageRes)
-                )
+                is RegisterUIEffect.ShowError -> {
+                    val message = context.resources.getString(effect.messageRes)
+                    snackbarHostState.showError(message)
+                }
+
+                else -> {}
             }
         }
     }
