@@ -6,12 +6,16 @@ import com.medsy.data.mapper.auth.toDomain
 import com.medsy.data.mapper.auth.toDto
 import com.medsy.data.remote.auth.api.AuthApi
 import com.medsy.data.remote.auth.dto.LoginRequestDto
+import com.medsy.data.remote.auth.dto.PharmacyRequestDto
 import com.medsy.data.remote.auth.dto.RefreshRequestDto
+import com.medsy.data.remote.auth.dto.RegisterPharmacyRequestDto
 import com.medsy.data.remote.auth.dto.VerifyOtpRequestDto
 import com.medsy.data.remote.network.safeApiCall
 import com.medsy.data.remote.network.safeEmptyRestCall
+import com.medsy.data.remote.pharmacy.PharmacyApi
 import com.medsy.domain.auth.model.AuthSession
 import com.medsy.domain.auth.model.RegisterParams
+import com.medsy.domain.auth.model.RegisterPharmacyParams
 import com.medsy.domain.auth.repository.AuthRepository
 import com.medsy.domain.common.EmptyMedsyResult
 import com.medsy.domain.common.MedsyError
@@ -23,6 +27,7 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val api: AuthApi,
+    private val pharmacyApi: PharmacyApi,
     private val tokenStorage: TokenStorage,
 ) : AuthRepository {
 
@@ -55,6 +60,24 @@ class AuthRepositoryImpl @Inject constructor(
             .map { it.toDomain() }
             .onSuccessSave()
             .also { Log.d("auth", "Repository: Login result: $it") }
+    }
+
+    override suspend fun registerPharmacy(params: RegisterPharmacyParams): EmptyMedsyResult<MedsyError.Remote> {
+        Log.d("auth", "Repository: Registering pharmacy ${params.name}")
+        val request = RegisterPharmacyRequestDto(
+            pharmacyRequest = PharmacyRequestDto(
+                name = params.name,
+                latitude = params.latitude,
+                longitude = params.longitude,
+                address = params.address,
+                phoneNumber = params.phoneNumber
+            ),
+            license = params.license
+        )
+        Log.d("auth", "Repository: Request Body: $request")
+        return safeEmptyRestCall { pharmacyApi.registerPharmacy(request) }.also {
+            Log.d("auth", "Repository: Pharmacy register result: $it")
+        }
     }
 
     override suspend fun refreshToken(): MedsyResult<AuthSession, MedsyError.Remote> {
