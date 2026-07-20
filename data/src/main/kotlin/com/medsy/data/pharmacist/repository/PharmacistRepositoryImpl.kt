@@ -25,7 +25,16 @@ class PharmacistRepositoryImpl @Inject constructor(
         homeAddress: String?,
         dob: String?
     ): MedsyResult<Pharmacist, MedsyError> {
-        return MedsyResult.Error(MedsyError.Remote.Unknown)
+        return safeApiCall { 
+            api.updateCurrentPharmacist(
+                com.medsy.data.pharmacist.remote.dto.UpdatePharmacistRequestDto(
+                    firstName = firstName,
+                    lastName = lastName,
+                    homeAddress = homeAddress,
+                    dob = dob
+                )
+            ) 
+        }.map { it.toDomain() }
     }
 
     override suspend fun removePharmacistFromPharmacy(pharmacistId: Long, pharmacyId: Long): EmptyMedsyResult<MedsyError> {

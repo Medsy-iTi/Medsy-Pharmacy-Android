@@ -6,6 +6,8 @@ import retrofit2.Response
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.PUT
+import retrofit2.http.Body
 
 interface PharmacistApi {
     @GET("api/v1/pharmacists/me")
@@ -21,4 +23,9 @@ interface PharmacistApi {
     suspend fun leavePharmacy(
         @Path("pharmacyId") pharmacyId: Long
     ): Response<ApiResponse<String>>
+
+    @PUT("api/v1/pharmacists/me")
+    suspend fun updateCurrentPharmacist(
+        @Body request: com.medsy.data.pharmacist.remote.dto.UpdatePharmacistRequestDto
+    ): Response<ApiResponse<PharmacistDto>>
 }

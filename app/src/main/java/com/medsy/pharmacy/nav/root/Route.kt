@@ -47,6 +47,9 @@ sealed interface Route : NavKey {
     data object PharmacistsList : Route
 
     @Serializable
+    data object PersonalInfo : Route
+
+    @Serializable
     data object NestedNav : Route {
         @Serializable
         data object Home : Route
