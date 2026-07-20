@@ -273,19 +273,6 @@ fun ProfileScreen(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
 
-                    // Edit Profile
-                    ProfileItemRow(
-                        icon = Icons.Outlined.EditNote,
-                        title = stringResource(R.string.profile_edit_profile),
-                        subtitle = null,
-                        onClick = { onIntent(ProfileUIIntent.NavigateToEditProfile) }
-                    )
-
-                    HorizontalDivider(
-                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
                     // Language Item
                     ProfileItemRow(
                         icon = Icons.Outlined.Language,
