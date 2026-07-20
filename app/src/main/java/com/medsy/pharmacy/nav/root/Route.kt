@@ -17,6 +17,9 @@ sealed interface Route : NavKey {
     data object Registration : Route
 
     @Serializable
+    data object PharmacyRegistration : Route
+
+    @Serializable
     data object Verification : Route
 
     @Serializable

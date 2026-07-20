@@ -18,6 +18,7 @@ import com.medsy.presentation.auth.approval.ApprovalScreenStatus
 import com.medsy.presentation.auth.login.LoginRoot
 import com.medsy.presentation.auth.nopharmacy.NoPharmacyRoot
 import com.medsy.presentation.auth.register.RegistrationRoot
+import com.medsy.presentation.auth.registerpharmacy.PharmacyRegistrationRoot
 import com.medsy.presentation.auth.verification.VerificationRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
 import com.medsy.presentation.splash.SplashRoot
@@ -82,7 +83,7 @@ fun RootNavDisplay() {
             entry<Route.NoPharmacy> {
                 NoPharmacyRoot(
                     openPharmacyRegistration = {
-                        backStack.navigateSingleTop(Route.Registration)
+                        backStack.navigateSingleTop(Route.PharmacyRegistration)
                     },
                     openLogin = { replaceWith(Route.Login) },
                 )
@@ -90,6 +91,11 @@ fun RootNavDisplay() {
             entry<Route.Registration> {
                 RegistrationRoot(
                     openVerification = { backStack.navigateSingleTop(Route.Verification) },
+                )
+            }
+            entry<Route.PharmacyRegistration> {
+                PharmacyRegistrationRoot(
+                    openPendingApproval = { replaceWith(Route.PendingApproval) },
                 )
             }
             entry<Route.Verification> {

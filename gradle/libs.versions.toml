@@ -27,6 +27,7 @@ secret = "2.0.1"
 moshi = "1.15.2"
 lottieCompose = "6.7.1"
 mapsCompose = "8.3.0"
+playServicesLocation = "21.4.0"
 coil = "3.5.0"
 coreSplashscreen = "1.2.0"
 dataStore = "1.2.1"
@@ -89,6 +90,7 @@ androidx-hilt-lifecycle-viewmodel-compose = { module = "androidx.hilt:hilt-lifec
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 #maps
 maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 
 #coil
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }

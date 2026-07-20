@@ -15,6 +15,7 @@ fun MedsyError.toMessageRes(): Int = when (this) {
         400 -> R.string.auth_error_invalid_credentials
         401 -> R.string.auth_error_authentication_required
         403 -> R.string.auth_error_pharmacists_only
+        413 -> R.string.pharmacy_registration_error_pdf_too_large
         else -> R.string.error_server
     }
 
