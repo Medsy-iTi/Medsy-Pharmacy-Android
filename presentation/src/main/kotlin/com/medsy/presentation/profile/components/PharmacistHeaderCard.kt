@@ -3,6 +3,7 @@ package com.medsy.presentation.profile.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -58,7 +59,7 @@ fun PharmacistHeaderCard(
                     .size(72.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .androidx.compose.foundation.clickable { onAvatarClick() },
+                    .clickable { onAvatarClick() },
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(16.dp))

@@ -116,9 +116,11 @@ fun ProfileScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 24.dp)
         ) {
-          
-            PharmacistHeaderCard(pharmacist = state.pharmacist)
-
+            PharmacistHeaderCard(
+                pharmacist = state.pharmacist,
+                isAvatarFemale = state.isAvatarFemale,
+                onAvatarClick = { onIntent(ProfileUIIntent.ToggleAvatarGender(!state.isAvatarFemale)) }
+            )
             Spacer(modifier = Modifier.height(16.dp))
 
             PharmacyInfoCard(

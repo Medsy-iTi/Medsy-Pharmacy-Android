@@ -134,8 +134,7 @@ fun PharmacistsListScreen(
             // Pharmacy Info Card
             PharmacyInfoCard(
                 pharmacyName = state.pharmacyName,
-                pharmacyAddress = null, // Or add address to state if available later
-                onClick = {}
+                pharmacyAddress = null // Or add address to state if available later
             )
 
             Spacer(modifier = Modifier.height(24.dp))
