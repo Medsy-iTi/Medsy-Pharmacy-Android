@@ -40,6 +40,7 @@ data class ExtendedColors(
     val prescriptionGalleryContainer: Color,
     val prescriptionGalleryContent: Color,
     val prescriptionScanBorder: Color,
+    val darkBlueColor: Color
 )
 
 internal val LocalExtendedColors = staticCompositionLocalOf {
@@ -84,6 +85,7 @@ internal val lightExtendedColors = ExtendedColors(
     prescriptionGalleryContainer = Color(0xFFEFF3FF),
     prescriptionGalleryContent = MedsyBlue,
     prescriptionScanBorder = MedsyBlueBorder,
+    darkBlueColor = Color(0xFF010326),
 )
 
 internal val darkExtendedColors = ExtendedColors(
@@ -120,4 +122,5 @@ internal val darkExtendedColors = ExtendedColors(
     prescriptionGalleryContainer = Color(0xFF1E2E4A),
     prescriptionGalleryContent = Color(0xFF93C5FD),
     prescriptionScanBorder = Color(0xFF3B4461),
+    darkBlueColor = Color(0xFF010326),
 )

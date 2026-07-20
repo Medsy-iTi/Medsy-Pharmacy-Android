@@ -125,6 +125,23 @@
     <string name="profile_language_english">English</string>
     <string name="profile_logout">تسجيل الخروج</string>
 
+    <!--  Orders — filters & search  -->
+    <string name="orders_filter_all">جميع الطلبات</string>
+    <string name="orders_filter_new_format">جديدة %1$d</string>
+    <string name="orders_filter_in_progress_format">قيد التجهيز %1$d</string>
+    <string name="orders_filter_delivered">تم التوصيل</string>
+    <string name="orders_search_placeholder">ابحث برقم الطلب</string>
+    <string name="orders_filter_icon_desc">فلترة</string>
+    <string name="orders_search_icon_desc">بحث</string>
+    <!--  Orders — card  -->
+    <string name="orders_status_in_progress">قيد التجهيز</string>
+    <string name="orders_action_prepare">تجهيز الطلب</string>
+    <string name="orders_payment_prefix">الدفع: %1$s</string>
+    <string name="orders_payment_cash">كاش</string>
+    <string name="orders_payment_card_format">%1$s •••• %2$s</string>
+    <string name="orders_payment_visa">فيزا</string>
+    <string name="orders_payment_mastercard">ماستركارد</string>
+
 
     <!--  Order Details  -->
     <string name="order_details_title">تفاصيل الطلب</string>
