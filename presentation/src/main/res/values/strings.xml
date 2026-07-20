@@ -244,6 +244,26 @@
     <string name="medsy_logo_content_desc">Medsy Logo\n</string>
     <string name="auth_error_no_pharmacy">You must be assigned to a pharmacy</string>
 
+
+    <!--  Orders — filters & search  -->
+    <string name="orders_filter_all">All Orders</string>
+    <string name="orders_filter_new_format">New (%1$d)</string>
+    <string name="orders_filter_in_progress_format">In Progress (%1$d)</string>
+    <string name="orders_filter_delivered">Delivered</string>
+    <string name="orders_search_placeholder">Search by order number</string>
+    <string name="orders_filter_icon_desc">Filter</string>
+    <string name="orders_search_icon_desc">Search</string>
+    <!--  Orders — card  -->
+    <string name="orders_status_in_progress">In Progress</string>
+    <string name="orders_action_prepare">Prepare order</string>
+    <string name="orders_payment_prefix">Payment: %1$s</string>
+    <string name="orders_payment_cash">Cash</string>
+    <string name="orders_payment_card_format">%1$s •••• %2$s</string>
+    <string name="orders_payment_visa">Visa</string>
+    <string name="orders_payment_mastercard">Mastercard</string>
+
+
+
     <!--  Order Details  -->
     <string name="order_details_title">Order Details</string>
     <string name="order_details_new_badge">New</string>
