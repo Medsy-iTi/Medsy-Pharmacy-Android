@@ -5,6 +5,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medsy.domain.auth.usecase.ClearSessionUseCase
+import com.medsy.domain.auth.usecase.LogoutUseCase
 import com.medsy.domain.common.preferences.usecase.ObserveUserPreferencesUseCase
 import com.medsy.domain.common.preferences.usecase.SetThemeModeUseCase
 import com.medsy.domain.common.preferences.usecase.SetAvatarGenderUseCase
@@ -30,6 +31,7 @@ class ProfileViewModel @Inject constructor(
     observePreferences: ObserveUserPreferencesUseCase,
     private val setThemeMode: SetThemeModeUseCase,
     private val setAvatarGender: SetAvatarGenderUseCase,
+    private val logoutUseCase: LogoutUseCase,
     private val clearSession: ClearSessionUseCase,
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
@@ -40,6 +42,9 @@ class ProfileViewModel @Inject constructor(
     private val pharmacistFlow = MutableStateFlow<Pharmacist?>(null)
     private val pharmacyFlow = MutableStateFlow<MyPharmacy?>(null)
     private val errorFlow = MutableStateFlow<MedsyError?>(null)
+    private val isLoggingOutFlow = MutableStateFlow(false)
+    private val isAvatarSheetOpenFlow = MutableStateFlow(false)
+    private val showLogoutDialogFlow = MutableStateFlow(false)
 
     private val dataFlow = combine(
         isLoadingFlow,
@@ -53,8 +58,11 @@ class ProfileViewModel @Inject constructor(
     val state = combine(
         observePreferences(),
         isReceivingOrdersFlow,
+        isLoggingOutFlow,
+        isAvatarSheetOpenFlow,
+        showLogoutDialogFlow,
         dataFlow
-    ) { prefs, isReceiving, data ->
+    ) { prefs, isReceiving, isLoggingOut, isAvatarSheetOpen, showLogoutDialog, data ->
         ProfileState(
             themeMode = prefs.themeMode,
             isReceivingOrders = isReceiving,
@@ -62,7 +70,10 @@ class ProfileViewModel @Inject constructor(
             pharmacist = data.pharmacist,
             pharmacy = data.pharmacy,
             error = data.error,
-            isAvatarFemale = prefs.isAvatarFemale
+            isAvatarFemale = prefs.isAvatarFemale,
+            isLoggingOut = isLoggingOut,
+            isAvatarSheetOpen = isAvatarSheetOpen,
+            showLogoutDialog = showLogoutDialog
         )
     }.stateIn(
         scope = viewModelScope,
@@ -76,8 +87,11 @@ class ProfileViewModel @Inject constructor(
 
     private fun loadProfileData(forceRefresh: Boolean = false) {
         viewModelScope.launch {
-            isLoadingFlow.value = true
-            errorFlow.value = null
+            val loadingJob = launch {
+                kotlinx.coroutines.delay(100)
+                isLoadingFlow.value = true
+                errorFlow.value = null
+            }
             
             val pharmacistResult = getCurrentPharmacist(forceRefresh)
             pharmacistResult.fold(
@@ -86,6 +100,8 @@ class ProfileViewModel @Inject constructor(
             )
 
             val pharmacyResult = getMyPharmacy(forceRefresh)
+            loadingJob.cancel()
+            
             pharmacyResult.fold(
                 onSuccess = { pharmacyFlow.value = it },
                 onError = { errorFlow.value = it }
@@ -114,8 +130,23 @@ class ProfileViewModel @Inject constructor(
             is ProfileUIIntent.ReceivingStatusChanged -> {
                 isReceivingOrdersFlow.value = intent.isReceiving
             }
-            ProfileUIIntent.Logout -> viewModelScope.launch {
-                clearSession()
+            is ProfileUIIntent.OpenAvatarSheet -> {
+                isAvatarSheetOpenFlow.value = true
+            }
+            is ProfileUIIntent.CloseAvatarSheet -> {
+                isAvatarSheetOpenFlow.value = false
+            }
+            is ProfileUIIntent.ShowLogoutDialog -> {
+                showLogoutDialogFlow.value = true
+            }
+            is ProfileUIIntent.HideLogoutDialog -> {
+                showLogoutDialogFlow.value = false
+            }
+            is ProfileUIIntent.Logout -> viewModelScope.launch {
+                showLogoutDialogFlow.value = false
+                isLoggingOutFlow.value = true
+                logoutUseCase()
+                isLoggingOutFlow.value = false
                 mutableEffect.send(ProfileUIEffect.OpenLogin)
             }
             ProfileUIIntent.NavigateToInvitePharmacist -> viewModelScope.launch {

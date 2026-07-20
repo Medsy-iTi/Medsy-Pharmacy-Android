@@ -9,10 +9,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
+import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor() : ViewModel() {
+class HomeViewModel @Inject constructor(
+    private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
+    private val getMyPharmacy: GetMyPharmacyUseCase
+) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeUIState())
     val state = _state.asStateFlow()
@@ -22,6 +27,15 @@ class HomeViewModel @Inject constructor() : ViewModel() {
 
     init {
         loadHomeData()
+        prefetchProfileData()
+    }
+
+    private fun prefetchProfileData() {
+        viewModelScope.launch {
+            // Silently prefetch so they are cached when the user navigates to Profile
+            getCurrentPharmacist(forceRefresh = false)
+            getMyPharmacy(forceRefresh = false)
+        }
     }
 
     fun onIntent(intent: HomeUIIntent) {

@@ -37,6 +37,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -59,6 +61,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.medsy.designsystem.ui.theme.MedsyTheme
 import com.medsy.domain.common.preferences.model.ThemeMode
 import com.medsy.presentation.R
+import com.medsy.presentation.profile.components.AvatarSelectionBottomSheet
 import com.medsy.presentation.profile.components.LanguageBottomSheet
 import com.medsy.presentation.profile.components.PharmacistHeaderCard
 import com.medsy.presentation.profile.components.PharmacyInfoCard
@@ -119,7 +122,7 @@ fun ProfileScreen(
             PharmacistHeaderCard(
                 pharmacist = state.pharmacist,
                 isAvatarFemale = state.isAvatarFemale,
-                onAvatarClick = { onIntent(ProfileUIIntent.ToggleAvatarGender(!state.isAvatarFemale)) }
+                onAvatarClick = { onIntent(ProfileUIIntent.OpenAvatarSheet) }
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -157,6 +160,54 @@ fun ProfileScreen(
             onThemeSelected = { mode ->
                 onIntent(ProfileUIIntent.ThemeChanged(mode))
                 showThemeSheet = false
+            }
+        )
+    }
+
+    if (state.isAvatarSheetOpen) {
+        AvatarSelectionBottomSheet(
+            isAvatarFemale = state.isAvatarFemale,
+            onDismiss = { onIntent(ProfileUIIntent.CloseAvatarSheet) },
+            onAvatarSelected = { isFemale ->
+                onIntent(ProfileUIIntent.ToggleAvatarGender(isFemale))
+                onIntent(ProfileUIIntent.CloseAvatarSheet)
+            }
+        )
+    }
+
+    if (state.showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { onIntent(ProfileUIIntent.HideLogoutDialog) },
+            title = {
+                Text(
+                    text = stringResource(R.string.profile_logout_confirm_title),
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(R.string.profile_logout_confirm_desc),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onIntent(ProfileUIIntent.Logout)
+                    }
+                ) {
+                    Text(
+                        text = stringResource(R.string.profile_logout),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { onIntent(ProfileUIIntent.HideLogoutDialog) }
+                ) {
+                    Text(stringResource(R.string.dialog_cancel))
+                }
             }
         )
     }

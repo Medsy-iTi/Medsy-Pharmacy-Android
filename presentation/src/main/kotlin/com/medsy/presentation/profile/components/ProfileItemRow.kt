@@ -31,9 +31,10 @@ fun ProfileItemRow(
     titleColor: androidx.compose.ui.graphics.Color? = null,
     showChevron: Boolean = true,
     trailing: @Composable () -> Unit = {},
+    isLoading: Boolean = false,
     onClick: (() -> Unit)? = null
 ) {
-    val clickableModifier = if (onClick != null) modifier.clickable(onClick = onClick) else modifier
+    val clickableModifier = if (onClick != null && !isLoading) modifier.clickable(onClick = onClick) else modifier
 
     Row(
         modifier = clickableModifier
@@ -69,7 +70,13 @@ fun ProfileItemRow(
             }
         }
 
-        if (onClick != null && showChevron) {
+        if (isLoading) {
+            androidx.compose.material3.CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                color = iconTint ?: MaterialTheme.colorScheme.primary,
+                strokeWidth = 2.dp
+            )
+        } else if (onClick != null && showChevron) {
             Icon(
                 imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                 contentDescription = null,

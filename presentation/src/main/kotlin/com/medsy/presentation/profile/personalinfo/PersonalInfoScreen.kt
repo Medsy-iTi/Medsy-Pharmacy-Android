@@ -170,7 +170,7 @@ fun PersonalInfoScreen(
 
             // Editable Form
             Text(
-                text = "Pharmacist Information", // Ideally in strings.xml
+                text = stringResource(R.string.profile_pharmacist_information),
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -178,7 +178,7 @@ fun PersonalInfoScreen(
             OutlinedTextField(
                 value = state.firstName,
                 onValueChange = { onIntent(PersonalInfoUIIntent.FirstNameChanged(it)) },
-                label = { Text("First Name") }, // Ideally strings
+                label = { Text(stringResource(R.string.profile_first_name)) },
                 leadingIcon = {
                     Icon(imageVector = Icons.Outlined.Person, contentDescription = null)
                 },
@@ -190,7 +190,7 @@ fun PersonalInfoScreen(
             OutlinedTextField(
                 value = state.lastName,
                 onValueChange = { onIntent(PersonalInfoUIIntent.LastNameChanged(it)) },
-                label = { Text("Last Name") },
+                label = { Text(stringResource(R.string.profile_last_name)) },
                 leadingIcon = {
                     Icon(imageVector = Icons.Outlined.Person, contentDescription = null)
                 },
@@ -202,7 +202,7 @@ fun PersonalInfoScreen(
             OutlinedTextField(
                 value = state.homeAddress,
                 onValueChange = { onIntent(PersonalInfoUIIntent.HomeAddressChanged(it)) },
-                label = { Text("Home Address") },
+                label = { Text(stringResource(R.string.profile_home_address)) },
                 leadingIcon = {
                     Icon(imageVector = Icons.Outlined.Home, contentDescription = null)
                 },
@@ -214,7 +214,7 @@ fun PersonalInfoScreen(
             OutlinedTextField(
                 value = state.dob ?: "",
                 onValueChange = { },
-                label = { Text("Date of Birth (YYYY-MM-DD)") },
+                label = { Text(stringResource(R.string.profile_date_of_birth)) },
                 leadingIcon = {
                     Icon(imageVector = Icons.Outlined.CalendarToday, contentDescription = null)
                 },
@@ -247,12 +247,12 @@ fun PersonalInfoScreen(
                                 showDatePicker = false
                             }
                         ) {
-                            Text("OK")
+                            Text(stringResource(R.string.dialog_ok))
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = { showDatePicker = false }) {
-                            Text("Cancel")
+                            Text(stringResource(R.string.dialog_cancel))
                         }
                     }
                 ) {
@@ -286,7 +286,7 @@ fun PersonalInfoScreen(
                     )
                 } else {
                     Text(
-                        text = "Save Changes", // Ideally strings
+                        text = stringResource(R.string.profile_save_changes),
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
                     )
                 }

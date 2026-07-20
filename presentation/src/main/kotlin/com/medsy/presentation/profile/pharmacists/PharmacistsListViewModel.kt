@@ -30,8 +30,12 @@ class PharmacistsListViewModel @Inject constructor(
 
     private fun loadPharmacists(forceRefresh: Boolean = false) {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true, error = null)
+            val loadingJob = launch {
+                kotlinx.coroutines.delay(100)
+                _state.value = _state.value.copy(isLoading = true, error = null)
+            }
             val result = getMyPharmacy(forceRefresh)
+            loadingJob.cancel()
             result.fold(
                 onSuccess = { pharmacy ->
                     _state.value = _state.value.copy(

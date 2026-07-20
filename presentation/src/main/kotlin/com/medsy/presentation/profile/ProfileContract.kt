@@ -13,7 +13,10 @@ data class ProfileState(
     val pharmacist: Pharmacist? = null,
     val pharmacy: MyPharmacy? = null,
     val error: MedsyError? = null,
-    val isAvatarFemale: Boolean = false
+    val isAvatarFemale: Boolean = false,
+    val isLoggingOut: Boolean = false,
+    val isAvatarSheetOpen: Boolean = false,
+    val showLogoutDialog: Boolean = false
 )
 
 sealed interface ProfileUIIntent {
@@ -21,6 +24,10 @@ sealed interface ProfileUIIntent {
     data class LanguageChanged(val languageTag: String) : ProfileUIIntent
     data class ReceivingStatusChanged(val isReceiving: Boolean) : ProfileUIIntent
     data class ToggleAvatarGender(val isFemale: Boolean) : ProfileUIIntent
+    data object OpenAvatarSheet : ProfileUIIntent
+    data object CloseAvatarSheet : ProfileUIIntent
+    data object ShowLogoutDialog : ProfileUIIntent
+    data object HideLogoutDialog : ProfileUIIntent
     data object Logout : ProfileUIIntent
     data object NavigateToInvitePharmacist : ProfileUIIntent
     data object NavigateToPharmacistsList : ProfileUIIntent

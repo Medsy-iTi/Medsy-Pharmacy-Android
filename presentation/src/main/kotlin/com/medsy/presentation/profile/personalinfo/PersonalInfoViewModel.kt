@@ -35,13 +35,17 @@ class PersonalInfoViewModel @Inject constructor(
 
     private fun loadData() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, error = null) }
+            val loadingJob = launch {
+                kotlinx.coroutines.delay(100)
+                _state.update { it.copy(isLoading = true, error = null) }
+            }
             
             val pharmacistDeferred = async { getCurrentPharmacist() }
             val pharmacyDeferred = async { getMyPharmacy() }
             
             val pharmacistResult = pharmacistDeferred.await()
             val pharmacyResult = pharmacyDeferred.await()
+            loadingJob.cancel()
             
             var hasError = false
             

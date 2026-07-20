@@ -199,7 +199,8 @@ fun ProfileSettingsSection(
                 subtitle = null,
                 iconTint = MaterialTheme.colorScheme.error,
                 titleColor = MaterialTheme.colorScheme.error,
-                onClick = { onIntent(ProfileUIIntent.Logout) }
+                isLoading = state.isLoggingOut,
+                onClick = { onIntent(ProfileUIIntent.ShowLogoutDialog) }
             )
         }
     }
