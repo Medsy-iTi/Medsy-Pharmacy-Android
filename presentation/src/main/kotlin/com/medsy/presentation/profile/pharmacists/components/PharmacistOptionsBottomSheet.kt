@@ -276,7 +276,6 @@ fun PharmacistOptionsBottomSheet(
     }
 }
 
-// Temporary internal IconButton wrapper since it wasn't imported above for standard Icons
 @Composable
 private fun IconButton(onClick: () -> Unit, content: @Composable () -> Unit) {
     androidx.compose.material3.IconButton(onClick = onClick, content = content)
