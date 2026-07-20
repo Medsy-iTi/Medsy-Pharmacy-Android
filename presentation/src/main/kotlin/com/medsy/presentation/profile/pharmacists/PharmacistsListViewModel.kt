@@ -28,10 +28,10 @@ class PharmacistsListViewModel @Inject constructor(
         loadPharmacists()
     }
 
-    private fun loadPharmacists() {
+    private fun loadPharmacists(forceRefresh: Boolean = false) {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true, error = null)
-            val result = getMyPharmacy()
+            val result = getMyPharmacy(forceRefresh)
             result.fold(
                 onSuccess = { pharmacy ->
                     _state.value = _state.value.copy(
@@ -57,6 +57,9 @@ class PharmacistsListViewModel @Inject constructor(
             }
             PharmacistsListUIIntent.InvitePharmacist -> {
                 viewModelScope.launch { _effect.send(PharmacistsListUIEffect.NavigateToInvitePharmacist) }
+            }
+            PharmacistsListUIIntent.Refresh -> {
+                loadPharmacists(forceRefresh = true)
             }
         }
     }

@@ -60,6 +60,8 @@ import com.medsy.presentation.R
 import com.medsy.presentation.profile.components.PharmacyInfoCard
 import com.medsy.presentation.profile.pharmacists.components.PharmacistItem
 import com.medsy.presentation.profile.pharmacists.components.PharmacistOptionsBottomSheet
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import com.medsy.presentation.profile.components.ShimmerPharmacistsList
 
 @Composable
 fun PharmacistsListRoot(
@@ -116,13 +118,19 @@ fun PharmacistsListScreen(
             )
         }
     ) { paddingValues ->
-        Column(
+        PullToRefreshBox(
+            isRefreshing = state.isLoading,
+            onRefresh = { onIntent(PharmacistsListUIIntent.Refresh) },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 24.dp)
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp, vertical = 24.dp)
+            ) {
             // Pharmacy Info Card
             PharmacyInfoCard(
                 pharmacyName = state.pharmacyName,
@@ -142,7 +150,9 @@ fun PharmacistsListScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Pharmacists List Box
-            if (state.pharmacists.isNotEmpty()) {
+            if (state.isLoading && state.pharmacists.isEmpty()) {
+                ShimmerPharmacistsList()
+            } else if (state.pharmacists.isNotEmpty()) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
