@@ -16,11 +16,11 @@ import com.medsy.pharmacy.nav.nested.NestedNavDisplay
 import com.medsy.presentation.auth.approval.ApprovalRoot
 import com.medsy.presentation.auth.approval.ApprovalScreenStatus
 import com.medsy.presentation.auth.login.LoginRoot
+import com.medsy.presentation.auth.nopharmacy.NoPharmacyRoot
 import com.medsy.presentation.auth.register.RegistrationRoot
 import com.medsy.presentation.auth.verification.VerificationRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
 import com.medsy.presentation.splash.SplashRoot
-import com.medsy.presentation.splash.SplashUIEffect
 
 @Composable
 fun RootNavDisplay() {
@@ -63,6 +63,10 @@ fun RootNavDisplay() {
                     openOnBoarding = { replaceWith(Route.Onboarding) },
                     openLogin = { replaceWith(Route.Login) },
                     openHome = { replaceWith(Route.NestedNav) },
+                    openNoPharmacy = { replaceWith(Route.NoPharmacy) },
+                    openPendingApproval = { replaceWith(Route.PendingApproval) },
+                    openRejected = { replaceWith(Route.Rejected) },
+                    openSuspended = { replaceWith(Route.Suspended) },
                 )
             }
             entry<Route.Onboarding> {
@@ -71,7 +75,16 @@ fun RootNavDisplay() {
             entry<Route.Login> {
                 LoginRoot(
                     openHome = { replaceWith(Route.NestedNav) },
+                    openNoPharmacy = { replaceWith(Route.NoPharmacy) },
                     openRegistration = { backStack.navigateSingleTop(Route.Registration) },
+                )
+            }
+            entry<Route.NoPharmacy> {
+                NoPharmacyRoot(
+                    openPharmacyRegistration = {
+                        backStack.navigateSingleTop(Route.Registration)
+                    },
+                    openLogin = { replaceWith(Route.Login) },
                 )
             }
             entry<Route.Registration> {

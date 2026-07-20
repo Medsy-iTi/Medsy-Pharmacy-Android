@@ -45,6 +45,10 @@ fun SplashRoot(
     openOnBoarding: () -> Unit,
     openLogin: () -> Unit,
     openHome: () -> Unit,
+    openNoPharmacy: () -> Unit,
+    openPendingApproval: () -> Unit,
+    openRejected: () -> Unit,
+    openSuspended: () -> Unit,
     viewModel: SplashViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(viewModel) {
@@ -52,10 +56,11 @@ fun SplashRoot(
             when (effect) {
                 SplashUIEffect.OpenHome -> openHome()
                 SplashUIEffect.OpenLogin -> openLogin()
+                SplashUIEffect.OpenNoPharmacy -> openNoPharmacy()
                 SplashUIEffect.OpenOnboarding -> openOnBoarding()
-                SplashUIEffect.OpenPendingApproval -> TODO()
-                SplashUIEffect.OpenRejected -> TODO()
-                SplashUIEffect.OpenSuspended -> TODO()
+                SplashUIEffect.OpenPendingApproval -> openPendingApproval()
+                SplashUIEffect.OpenRejected -> openRejected()
+                SplashUIEffect.OpenSuspended -> openSuspended()
             }
         }
     }

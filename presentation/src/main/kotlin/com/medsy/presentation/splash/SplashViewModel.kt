@@ -37,6 +37,8 @@ class SplashViewModel @Inject constructor(
             val destination = when {
                 currentPreferences.isOnboardingCompleted.not() -> SplashUIEffect.OpenOnboarding
                 currentSession == null -> SplashUIEffect.OpenLogin
+                currentSession.account.approvalStatus == PharmacyApprovalStatus.NoPharmacy ->
+                    SplashUIEffect.OpenNoPharmacy
                 currentSession.account.approvalStatus == PharmacyApprovalStatus.Approved ->
                     SplashUIEffect.OpenHome
                 currentSession.account.approvalStatus == PharmacyApprovalStatus.PendingApproval ->
@@ -54,6 +56,7 @@ sealed interface SplashUIEffect {
     data object OpenOnboarding : SplashUIEffect
     data object OpenLogin : SplashUIEffect
     data object OpenHome : SplashUIEffect
+    data object OpenNoPharmacy : SplashUIEffect
     data object OpenPendingApproval : SplashUIEffect
     data object OpenRejected : SplashUIEffect
     data object OpenSuspended : SplashUIEffect
