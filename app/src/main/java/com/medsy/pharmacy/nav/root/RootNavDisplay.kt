@@ -20,11 +20,12 @@ import com.medsy.presentation.auth.approval.ApprovalRoot
 import com.medsy.presentation.auth.approval.ApprovalScreenStatus
 import com.medsy.presentation.auth.login.LoginRoot
 import com.medsy.presentation.auth.register.RegistrationRoot
-import com.medsy.presentation.auth.verification.VerificationRoot
+import com.medsy.presentation.auth.register.pharmacyinfo.ProfessionalInfoRoot
+import com.medsy.presentation.auth.register.documents.DocumentsRoot
+import com.medsy.presentation.auth.otp.OtpRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
 import com.medsy.presentation.orderdetails.OrderDetailsRoot
 import com.medsy.presentation.splash.SplashRoot
-import com.medsy.presentation.splash.SplashUIEffect
 
 @Composable
 fun RootNavDisplay() {
@@ -67,6 +68,10 @@ fun RootNavDisplay() {
                     openOnBoarding = { replaceWith(Route.Onboarding) },
                     openLogin = { replaceWith(Route.Login) },
                     openHome = { replaceWith(Route.NestedNav) },
+                    openPendingApproval = { replaceWith(Route.PendingApproval) },
+                    openRejected = { replaceWith(Route.Rejected) },
+                    openSuspended = { replaceWith(Route.Suspended) },
+                    openProfessionalInfo = { replaceWith(Route.ProfessionalInfo) },
                 )
             }
             entry<Route.Onboarding> {
@@ -80,12 +85,30 @@ fun RootNavDisplay() {
             }
             entry<Route.Registration> {
                 RegistrationRoot(
-                    openVerification = { backStack.navigateSingleTop(Route.Verification) },
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToSignIn = { replaceWith(Route.Login) },
+                    onNavigateToOtp = { email ->
+                        backStack.navigateSingleTop(Route.Verification(email))
+                    }
                 )
             }
-            entry<Route.Verification> {
-                VerificationRoot(
-                    openPendingApproval = { replaceWith(Route.PendingApproval) },
+            entry<Route.Verification> { route ->
+                OtpRoot(
+                    email = route.email,
+                    onNavigateToProfessionalInfo = { replaceWith(Route.ProfessionalInfo) },
+                    onNavigateBack = { backStack.removeLastOrNull() }
+                )
+            }
+            entry<Route.ProfessionalInfo> {
+                ProfessionalInfoRoot(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToDocuments = { replaceWith(Route.Documents) }
+                )
+            }
+            entry<Route.Documents> {
+                DocumentsRoot(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToReview = { /* TODO */ }
                 )
             }
             entry<Route.PendingApproval> {

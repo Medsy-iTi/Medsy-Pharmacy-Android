@@ -1,4 +1,4 @@
-package com.medsy.presentation.auth.register
+package com.medsy.presentation.auth.register.pharmacyinfo
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,14 +8,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Badge
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.filled.Store
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -23,9 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -37,19 +34,20 @@ import com.medsy.designsystem.components.MedsyButton
 import com.medsy.designsystem.components.MedsySnackbarHost
 import com.medsy.designsystem.components.showError
 import com.medsy.presentation.R
+import com.medsy.presentation.auth.register.RegisterUIEffect
+import com.medsy.presentation.auth.register.RegisterUIIntent
+import com.medsy.presentation.auth.register.RegisterUIState
+import com.medsy.presentation.auth.register.RegisterViewModel
 import com.medsy.presentation.auth.register.components.AuthTextField
-import com.medsy.presentation.auth.register.components.PasswordField
 import com.medsy.presentation.auth.register.components.RegistrationStepper
 import com.medsy.presentation.auth.register.components.ScreenHeader
 import com.medsy.presentation.auth.register.components.SectionTitle
-import com.medsy.presentation.auth.register.components.SignInFooter
 
 @Composable
-fun RegistrationRoot(
+fun ProfessionalInfoRoot(
     onNavigateBack: () -> Unit,
-    onNavigateToSignIn: () -> Unit,
-    onNavigateToOtp: (String) -> Unit,
-    viewModel: RegisterViewModel = hiltViewModel(),
+    onNavigateToDocuments: () -> Unit,
+    viewModel: RegisterViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -58,10 +56,11 @@ fun RegistrationRoot(
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is RegisterUIEffect.NavigateToOtp -> onNavigateToOtp(effect.email)
+                is RegisterUIEffect.NavigateToDocuments -> onNavigateToDocuments()
+
                 is RegisterUIEffect.ShowError -> {
                     val message = context.resources.getString(effect.messageRes)
-                    snackbarHostState.showError(message)
+                    snackbarHostState.showError(message = context.getString(effect.messageRes))
                 }
 
                 else -> {}
@@ -69,25 +68,21 @@ fun RegistrationRoot(
         }
     }
 
-    RegistrationScreen(
+    ProfessionalInfoScreen(
         state = state,
         onIntent = viewModel::onIntent,
         onNavigateBack = onNavigateBack,
-        onNavigateToSignIn = onNavigateToSignIn,
         snackbarHostState = snackbarHostState
     )
 }
 
 @Composable
-fun RegistrationScreen(
+fun ProfessionalInfoScreen(
     state: RegisterUIState,
     onIntent: (RegisterUIIntent) -> Unit,
     onNavigateBack: () -> Unit,
-    onNavigateToSignIn: () -> Unit,
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    snackbarHostState: SnackbarHostState
 ) {
-    var passwordVisible by remember { mutableStateOf(false) }
-
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.background,
@@ -110,88 +105,66 @@ fun RegistrationScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                RegistrationStepper(currentStep = state.currentStep)
+                RegistrationStepper(currentStep = 2)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                SectionTitle(textRes = R.string.auth_section_personal_data)
+                SectionTitle(textRes = R.string.auth_section_pharmacy_info)
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 AuthTextField(
-                    value = state.firstName,
-                    onValueChange = { onIntent(RegisterUIIntent.FirstNameChanged(it)) },
-                    labelRes = R.string.auth_first_name,
-                    leadingIcon = Icons.Filled.Person,
-                    errorRes = state.firstNameErrorRes,
+                    value = state.pharmacyName,
+                    onValueChange = { onIntent(RegisterUIIntent.PharmacyNameChanged(it)) },
+                    labelRes = R.string.registration_pharmacy_name,
+                    leadingIcon = Icons.Filled.Store,
+                    errorRes = state.pharmacyNameErrorRes,
                 )
 
                 Spacer(modifier = Modifier.height(2.dp))
 
                 AuthTextField(
-                    value = state.lastName,
-                    onValueChange = { onIntent(RegisterUIIntent.LastNameChanged(it)) },
-                    labelRes = R.string.auth_last_name,
-                    leadingIcon = Icons.Filled.Person,
-                    errorRes = state.lastNameErrorRes,
+                    value = state.licenseNumber,
+                    onValueChange = { onIntent(RegisterUIIntent.LicenseNumberChanged(it)) },
+                    labelRes = R.string.registration_license_number,
+                    leadingIcon = Icons.Filled.Badge,
+                    errorRes = state.licenseNumberErrorRes,
                 )
 
                 Spacer(modifier = Modifier.height(2.dp))
 
                 AuthTextField(
-                    value = state.phoneNumber,
-                    onValueChange = { onIntent(RegisterUIIntent.PhoneChanged(it)) },
+                    value = state.pharmacyPhoneNumber,
+                    onValueChange = { onIntent(RegisterUIIntent.PharmacyPhoneChanged(it)) },
                     labelRes = R.string.auth_phone,
                     leadingIcon = Icons.Filled.Phone,
-                    errorRes = state.phoneErrorRes,
+                    errorRes = state.pharmacyPhoneErrorRes,
                     keyboardType = KeyboardType.Phone,
                 )
 
                 Spacer(modifier = Modifier.height(2.dp))
 
                 AuthTextField(
-                    value = state.email,
-                    onValueChange = { onIntent(RegisterUIIntent.EmailChanged(it)) },
-                    labelRes = R.string.auth_email,
-                    leadingIcon = Icons.Filled.Email,
-                    errorRes = state.emailErrorRes,
-                    keyboardType = KeyboardType.Email,
-                )
-
-                Spacer(modifier = Modifier.height(2.dp))
-
-                PasswordField(
-                    value = state.password,
-                    onValueChange = { onIntent(RegisterUIIntent.PasswordChanged(it)) },
-                    labelRes = R.string.auth_password,
-                    isVisible = passwordVisible,
-                    onToggleVisibility = { passwordVisible = !passwordVisible },
-                    errorRes = state.passwordErrorRes,
+                    value = state.pharmacyAddress,
+                    onValueChange = { onIntent(RegisterUIIntent.PharmacyAddressChanged(it)) },
+                    labelRes = R.string.registration_map_location,
+                    leadingIcon = Icons.Filled.LocationOn,
+                    errorRes = state.addressErrorRes,
+                    trailingIcon = {
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 MedsyButton(
-                    onClick = { onIntent(RegisterUIIntent.Submit) },
+                    onClick = { onIntent(RegisterUIIntent.SubmitPharmacyInfo) },
                     isLoading = state.isLoading,
                 ) {
-                    if (state.isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            color = MaterialTheme.colorScheme.onPrimary,
-                        )
-                    } else {
-                        Text(
-                            text = stringResource(R.string.action_next),
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    }
+                    Text(
+                        text = stringResource(R.string.action_next),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
                 }
-
-                SignInFooter(
-                    onSignInClick = onNavigateToSignIn,
-                    modifier = Modifier.padding(top = 8.dp, bottom = 24.dp),
-                )
             }
         }
         MedsySnackbarHost(hostState = snackbarHostState)

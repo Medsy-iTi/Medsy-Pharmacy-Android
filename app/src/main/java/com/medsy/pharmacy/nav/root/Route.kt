@@ -17,7 +17,13 @@ sealed interface Route : NavKey {
     data object Registration : Route
 
     @Serializable
-    data object Verification : Route
+    data object ProfessionalInfo : Route
+
+    @Serializable
+    data object Documents : Route
+
+    @Serializable
+    data class Verification(val email: String) : Route
 
     @Serializable
     data object PendingApproval : Route

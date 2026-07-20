@@ -36,13 +36,13 @@ class SplashViewModel @Inject constructor(
             val destination = when {
                 currentPreferences.isOnboardingCompleted.not() -> SplashUIEffect.OpenOnboarding
                 currentSession == null -> SplashUIEffect.OpenLogin
-                currentSession.account.approvalStatus == PharmacyApprovalStatus.Approved ->
+                currentSession.user.approvalStatus == PharmacyApprovalStatus.Approved ->
                     SplashUIEffect.OpenHome
 
-                currentSession.account.approvalStatus == PharmacyApprovalStatus.PendingApproval ->
+                currentSession.user.approvalStatus == PharmacyApprovalStatus.PendingApproval ->
                     SplashUIEffect.OpenPendingApproval
 
-                currentSession.account.approvalStatus == PharmacyApprovalStatus.Rejected ->
+                currentSession.user.approvalStatus == PharmacyApprovalStatus.Rejected ->
                     SplashUIEffect.OpenRejected
 
                 else -> SplashUIEffect.OpenSuspended
@@ -51,4 +51,3 @@ class SplashViewModel @Inject constructor(
         }
     }
 }
-

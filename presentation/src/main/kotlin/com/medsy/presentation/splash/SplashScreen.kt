@@ -47,6 +47,10 @@ fun SplashRoot(
     openOnBoarding: () -> Unit,
     openLogin: () -> Unit,
     openHome: () -> Unit,
+    openPendingApproval: () -> Unit,
+    openRejected: () -> Unit,
+    openSuspended: () -> Unit,
+    openProfessionalInfo: () -> Unit,
     viewModel: SplashViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(viewModel) {
