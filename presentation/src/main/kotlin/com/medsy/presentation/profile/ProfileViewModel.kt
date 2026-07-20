@@ -121,6 +121,9 @@ class ProfileViewModel @Inject constructor(
             ProfileUIIntent.NavigateToPersonalInfo -> viewModelScope.launch {
                 mutableEffect.send(ProfileUIEffect.OpenPersonalInfo)
             }
+            ProfileUIIntent.Refresh -> {
+                loadProfileData()
+            }
         }
     }
 
