@@ -104,7 +104,6 @@ fun LoginScreen(
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState())
                     .padding(
-                        horizontal = LoginConstants.ScreenPaddingHorizontal,
                         vertical = LoginConstants.ScreenPaddingVertical,
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,

@@ -47,31 +47,30 @@ private fun MedsyError.Local.toMessageRes(): Int = when (this) {
 
 @StringRes
 private fun resolveHttpError(statusCode: Int, serverMessage: String?): Int {
-    if (statusCode == 400 || statusCode == 409) {
-        when {
-            serverMessage.containsAny(
-                "phone already",
-                "phone is already",
-                "phone number already",
-                "phone number is already",
-            ) -> return R.string.error_phone_exists
+    when {
+        serverMessage.containsAny(
+            "phone already",
+            "phone is already",
+            "phone number already",
+            "phone number is already",
+        ) -> return R.string.error_phone_exists
 
-            serverMessage.containsAny(
-                "email already",
-                "email is already",
-            ) -> return R.string.error_email_exists
+        serverMessage.containsAny(
+            "email already",
+            "email is already",
+        ) -> return R.string.error_email_exists
 
-            serverMessage.containsAny(
-                "invalid email or password",
-                "invalid credentials",
-            ) -> return R.string.auth_error_invalid_credentials
+        serverMessage.containsAny(
+            "invalid email or password",
+            "invalid credentials",
+        ) -> return R.string.auth_error_invalid_credentials
 
-            serverMessage.containsAny(
-                "otp",
-                "verification code",
-            ) -> return R.string.auth_error_invalid_otp
-        }
+        serverMessage.containsAny(
+            "otp",
+            "verification code",
+        ) -> return R.string.auth_error_invalid_otp
     }
+
 
     return when (statusCode) {
         400 -> R.string.error_bad_request

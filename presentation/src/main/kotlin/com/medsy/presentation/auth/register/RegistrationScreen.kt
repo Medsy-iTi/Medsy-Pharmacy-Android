@@ -176,7 +176,7 @@ fun RegistrationScreen(
                         )
                     } else {
                         Text(
-                            text = stringResource(R.string.action_next),
+                            text = stringResource(R.string.auth_register_action),
                             style = MaterialTheme.typography.titleMedium,
                         )
                     }
