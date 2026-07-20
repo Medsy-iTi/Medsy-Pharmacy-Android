@@ -35,7 +35,8 @@ fun NestedNavDisplay(
     navigateBack: () -> Unit,
     openLogin: () -> Unit,
     openOrderDetails: (String) -> Unit,
-
+    openInvitePharmacist: () -> Unit,
+    openPharmacistsList: () -> Unit
     ) {
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration {
@@ -104,7 +105,13 @@ fun NestedNavDisplay(
             entryProvider = entryProvider {
                 entry<Route.NestedNav.Home> { HomeRoot() }
                 entry<Route.NestedNav.Orders> { OrdersRoot(onOrderClick = openOrderDetails) }
-                entry<Route.NestedNav.Profile> { ProfileRoot(openLogin = openLogin) }
+                entry<Route.NestedNav.Profile> { 
+                    ProfileRoot(
+                        openLogin = openLogin,
+                        openInvitePharmacist = openInvitePharmacist,
+                        openPharmacistsList = openPharmacistsList
+                    ) 
+                }
             },
         )
     }
