@@ -69,6 +69,7 @@ fun ProfileRoot(
     openLogin: () -> Unit,
     openInvitePharmacist: () -> Unit,
     openPharmacistsList: () -> Unit,
+    openPersonalInfo: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -78,6 +79,7 @@ fun ProfileRoot(
                 ProfileUIEffect.OpenLogin -> openLogin()
                 ProfileUIEffect.OpenInvitePharmacist -> openInvitePharmacist()
                 ProfileUIEffect.OpenPharmacistsList -> openPharmacistsList()
+                ProfileUIEffect.OpenPersonalInfo -> openPersonalInfo()
             }
         }
     }

@@ -119,7 +119,7 @@ class ProfileViewModel @Inject constructor(
                 mutableEffect.send(ProfileUIEffect.OpenPharmacistsList)
             }
             ProfileUIIntent.NavigateToPersonalInfo -> viewModelScope.launch {
-                _effect.send(ProfileUIEffect.OpenPersonalInfo)
+                mutableEffect.send(ProfileUIEffect.OpenPersonalInfo)
             }
         }
     }
