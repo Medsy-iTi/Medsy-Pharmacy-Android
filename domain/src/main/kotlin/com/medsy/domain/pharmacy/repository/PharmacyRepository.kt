@@ -6,7 +6,7 @@ import com.medsy.domain.pharmacy.model.MyPharmacy
 import com.medsy.domain.pharmacy.model.RegisterPharmacyParams
 
 interface PharmacyRepository {
-    suspend fun getMyPharmacy(): MedsyResult<MyPharmacy, MedsyError>
+    suspend fun getMyPharmacy(forceRefresh: Boolean = false): MedsyResult<MyPharmacy, MedsyError>
     suspend fun registerPharmacy(
         params: RegisterPharmacyParams,
     ): MedsyResult<MyPharmacy, MedsyError.Remote>

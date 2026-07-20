@@ -9,5 +9,5 @@ import javax.inject.Inject
 class GetCurrentPharmacistUseCase @Inject constructor(
     private val repository: PharmacistRepository
 ) {
-    suspend operator fun invoke(): MedsyResult<Pharmacist, MedsyError> = repository.getCurrentPharmacist()
+    suspend operator fun invoke(forceRefresh: Boolean = false): MedsyResult<Pharmacist, MedsyError> = repository.getCurrentPharmacist(forceRefresh)
 }

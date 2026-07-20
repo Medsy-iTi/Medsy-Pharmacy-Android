@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetMyPharmacyUseCase @Inject constructor(
     private val repository: PharmacyRepository,
 ) {
-    suspend operator fun invoke() = repository.getMyPharmacy()
+    suspend operator fun invoke(forceRefresh: Boolean = false) = repository.getMyPharmacy(forceRefresh)
 }
