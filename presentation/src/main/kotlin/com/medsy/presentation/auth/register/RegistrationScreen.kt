@@ -39,7 +39,6 @@ import com.medsy.designsystem.components.showError
 import com.medsy.presentation.R
 import com.medsy.presentation.auth.register.components.AuthTextField
 import com.medsy.presentation.auth.register.components.PasswordField
-import com.medsy.presentation.auth.register.components.RegistrationStepper
 import com.medsy.presentation.auth.register.components.ScreenHeader
 import com.medsy.presentation.auth.register.components.SectionTitle
 import com.medsy.presentation.auth.register.components.SignInFooter
@@ -106,8 +105,6 @@ fun RegistrationScreen(
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
-
-                RegistrationStepper(currentStep = state.currentStep)
 
                 Spacer(modifier = Modifier.height(24.dp))
 

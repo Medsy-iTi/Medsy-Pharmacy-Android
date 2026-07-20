@@ -97,11 +97,11 @@ fun RootNavDisplay() {
                     onNavigateBack = { backStack.removeLastOrNull() },
                     onNavigateToSignIn = { replaceWith(Route.Login) },
                     onNavigateToOtp = { email ->
-                        backStack.navigateSingleTop(Route.Verification(email))
+                        backStack.navigateSingleTop(Route.OTPVerification(email))
                     },
                 )
             }
-            entry<Route.Verification> { route ->
+            entry<Route.OTPVerification> { route ->
                 OtpRoot(
                     email = route.email,
                     onNavigateNoPharmacy = { replaceWith(Route.NoPharmacy) },

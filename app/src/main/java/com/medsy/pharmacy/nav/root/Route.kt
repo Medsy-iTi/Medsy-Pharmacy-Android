@@ -20,7 +20,7 @@ sealed interface Route : NavKey {
     data object PharmacyRegistration : Route
 
     @Serializable
-    data class Verification(val email: String) : Route
+    data class OTPVerification(val email: String) : Route
 
     @Serializable
     data object NoPharmacy : Route

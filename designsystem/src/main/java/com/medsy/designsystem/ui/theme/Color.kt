@@ -3,6 +3,8 @@ package com.medsy.designsystem.ui.theme
 import androidx.compose.ui.graphics.Color
 
 
+val MedsyBlue = Color(0xFF1B6FD8)
+
 // Light theme
 internal val primaryLight = Color(0xFF1668FF)
 internal val onPrimaryLight = Color(0xFFFFFFFF)
