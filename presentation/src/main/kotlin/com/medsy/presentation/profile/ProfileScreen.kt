@@ -1,6 +1,7 @@
 package com.medsy.presentation.profile
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -11,8 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -20,9 +23,9 @@ import androidx.compose.material.icons.automirrored.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.EditNote
 import androidx.compose.material.icons.outlined.Language
-import androidx.compose.material.icons.outlined.Place
-import androidx.compose.material.icons.outlined.Phone
-import androidx.compose.material.icons.outlined.Security
+import androidx.compose.material.icons.outlined.PersonOutline
+import androidx.compose.material.icons.outlined.PeopleOutline
+import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,7 +35,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -41,9 +43,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -59,6 +65,8 @@ import com.medsy.presentation.profile.components.ThemeBottomSheet
 @Composable
 fun ProfileRoot(
     openLogin: () -> Unit,
+    openInvitePharmacist: () -> Unit,
+    openPharmacistsList: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -66,6 +74,8 @@ fun ProfileRoot(
         viewModel.effect.collect {
             when (it) {
                 ProfileUIEffect.OpenLogin -> openLogin()
+                ProfileUIEffect.OpenInvitePharmacist -> openInvitePharmacist()
+                ProfileUIEffect.OpenPharmacistsList -> openPharmacistsList()
             }
         }
     }
@@ -99,85 +109,70 @@ fun ProfileScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 24.dp)
         ) {
-            // Note: Header "الملف الشخصي" and Settings Gear removed as requested.
-
-            // ─── Pharmacy info card ──────────────────────────────────────────
-            PharmacyInfoCard(
-                pharmacyName = "صيدلية النهضية",
-                rating = "4.8",
-                ratingsCountRes = R.string.profile_ratings_count,
-                verifiedTextRes = R.string.profile_verified_pharmacy,
-                onClick = { /* View Pharmacy Details */ }
+            // Header
+            Text(
+                text = stringResource(R.string.profile_header_title),
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // ─── Contact and Documents Card ──────────────────────────────
+            // ─── User Profile Card ──────────────────────────────────────────
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                 border = cardBorder
             ) {
-                Column {
-                    // Phone Number Row (Outlined icon)
-                    ProfileItemRow(
-                        icon = Icons.Outlined.Phone,
-                        title = stringResource(R.string.profile_phone_number),
-                        subtitle = "010 1234 5678",
-                        showChevron = false,
-                        trailing = {
-                            TextButton(onClick = { /* Change Action */ }) {
-                                Text(
-                                    text = stringResource(R.string.profile_change),
-                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                )
-                            }
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_profile_placeholder),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceVariant),
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Column {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = stringResource(R.string.profile_dummy_name),
+                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         }
-                    )
-
-                    HorizontalDivider(
-                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    // License Row (Outlined icon)
-                    ProfileItemRow(
-                        icon = Icons.Outlined.Security,
-                        title = stringResource(R.string.profile_license),
-                        subtitle = stringResource(R.string.profile_license_view),
-                        onClick = { /* View License action */ }
-                    )
-
-                    HorizontalDivider(
-                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    // Location Row (Outlined icon)
-                    ProfileItemRow(
-                        icon = Icons.Outlined.Place,
-                        title = stringResource(R.string.profile_registered_location),
-                        subtitle = stringResource(R.string.profile_location_value),
-                        onClick = { /* View Location action */ }
-                    )
-
-                    HorizontalDivider(
-                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    // Edit Request Row (Outlined icon)
-                    ProfileItemRow(
-                        icon = Icons.Outlined.EditNote,
-                        title = stringResource(R.string.profile_edit_request),
-                        subtitle = stringResource(R.string.profile_edit_request_sub),
-                        onClick = { /* Request edit action */ }
-                    )
+                        Text(
+                            text = stringResource(R.string.profile_verified_pharmacist),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = stringResource(R.string.profile_experience_years, stringResource(R.string.profile_dummy_experience)),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // ─── Pharmacy info card ──────────────────────────────────────────
+            PharmacyInfoCard(
+                pharmacyName = "صيدلية النهضة",
+                rating = "4.8",
+                ratingsCountRes = R.string.profile_ratings_count,
+                verifiedTextRes = R.string.profile_verified_pharmacy,
+                onClick = { /* View Pharmacy Details */ }
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -245,6 +240,58 @@ fun ProfileScreen(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
 
+                    // Personal Info
+                    ProfileItemRow(
+                        icon = Icons.Outlined.PersonOutline,
+                        title = stringResource(R.string.profile_my_personal_info),
+                        subtitle = null,
+                        onClick = { onIntent(ProfileUIIntent.NavigateToPersonalInfo) }
+                    )
+
+                    HorizontalDivider(
+                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+
+                    // Pharmacists in Pharmacy
+                    ProfileItemRow(
+                        icon = Icons.Outlined.PeopleOutline,
+                        title = stringResource(R.string.profile_pharmacists_in_pharmacy),
+                        subtitle = stringResource(R.string.profile_pharmacists_count, stringResource(R.string.profile_dummy_pharmacist_count)),
+                        onClick = { onIntent(ProfileUIIntent.NavigateToPharmacistsList) }
+                    )
+
+                    HorizontalDivider(
+                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+
+                    // Invite Pharmacist
+                    ProfileItemRow(
+                        icon = Icons.Outlined.PersonAddAlt,
+                        title = stringResource(R.string.profile_invite_pharmacist),
+                        subtitle = null,
+                        onClick = { onIntent(ProfileUIIntent.NavigateToInvitePharmacist) }
+                    )
+
+                    HorizontalDivider(
+                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+
+                    // Edit Profile
+                    ProfileItemRow(
+                        icon = Icons.Outlined.EditNote,
+                        title = stringResource(R.string.profile_edit_profile),
+                        subtitle = null,
+                        onClick = { onIntent(ProfileUIIntent.NavigateToEditProfile) }
+                    )
+
+                    HorizontalDivider(
+                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+
                     // Language Item
                     ProfileItemRow(
                         icon = Icons.Outlined.Language,
@@ -288,6 +335,8 @@ fun ProfileScreen(
                         icon = Icons.AutoMirrored.Outlined.ExitToApp,
                         title = stringResource(R.string.profile_logout),
                         subtitle = null,
+                        iconTint = MaterialTheme.colorScheme.error,
+                        titleColor = MaterialTheme.colorScheme.error,
                         onClick = { onIntent(ProfileUIIntent.Logout) }
                     )
                 }
