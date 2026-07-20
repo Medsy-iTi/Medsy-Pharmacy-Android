@@ -18,6 +18,7 @@ enum class AccountRole {
 }
 
 enum class PharmacyApprovalStatus {
+    NoPharmacy,
     PendingApproval,
     Approved,
     Rejected,

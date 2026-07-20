@@ -14,11 +14,47 @@
 
     <string name="auth_login_title">Pharmacy sign in</string>
     <string name="auth_login_supporting">Sign in with the registered pharmacy account.</string>
+    <string name="auth_email">Email address</string>
     <string name="auth_phone">Phone number</string>
     <string name="auth_password">Password</string>
+    <string name="auth_show_password">Show password</string>
+    <string name="auth_hide_password">Hide password</string>
     <string name="auth_login_action">Sign in</string>
-    <string name="auth_register_action">Register a pharmacy</string>
+    <string name="auth_register_action">Create Account</string>
+    <string name="login_motto">Receive requests, send offers, and manage orders.</string>
+    <string name="login_account_type_hint">For approved pharmacy accounts</string>
+    <string name="login_forgot_password">Forgot password?</string>
+    <string name="login_no_account_full">Don\'t have a pharmacy account? %1$s</string>
+    <string name="auth_error_required_field">This field is required</string>
+    <string name="auth_error_password_min_6">Password must be at least 6 characters</string>
+    <string name="auth_error_invalid_credentials">Invalid email or password</string>
+    <string name="auth_error_authentication_required">Please sign in again</string>
+    <string name="auth_error_pharmacists_only">This app is for pharmacist accounts only</string>
+    <string name="auth_error_invalid_phone">Enter a valid phone number</string>
+    <string name="auth_error_invalid_otp">Enter a valid verification code</string>
     <string name="auth_placeholder_notice">This is a navigable placeholder. Backend submission will be added after the pharmacy API contract is frozen.</string>
+
+    <string name="no_pharmacy_title">No pharmacy assigned</string>
+    <string name="no_pharmacy_supporting">This pharmacist account is not linked to a pharmacy yet.</string>
+    <string name="no_pharmacy_owner_invite">Register a new pharmacy, or ask the pharmacy owner/admin to invite you using this account email.</string>
+    <string name="no_pharmacy_back_to_login">Back to sign in</string>
+    <string name="no_pharmacy_animation_content_desc">Pharmacists reviewing a pharmacy account request</string>
+    <string name="no_pharmacy_register_pharmacy">Register a pharmacy</string>
+    <string name="no_pharmacy_register_title">Register your pharmacy</string>
+    <string name="no_pharmacy_register_body">Create a pharmacy profile, add its map location, and upload the license PDF for review.</string>
+    <string name="no_pharmacy_invite_title">Already work in a pharmacy?</string>
+    <string name="no_pharmacy_invite_body">Ask the pharmacy owner or admin to invite this pharmacist account using your email address.</string>
+    <string name="no_pharmacy_review_title">Access starts after review</string>
+    <string name="no_pharmacy_review_body">Medsy will keep requests hidden until the pharmacy assignment and approval state are ready.</string>
+
+    <string name="error_no_internet">No internet connection</string>
+    <string name="error_request_timeout">The request timed out. Please try again.</string>
+    <string name="error_serialization">We could not read the server response</string>
+    <string name="error_empty_response">The server returned an empty response</string>
+    <string name="error_server">Something went wrong on the server</string>
+    <string name="error_unknown">Something went wrong</string>
+    <string name="error_invalid_location">Enter a valid location</string>
+    <string name="error_invalid_document">Choose a valid document</string>
 
     <string name="registration_title">Register your pharmacy</string>
     <string name="registration_supporting">Provide the pharmacy and verification information required for admin approval.</string>
@@ -30,6 +66,30 @@
     <string name="registration_map_location">Precise map location — placeholder</string>
     <string name="registration_documents">Verification documents — placeholder</string>
     <string name="registration_continue">Continue to verification</string>
+
+    <string name="pharmacy_registration_title">Register your pharmacy</string>
+    <string name="pharmacy_registration_supporting">Add your pharmacy details, choose its map pin, and upload the license PDF for review.</string>
+    <string name="pharmacy_registration_pharmacy_name">Pharmacy name</string>
+    <string name="pharmacy_registration_phone">Phone number</string>
+    <string name="pharmacy_registration_address">Pharmacy address</string>
+    <string name="pharmacy_registration_submit">Submit for approval</string>
+    <string name="pharmacy_registration_badge">License PDF required before activation</string>
+    <string name="pharmacy_registration_map_title">Pharmacy map pin</string>
+    <string name="pharmacy_registration_map_hint">Move the map until the pin is over the pharmacy entrance, then confirm the pin location.</string>
+    <string name="pharmacy_registration_map_use_pin">Use this pin location</string>
+    <string name="pharmacy_registration_location_selected">Selected: %1$.5f, %2$.5f</string>
+    <string name="pharmacy_registration_license_pdf_title">Pharmacy license PDF</string>
+    <string name="pharmacy_registration_license_pdf_limit">PDF only, up to 1 MB.</string>
+    <string name="pharmacy_registration_select_license">Upload license PDF</string>
+    <string name="pharmacy_registration_replace_license">Replace license PDF</string>
+    <string name="pharmacy_registration_license_selected">%1$s selected · %2$d KB</string>
+    <string name="pharmacy_registration_error_location_required">Choose the pharmacy location from the map</string>
+    <string name="pharmacy_registration_error_license_required">Upload the pharmacy license PDF</string>
+    <string name="pharmacy_registration_error_invalid_pdf">Choose a valid PDF file</string>
+    <string name="pharmacy_registration_error_pdf_too_large">The license PDF must be 1 MB or smaller</string>
+    <string name="pharmacy_registration_error_read_pdf">We could not read this PDF. Please choose another file.</string>
+    <string name="pharmacy_registration_error_invalid_location">Choose a valid map location</string>
+    <string name="pharmacy_registration_error_submit_failed">We could not register this pharmacy. Check the details or make sure your pharmacist account is not already assigned.</string>
 
     <string name="verification_title">Verify your contact</string>
     <string name="verification_supporting">Enter the verification code sent to the registered pharmacy contact.</string>
@@ -81,4 +141,6 @@
     <string name="profile_language_arabic">العربية</string>
     <string name="profile_language_english">English</string>
     <string name="profile_logout">Log out</string>
+    <string name="medsy_logo_content_desc">Medsy Logo\n</string>
+    <string name="auth_error_no_pharmacy">You must be assigned to a pharmacy</string>
 </resources>

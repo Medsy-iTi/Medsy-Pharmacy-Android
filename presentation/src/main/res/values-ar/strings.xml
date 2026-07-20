@@ -14,14 +14,50 @@
 
     <string name="auth_login_title">تسجيل دخول الصيدلية</string>
     <string name="auth_login_supporting">سجّل الدخول باستخدام حساب الصيدلية المسجل.</string>
+    <string name="auth_email">البريد الإلكتروني</string>
     <string name="auth_phone">رقم الهاتف</string>
     <string name="auth_password">كلمة المرور</string>
+    <string name="auth_show_password">إظهار كلمة المرور</string>
+    <string name="auth_hide_password">إخفاء كلمة المرور</string>
     <string name="auth_login_action">تسجيل الدخول</string>
-    <string name="auth_register_action">تسجيل صيدلية</string>
+    <string name="auth_register_action">انشاء حساب</string>
+    <string name="login_motto">استقبل الطلبات، أرسل العروض، وأدر الطلبات.</string>
+    <string name="login_account_type_hint">لحسابات الصيدليات المعتمدة</string>
+    <string name="login_forgot_password">هل نسيت كلمة المرور؟</string>
+    <string name="login_no_account_full">ليس لديك حساب صيدلية؟ %1$s</string>
+    <string name="auth_error_required_field">هذا الحقل مطلوب</string>
+    <string name="auth_error_password_min_6">يجب ألا تقل كلمة المرور عن 6 أحرف</string>
+    <string name="auth_error_invalid_credentials">البريد الإلكتروني أو كلمة المرور غير صحيحة</string>
+    <string name="auth_error_authentication_required">يرجى تسجيل الدخول مرة أخرى</string>
+    <string name="auth_error_pharmacists_only">هذا التطبيق مخصص لحسابات الصيادلة فقط</string>
+    <string name="auth_error_invalid_phone">أدخل رقم هاتف صحيح</string>
+    <string name="auth_error_invalid_otp">أدخل رمز تحقق صحيح</string>
     <string name="auth_placeholder_notice">هذه واجهة مؤقتة قابلة للتنقل. ستتم إضافة الاتصال بالخادم بعد تثبيت عقد واجهة الصيدليات.</string>
 
+    <string name="no_pharmacy_title">لا توجد صيدلية مرتبطة</string>
+    <string name="no_pharmacy_supporting">حساب الصيدلي هذا غير مرتبط بأي صيدلية حتى الآن.</string>
+    <string name="no_pharmacy_owner_invite">سجّل صيدلية جديدة، أو اطلب من مالك الصيدلية أو مسؤولها دعوتك باستخدام بريد هذا الحساب.</string>
+    <string name="no_pharmacy_back_to_login">العودة إلى تسجيل الدخول</string>
+    <string name="no_pharmacy_animation_content_desc">صيادلة يراجعون طلب حساب صيدلية</string>
+    <string name="no_pharmacy_register_pharmacy">تسجيل صيدلية</string>
+    <string name="no_pharmacy_register_title">سجّل صيدليتك</string>
+    <string name="no_pharmacy_register_body">أنشئ ملف الصيدلية، وأضف موقعها على الخريطة، وارفع ملف الترخيص PDF للمراجعة.</string>
+    <string name="no_pharmacy_invite_title">تعمل بالفعل في صيدلية؟</string>
+    <string name="no_pharmacy_invite_body">اطلب من مالك الصيدلية أو المسؤول دعوتك باستخدام البريد الإلكتروني لهذا الحساب.</string>
+    <string name="no_pharmacy_review_title">يبدأ الوصول بعد المراجعة</string>
+    <string name="no_pharmacy_review_body">سيُبقي ميدزي الطلبات مخفية حتى تصبح حالة ربط الصيدلية والموافقة جاهزة.</string>
+
+    <string name="error_no_internet">لا يوجد اتصال بالإنترنت</string>
+    <string name="error_request_timeout">انتهت مهلة الطلب. حاول مرة أخرى.</string>
+    <string name="error_serialization">تعذر قراءة استجابة الخادم</string>
+    <string name="error_empty_response">أعاد الخادم استجابة فارغة</string>
+    <string name="error_server">حدث خطأ في الخادم</string>
+    <string name="error_unknown">حدث خطأ ما</string>
+    <string name="error_invalid_location">أدخل موقعًا صحيحًا</string>
+    <string name="error_invalid_document">اختر مستندًا صحيحًا</string>
+
     <string name="registration_title">سجّل صيدليتك</string>
-    <string name="registration_supporting">أدخل بيانات الصيدلية ومستندات التحقق المطلوبة لموافقة الإدارة.</string>
+    <string name="registration_supporting">أدخل بيانات الصيدلية والتحقق المطلوبة لموافقة الإدارة.</string>
     <string name="registration_pharmacy_name">اسم الصيدلية</string>
     <string name="registration_license_number">رقم الترخيص</string>
     <string name="registration_phone">رقم الهاتف</string>
@@ -30,6 +66,30 @@
     <string name="registration_map_location">الموقع الدقيق على الخريطة — واجهة مؤقتة</string>
     <string name="registration_documents">مستندات التحقق — واجهة مؤقتة</string>
     <string name="registration_continue">المتابعة إلى التحقق</string>
+
+    <string name="pharmacy_registration_title">سجّل صيدليتك</string>
+    <string name="pharmacy_registration_supporting">أضف بيانات الصيدلية، واختر موقعها على الخريطة، وارفع ملف الترخيص PDF للمراجعة.</string>
+    <string name="pharmacy_registration_pharmacy_name">اسم الصيدلية</string>
+    <string name="pharmacy_registration_phone">رقم الهاتف</string>
+    <string name="pharmacy_registration_address">عنوان الصيدلية</string>
+    <string name="pharmacy_registration_submit">إرسال للمراجعة</string>
+    <string name="pharmacy_registration_badge">ملف الترخيص PDF مطلوب قبل التفعيل</string>
+    <string name="pharmacy_registration_map_title">موقع الصيدلية على الخريطة</string>
+    <string name="pharmacy_registration_map_hint">حرّك الخريطة حتى يكون الدبوس فوق مدخل الصيدلية، ثم أكّد الموقع.</string>
+    <string name="pharmacy_registration_map_use_pin">استخدام هذا الموقع</string>
+    <string name="pharmacy_registration_location_selected">تم الاختيار: %1$.5f، %2$.5f</string>
+    <string name="pharmacy_registration_license_pdf_title">ملف ترخيص الصيدلية PDF</string>
+    <string name="pharmacy_registration_license_pdf_limit">PDF فقط، بحد أقصى 1 ميجابايت.</string>
+    <string name="pharmacy_registration_select_license">رفع ملف الترخيص PDF</string>
+    <string name="pharmacy_registration_replace_license">استبدال ملف الترخيص PDF</string>
+    <string name="pharmacy_registration_license_selected">تم اختيار %1$s · %2$d كيلوبايت</string>
+    <string name="pharmacy_registration_error_location_required">اختر موقع الصيدلية من الخريطة</string>
+    <string name="pharmacy_registration_error_license_required">ارفع ملف ترخيص الصيدلية PDF</string>
+    <string name="pharmacy_registration_error_invalid_pdf">اختر ملف PDF صحيح</string>
+    <string name="pharmacy_registration_error_pdf_too_large">يجب أن يكون ملف الترخيص 1 ميجابايت أو أقل</string>
+    <string name="pharmacy_registration_error_read_pdf">تعذرت قراءة هذا الملف. اختر ملفًا آخر.</string>
+    <string name="pharmacy_registration_error_invalid_location">اختر موقع خريطة صحيحًا</string>
+    <string name="pharmacy_registration_error_submit_failed">تعذر تسجيل هذه الصيدلية. راجع البيانات أو تأكد أن حساب الصيدلي غير مرتبط بصيدلية بالفعل.</string>
 
     <string name="verification_title">تحقق من وسيلة التواصل</string>
     <string name="verification_supporting">أدخل رمز التحقق المرسل إلى جهة تواصل الصيدلية المسجلة.</string>
@@ -81,4 +141,6 @@
     <string name="profile_language_arabic">العربية</string>
     <string name="profile_language_english">English</string>
     <string name="profile_logout">تسجيل الخروج</string>
+    <string name="medsy_logo_content_desc">Medsy Logo\n</string>
+    <string name="auth_error_no_pharmacy">You must be assigned to a pharmacy</string>
 </resources>
