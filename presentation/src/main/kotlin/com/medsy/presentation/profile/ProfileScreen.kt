@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ExitToApp
+import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.EditNote
 import androidx.compose.material.icons.outlined.Language
@@ -30,6 +31,7 @@ import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -114,7 +116,7 @@ fun ProfileScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                    containerColor = MaterialTheme.colorScheme.surface
                 ),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
             ) {
@@ -126,7 +128,7 @@ fun ProfileScreen(
                         painter = painterResource(id = R.drawable.ic_profile_placeholder),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(64.dp)
+                            .size(72.dp)
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.surfaceVariant),
                         contentScale = ContentScale.Crop
@@ -136,15 +138,24 @@ fun ProfileScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = stringResource(R.string.profile_dummy_name),
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                                 color = MaterialTheme.colorScheme.onSurface
                             )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Icon(
+                                imageVector = Icons.Filled.Verified,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
                         }
+                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = stringResource(R.string.profile_verified_pharmacist),
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                             color = MaterialTheme.colorScheme.primary
                         )
+                        Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = stringResource(R.string.profile_experience_years, stringResource(R.string.profile_dummy_experience)),
                             style = MaterialTheme.typography.bodySmall,

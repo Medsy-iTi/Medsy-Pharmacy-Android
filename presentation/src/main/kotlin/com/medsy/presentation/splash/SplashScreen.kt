@@ -156,7 +156,7 @@ fun SplashScreen() {
                     text = stringResource(R.string.splash_app_name),
                     style = MaterialTheme.typography.displaySmall.copy(
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.extendedColors.blueContent,
+                        color = MaterialTheme.colorScheme.primary,
                         letterSpacing = (-0.5).sp
                     ),
                     textAlign = TextAlign.Center
