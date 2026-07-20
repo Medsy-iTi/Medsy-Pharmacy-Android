@@ -23,12 +23,12 @@ sealed interface ProfileUIIntent {
     data object NavigateToInvitePharmacist : ProfileUIIntent
     data object NavigateToPharmacistsList : ProfileUIIntent
     data object NavigateToPersonalInfo : ProfileUIIntent
-    data object NavigateToEditProfile : ProfileUIIntent
 }
 
 sealed interface ProfileUIEffect {
     data object OpenLogin : ProfileUIEffect
     data object OpenInvitePharmacist : ProfileUIEffect
     data object OpenPharmacistsList : ProfileUIEffect
+    data object OpenPersonalInfo : ProfileUIEffect
 
 }
