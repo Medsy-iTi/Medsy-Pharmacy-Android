@@ -115,4 +115,45 @@
     <string name="order_details_accepted_message">تم قبول الطلب</string>
     <string name="order_details_rejected_message">تم رفض الطلب</string>
     <string name="orders_view_sample_order">طلب تجريبي</string>
+    <!-- New Profile Strings -->
+    <string name="profile_header_title">الملف الشخصي</string>
+    <string name="profile_verified_pharmacist">صيدلي مرخص</string>
+    <string name="profile_experience_years">خبرة %1$s سنوات</string>
+    <string name="profile_my_personal_info">بياناتي الشخصية</string>
+    <string name="profile_pharmacists_in_pharmacy">الصيادلة في الصيدلية</string>
+    <string name="profile_pharmacists_count">%1$s صيدلي</string>
+    <string name="profile_invite_pharmacist">دعوة صيدلي</string>
+    <string name="profile_edit_profile">تعديل الملف الشخصي</string>
+    <string name="profile_dummy_name">د. أحمد محمد</string>
+    <string name="profile_dummy_experience">7</string>
+    <string name="profile_dummy_pharmacist_count">2</string>
+
+    <!-- Invite Pharmacist -->
+    <string name="invite_pharmacist_title">دعوة صيدلي للانضمام</string>
+    <string name="invite_pharmacist_subtitle">ادخل البريد الإلكتروني الخاص بالصيدلي لإرسال دعوة للانضمام إلى صيدليتك</string>
+    <string name="invite_pharmacist_email">البريد الإلكتروني</string>
+    <string name="invite_pharmacist_email_hint">example@email.com</string>
+    <string name="invite_pharmacist_send_action">إرسال الدعوة</string>
+
+    <!-- Invitation Sent -->
+    <string name="invitation_sent_title">تم إرسال الدعوة بنجاح!</string>
+    <string name="invitation_sent_subtitle">تم إرسال دعوة إلى البريد الإلكتروني وسيتم إشعاره عند قبول الدعوة</string>
+    <string name="invitation_sent_waiting">بانتظار قبول الدعوة</string>
+    <string name="invitation_sent_invite_another">دعوة صيدلي آخر</string>
+    <string name="invitation_sent_return_profile">العودة للملف الشخصي</string>
+
+    <!-- Pharmacists in Pharmacy -->
+    <string name="pharmacists_list_title">الصيادلة (%1$d)</string>
+    <string name="pharmacists_list_manager">مدير</string>
+    <string name="pharmacists_list_dummy_name_2">د. سارة علي</string>
+    <string name="pharmacists_list_dummy_experience_2">4</string>
+
+    <!-- Pharmacist Options -->
+    <string name="pharmacist_options_title">خيارات الصيدلي</string>
+    <string name="pharmacist_options_view_profile">عرض الملف الشخصي</string>
+    <string name="pharmacist_options_remove">إزالة من الصيدلية</string>
+    <string name="pharmacist_options_remove_confirm_title">إزالة الصيدلي من الصيدلية؟</string>
+    <string name="pharmacist_options_remove_confirm_desc">سيتم إزالة د. سارة علي من صيدلية النهضة\nهل أنت متأكد من هذا الإجراء؟</string>
+    <string name="pharmacist_options_cancel">إلغاء</string>
+    <string name="pharmacist_options_remove_action">إزالة</string>
 </resources>

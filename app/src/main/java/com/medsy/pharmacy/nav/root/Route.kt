@@ -32,6 +32,15 @@ sealed interface Route : NavKey {
     data class OrderDetails(val orderId: String) : Route
 
     @Serializable
+    data object InvitePharmacist : Route
+
+    @Serializable
+    data object InvitationSent : Route
+
+    @Serializable
+    data object PharmacistsList : Route
+
+    @Serializable
     data object NestedNav : Route {
         @Serializable
         data object Home : Route

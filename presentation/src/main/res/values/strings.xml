@@ -115,4 +115,45 @@
     <string name="order_details_accepted_message">Order accepted</string>
     <string name="order_details_rejected_message">Order rejected</string>
     <string name="orders_view_sample_order">Sample Order</string>
+    <!-- New Profile Strings -->
+    <string name="profile_header_title">Profile</string>
+    <string name="profile_verified_pharmacist">Licensed Pharmacist</string>
+    <string name="profile_experience_years">%1$s years experience</string>
+    <string name="profile_my_personal_info">My Personal Info</string>
+    <string name="profile_pharmacists_in_pharmacy">Pharmacists in Pharmacy</string>
+    <string name="profile_pharmacists_count">%1$s Pharmacists</string>
+    <string name="profile_invite_pharmacist">Invite Pharmacist</string>
+    <string name="profile_edit_profile">Edit Profile</string>
+    <string name="profile_dummy_name">Dr. Ahmed Mohamed</string>
+    <string name="profile_dummy_experience">7</string>
+    <string name="profile_dummy_pharmacist_count">2</string>
+
+    <!-- Invite Pharmacist -->
+    <string name="invite_pharmacist_title">Invite Pharmacist to join</string>
+    <string name="invite_pharmacist_subtitle">Enter the pharmacist\'s email to send an invitation to join your pharmacy</string>
+    <string name="invite_pharmacist_email">Email Address</string>
+    <string name="invite_pharmacist_email_hint">example@email.com</string>
+    <string name="invite_pharmacist_send_action">Send Invitation</string>
+
+    <!-- Invitation Sent -->
+    <string name="invitation_sent_title">Invitation sent successfully!</string>
+    <string name="invitation_sent_subtitle">An invitation was sent to the email and you will be notified upon acceptance</string>
+    <string name="invitation_sent_waiting">Waiting for acceptance</string>
+    <string name="invitation_sent_invite_another">Invite another pharmacist</string>
+    <string name="invitation_sent_return_profile">Return to profile</string>
+
+    <!-- Pharmacists in Pharmacy -->
+    <string name="pharmacists_list_title">Pharmacists (%1$d)</string>
+    <string name="pharmacists_list_manager">Manager</string>
+    <string name="pharmacists_list_dummy_name_2">Dr. Sara Ali</string>
+    <string name="pharmacists_list_dummy_experience_2">4</string>
+
+    <!-- Pharmacist Options -->
+    <string name="pharmacist_options_title">Pharmacist Options</string>
+    <string name="pharmacist_options_view_profile">View Profile</string>
+    <string name="pharmacist_options_remove">Remove from Pharmacy</string>
+    <string name="pharmacist_options_remove_confirm_title">Remove pharmacist from pharmacy?</string>
+    <string name="pharmacist_options_remove_confirm_desc">Dr. Sara Ali will be removed from Al Nahda Pharmacy, are you sure about this action?</string>
+    <string name="pharmacist_options_cancel">Cancel</string>
+    <string name="pharmacist_options_remove_action">Remove</string>
 </resources>
