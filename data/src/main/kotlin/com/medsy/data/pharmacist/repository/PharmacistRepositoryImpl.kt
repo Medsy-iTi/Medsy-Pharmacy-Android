@@ -15,8 +15,17 @@ import javax.inject.Inject
 class PharmacistRepositoryImpl @Inject constructor(
     private val api: PharmacistApi
 ) : PharmacistRepository {
-    override suspend fun getCurrentPharmacist(): MedsyResult<Pharmacist, MedsyError> {
-        return safeApiCall { api.getCurrentPharmacist() }.map { it.toDomain() }
+    private var cachedPharmacist: Pharmacist? = null
+
+    override suspend fun getCurrentPharmacist(forceRefresh: Boolean): MedsyResult<Pharmacist, MedsyError> {
+        if (!forceRefresh && cachedPharmacist != null) {
+            return MedsyResult.Success(cachedPharmacist!!)
+        }
+        val result = safeApiCall { api.getCurrentPharmacist() }.map { it.toDomain() }
+        if (result is MedsyResult.Success) {
+            cachedPharmacist = result.data
+        }
+        return result
     }
 
     override suspend fun updateCurrentPharmacist(
@@ -25,7 +34,7 @@ class PharmacistRepositoryImpl @Inject constructor(
         homeAddress: String?,
         dob: String?
     ): MedsyResult<Pharmacist, MedsyError> {
-        return safeApiCall { 
+        val result = safeApiCall { 
             api.updateCurrentPharmacist(
                 com.medsy.data.pharmacist.remote.dto.UpdatePharmacistRequestDto(
                     firstName = firstName,
@@ -35,6 +44,10 @@ class PharmacistRepositoryImpl @Inject constructor(
                 )
             ) 
         }.map { it.toDomain() }
+        if (result is MedsyResult.Success) {
+            cachedPharmacist = result.data
+        }
+        return result
     }
 
     override suspend fun removePharmacistFromPharmacy(pharmacistId: Long, pharmacyId: Long): EmptyMedsyResult<MedsyError> {

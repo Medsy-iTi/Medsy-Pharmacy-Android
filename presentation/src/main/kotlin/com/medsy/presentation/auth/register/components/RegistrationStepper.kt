@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.Assignment
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Person
@@ -36,7 +37,7 @@ fun RegistrationStepper(
 ) {
     val steps = listOf(
         R.string.auth_step_personal_data to Icons.Default.Person,
-        R.string.auth_step_pharmacy_info to Icons.Default.Assignment,
+        R.string.auth_step_pharmacy_info to Icons.AutoMirrored.Filled.Assignment,
         R.string.auth_step_documents to Icons.Default.Security,
         R.string.auth_step_review to Icons.Default.Check
     )

@@ -60,8 +60,10 @@ import com.medsy.designsystem.ui.theme.MedsyTheme
 import com.medsy.domain.common.preferences.model.ThemeMode
 import com.medsy.presentation.R
 import com.medsy.presentation.profile.components.LanguageBottomSheet
+import com.medsy.presentation.profile.components.PharmacistHeaderCard
 import com.medsy.presentation.profile.components.PharmacyInfoCard
 import com.medsy.presentation.profile.components.ProfileItemRow
+import com.medsy.presentation.profile.components.ProfileSettingsSection
 import com.medsy.presentation.profile.components.ThemeBottomSheet
 
 @Composable

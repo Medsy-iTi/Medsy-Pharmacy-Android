@@ -6,7 +6,7 @@ import com.medsy.domain.common.MedsyResult
 import com.medsy.domain.pharmacist.model.Pharmacist
 
 interface PharmacistRepository {
-    suspend fun getCurrentPharmacist(): MedsyResult<Pharmacist, MedsyError>
+    suspend fun getCurrentPharmacist(forceRefresh: Boolean = false): MedsyResult<Pharmacist, MedsyError>
     suspend fun updateCurrentPharmacist(
         firstName: String?,
         lastName: String?,

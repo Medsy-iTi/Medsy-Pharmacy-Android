@@ -63,7 +63,7 @@ class InvitePharmacistViewModel @Inject constructor(
             if (pharmacyId == null) return@launch
 
             // Then invite the pharmacist
-            val inviteResult = invitePharmacist(pharmacyId!!, email)
+            val inviteResult = invitePharmacist(pharmacyId, email)
             inviteResult.fold(
                 onSuccess = {
                     _state.update { state -> state.copy(isLoading = false) }
