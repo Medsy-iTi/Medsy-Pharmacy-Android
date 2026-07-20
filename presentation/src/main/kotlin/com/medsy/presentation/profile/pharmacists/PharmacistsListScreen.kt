@@ -58,6 +58,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.medsy.designsystem.ui.theme.MedsyTheme
 import com.medsy.presentation.R
 import com.medsy.presentation.profile.components.PharmacyInfoCard
+import com.medsy.presentation.profile.pharmacists.components.PharmacistItem
 import com.medsy.presentation.profile.pharmacists.components.PharmacistOptionsBottomSheet
 
 @Composable
@@ -246,67 +247,7 @@ fun PharmacistsListScreen(
     }
 }
 
-@Composable
-private fun PharmacistItem(
-    name: String,
-    experience: String,
-    roleBadge: String?,
-    onClick: () -> Unit,
-    trailingIcon: @Composable () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_profile_placeholder),
-            contentDescription = null,
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-            contentScale = ContentScale.Crop
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                if (roleBadge != null) {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = roleBadge,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .background(
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                                RoundedCornerShape(4.dp)
-                            )
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                    )
-                }
-            }
-            Text(
-                text = stringResource(R.string.profile_verified_pharmacist),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                text = stringResource(R.string.profile_experience_years, experience),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        trailingIcon()
-    }
-}
+
 
 @Preview(showBackground = true)
 @Composable
