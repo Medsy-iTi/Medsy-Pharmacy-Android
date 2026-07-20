@@ -12,8 +12,15 @@ sealed interface ProfileUIIntent {
     data class LanguageChanged(val languageTag: String) : ProfileUIIntent
     data class ReceivingStatusChanged(val isReceiving: Boolean) : ProfileUIIntent
     data object Logout : ProfileUIIntent
+    data object NavigateToInvitePharmacist : ProfileUIIntent
+    data object NavigateToPharmacistsList : ProfileUIIntent
+    data object NavigateToPersonalInfo : ProfileUIIntent
+    data object NavigateToEditProfile : ProfileUIIntent
 }
 
 sealed interface ProfileUIEffect {
     data object OpenLogin : ProfileUIEffect
+    data object OpenInvitePharmacist : ProfileUIEffect
+    data object OpenPharmacistsList : ProfileUIEffect
+
 }
