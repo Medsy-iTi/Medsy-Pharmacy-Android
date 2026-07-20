@@ -60,6 +60,18 @@ class ProfileViewModel @Inject constructor(
                 clearSession()
                 mutableEffect.send(ProfileUIEffect.OpenLogin)
             }
+            ProfileUIIntent.NavigateToInvitePharmacist -> viewModelScope.launch {
+                mutableEffect.send(ProfileUIEffect.OpenInvitePharmacist)
+            }
+            ProfileUIIntent.NavigateToPharmacistsList -> viewModelScope.launch {
+                mutableEffect.send(ProfileUIEffect.OpenPharmacistsList)
+            }
+            ProfileUIIntent.NavigateToPersonalInfo -> {
+                // TODO: Handle navigation to personal info when screen is ready
+            }
+            ProfileUIIntent.NavigateToEditProfile -> {
+                // TODO: Handle navigation to edit profile when screen is ready
+            }
         }
     }
 }

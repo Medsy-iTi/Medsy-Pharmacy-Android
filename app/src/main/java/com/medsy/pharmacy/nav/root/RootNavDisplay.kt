@@ -136,6 +136,8 @@ fun RootNavDisplay() {
                     openOrderDetails = { orderId ->
                         backStack.navigateSingleTop(Route.OrderDetails(orderId))
                     },
+                    openInvitePharmacist = { backStack.navigateSingleTop(Route.InvitePharmacist) },
+                    openPharmacistsList = { backStack.navigateSingleTop(Route.PharmacistsList) }
                 )
             }
             entry<Route.OrderDetails> { route ->
@@ -150,6 +152,28 @@ fun RootNavDisplay() {
                     onOpenLocationOnMap = { /* TODO: pass real coordinates once the order model carries them */ },
                     onOpenPaymentSummary = { /* TODO: navigate once a payment summary route exists */ },
                     onOpenCustomerChat = { /* TODO: navigate once a customer chat route exists */ },
+                )
+            }
+            entry<Route.InvitePharmacist> {
+                com.medsy.presentation.profile.invite.InvitePharmacistRoot(
+                    navigateBack = { backStack.removeLastOrNull() },
+                    navigateToInvitationSent = { backStack.navigateSingleTop(Route.InvitationSent) }
+                )
+            }
+            entry<Route.InvitationSent> {
+                com.medsy.presentation.profile.invitationsent.InvitationSentRoot(
+                    navigateBack = { backStack.removeLastOrNull() },
+                    returnToProfile = {
+                        while (backStack.isNotEmpty() && backStack.last() != Route.NestedNav) {
+                            backStack.removeLastOrNull()
+                        }
+                    }
+                )
+            }
+            entry<Route.PharmacistsList> {
+                com.medsy.presentation.profile.pharmacists.PharmacistsListRoot(
+                    navigateBack = { backStack.removeLastOrNull() },
+                    navigateToInvitePharmacist = { backStack.navigateSingleTop(Route.InvitePharmacist) }
                 )
             }
         },
