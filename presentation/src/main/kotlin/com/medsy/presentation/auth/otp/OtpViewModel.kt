@@ -1,6 +1,5 @@
 package com.medsy.presentation.auth.otp
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medsy.domain.auth.usecase.VerifyOtpUseCase
@@ -34,61 +33,48 @@ class OtpViewModel @Inject constructor(
 
     fun setEmail(email: String) {
         if (_state.value.email.isEmpty() && email.isNotEmpty()) {
-            Log.d("auth", "OtpViewModel: Setting email: $email")
             _state.update { it.copy(email = email) }
         }
     }
 
-    private fun startTimer() {
-        Log.d("auth", "OtpViewModel: Starting timer")
-        viewModelScope.launch {
-            _state.update { it.copy(countdown = 300) }
-            while (_state.value.countdown > 0) {
-                delay(1000.milliseconds)
-                _state.update { it.copy(countdown = it.countdown - 1) }
-            }
-        }
-    }
-
     fun onIntent(intent: OtpUIIntent) {
-        Log.d("auth", "OtpViewModel: Intent received: $intent")
         when (intent) {
             is OtpUIIntent.CodeChanged -> _state.update {
-                it.copy(
-                    code = intent.value,
-                    hasError = false
-                )
+                it.copy(code = intent.value, hasError = false)
             }
 
             OtpUIIntent.Submit -> submit()
-            OtpUIIntent.Resend -> {
-                Log.d("auth", "OtpViewModel: Resending OTP")
-                startTimer()
-            }
-
-            OtpUIIntent.Tick -> { /* handled by loop */
-            }
+            OtpUIIntent.Resend -> startTimer()
+            OtpUIIntent.Tick -> Unit
         }
     }
 
     private fun submit() {
         if (_state.value.isLoading) return
-        Log.d("auth", "OtpViewModel: Submitting OTP: ${_state.value.code}")
+
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, hasError = false) }
 
             when (val result = verifyOtpUseCase(_state.value.email, _state.value.code)) {
                 is MedsyResult.Success -> {
-                    Log.i("auth", "OtpViewModel: OTP verification success")
                     _state.update { it.copy(isLoading = false) }
-                    mutableEffect.send(OtpUIEffect.NavigateToProfessionalInfo)
+                    mutableEffect.send(OtpUIEffect.NavigateNoPharmacy)
                 }
 
                 is MedsyResult.Error -> {
-                    Log.e("auth", "OtpViewModel: OTP verification error: ${result.error}")
                     _state.update { it.copy(isLoading = false, hasError = true) }
                     mutableEffect.send(OtpUIEffect.ShowError(result.error.toMessageRes()))
                 }
+            }
+        }
+    }
+
+    private fun startTimer() {
+        viewModelScope.launch {
+            _state.update { it.copy(countdown = 300) }
+            while (_state.value.countdown > 0) {
+                delay(1000.milliseconds)
+                _state.update { it.copy(countdown = it.countdown - 1) }
             }
         }
     }

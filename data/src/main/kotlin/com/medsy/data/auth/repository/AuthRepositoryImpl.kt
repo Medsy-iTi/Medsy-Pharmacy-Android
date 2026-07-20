@@ -1,116 +1,40 @@
 package com.medsy.data.auth.repository
 
-import android.util.Log
-import com.medsy.data.local.auth.TokenStorage
-import com.medsy.data.mapper.auth.toDomain
-import com.medsy.data.mapper.auth.toDto
-import com.medsy.data.remote.auth.api.AuthApi
-import com.medsy.data.remote.auth.dto.LoginRequestDto
-import com.medsy.data.remote.auth.dto.RefreshRequestDto
-import com.medsy.data.remote.auth.dto.VerifyOtpRequestDto
+import com.medsy.data.auth.mapper.toDomain
+import com.medsy.data.auth.mapper.toDto
+import com.medsy.data.auth.remote.api.AuthApi
+import com.medsy.data.auth.remote.dto.LoginRequestDto
+import com.medsy.data.auth.remote.dto.VerifyOtpRequestDto
 import com.medsy.data.remote.network.safeApiCall
 import com.medsy.data.remote.network.safeEmptyRestCall
-import com.medsy.data.remote.pharmacy.api.PharmacyApi
-import com.medsy.data.remote.pharmacy.dto.PharmacyRequestDto
-import com.medsy.data.remote.pharmacy.dto.RegisterPharmacyRequestDto
 import com.medsy.domain.auth.model.AuthSession
 import com.medsy.domain.auth.model.RegisterParams
-import com.medsy.domain.auth.model.RegisterPharmacyParams
 import com.medsy.domain.auth.repository.AuthRepository
 import com.medsy.domain.common.EmptyMedsyResult
 import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
 import com.medsy.domain.common.map
-import com.medsy.domain.common.onSuccess
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val api: AuthApi,
-    private val pharmacyApi: PharmacyApi,
-    private val tokenStorage: TokenStorage,
 ) : AuthRepository {
-
     override suspend fun register(
         params: RegisterParams,
-    ): EmptyMedsyResult<MedsyError.Remote> {
-        Log.d("auth", "Repository: Registering user ${params.email}")
-        return safeEmptyRestCall { api.register(params.toDto()) }.also {
-            Log.d("auth", "Repository: Register result: $it")
-        }
-    }
+    ): EmptyMedsyResult<MedsyError.Remote> =
+        safeEmptyRestCall { api.register(params.toDto()) }
 
     override suspend fun verifyOtp(
         email: String,
         otpCode: String,
-    ): MedsyResult<AuthSession, MedsyError.Remote> {
-        Log.d("auth", "Repository: Verifying OTP for $email")
-        return safeApiCall { api.verify(VerifyOtpRequestDto(email, otpCode)) }
+    ): MedsyResult<AuthSession, MedsyError.Remote> =
+        safeApiCall { api.verify(VerifyOtpRequestDto(email.trim(), otpCode)) }
             .map { it.toDomain() }
-            .onSuccessSave()
-            .also { Log.d("auth", "Repository: Verify OTP result: $it") }
-    }
 
     override suspend fun login(
         email: String,
         password: String,
-    ): MedsyResult<AuthSession, MedsyError.Remote> {
-        Log.d("auth", "Repository: Logging in user $email")
-        return safeApiCall { api.login(LoginRequestDto(email, password)) }
+    ): MedsyResult<AuthSession, MedsyError.Remote> =
+        safeApiCall { api.login(LoginRequestDto(email.trim(), password)) }
             .map { it.toDomain() }
-            .onSuccessSave()
-            .also { Log.d("auth", "Repository: Login result: $it") }
-    }
-
-    override suspend fun registerPharmacy(params: RegisterPharmacyParams): EmptyMedsyResult<MedsyError.Remote> {
-        Log.d("auth", "Repository: Registering pharmacy ${params.name}")
-        val request = RegisterPharmacyRequestDto(
-            pharmacyRequest = PharmacyRequestDto(
-                name = params.name,
-                latitude = params.latitude,
-                longitude = params.longitude,
-                address = params.address,
-                phoneNumber = params.phoneNumber
-            ),
-            license = params.license
-        )
-        Log.d("auth", "Repository: Request Body: $request")
-        return safeEmptyRestCall { pharmacyApi.registerPharmacy(request) }.also {
-            Log.d("auth", "Repository: Pharmacy register result: $it")
-        }
-    }
-
-    override suspend fun refreshToken(): MedsyResult<AuthSession, MedsyError.Remote> {
-        Log.d("auth", "Repository: Refreshing token")
-        val refreshToken = tokenStorage.refreshToken()
-            ?: return MedsyResult.Error(
-                MedsyError.Remote.Http(statusCode = 401, serverMessage = null)
-            ).also { Log.e("auth", "Repository: No refresh token found") }
-
-        return safeApiCall { api.refresh(RefreshRequestDto(refreshToken)) }
-            .map { it.toDomain() }
-            .onSuccessSave()
-            .also { Log.d("auth", "Repository: Refresh token result: $it") }
-    }
-
-    override suspend fun logout(): EmptyMedsyResult<MedsyError.Remote> {
-        Log.d("auth", "Repository: Logging out")
-        val refreshToken = tokenStorage.refreshToken()
-        val result = if (refreshToken != null) {
-            safeEmptyRestCall { api.logout(RefreshRequestDto(refreshToken)) }
-        } else {
-            MedsyResult.Success(Unit)
-        }
-        tokenStorage.clear()
-        Log.d("auth", "Repository: Logout result: $result")
-        return result
-    }
-
-    override fun observeSession(): Flow<AuthSession?> = tokenStorage.session
-
-    override suspend fun hasValidSession(): Boolean = tokenStorage.session.value != null
-
-    private fun MedsyResult<AuthSession, MedsyError.Remote>.onSuccessSave():
-            MedsyResult<AuthSession, MedsyError.Remote> =
-        onSuccess(tokenStorage::save)
 }

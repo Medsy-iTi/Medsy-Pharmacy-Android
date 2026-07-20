@@ -25,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.medsy.designsystem.components.MedsyButton
-import com.medsy.designsystem.ui.theme.ErrorRed
 import com.medsy.presentation.R
 
 @Composable
@@ -49,8 +48,11 @@ fun OrderActionButtons(
                 onClick = onRejectClick,
                 enabled = !isSubmitting,
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = ErrorRed),
-                border = androidx.compose.foundation.BorderStroke(1.dp, ErrorRed.copy(alpha = 0.5f)),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                border = androidx.compose.foundation.BorderStroke(
+                    1.dp,
+                    MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+                ),
                 modifier = Modifier
                     .weight(1f)
                     .height(52.dp),

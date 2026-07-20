@@ -64,7 +64,6 @@ fun HomeRoot(
         onIntent = viewModel::onIntent
     )
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -149,4 +148,3 @@ fun HomeScreen(
         }
     }
 }
-

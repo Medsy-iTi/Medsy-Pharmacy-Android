@@ -5,9 +5,7 @@ import com.medsy.data.remote.api.ApiService
 import com.medsy.data.remote.auth.AuthInterceptor
 import com.medsy.data.remote.auth.LocaleInterceptor
 import com.medsy.data.remote.auth.TokenAuthenticator
-import com.medsy.data.remote.auth.api.AuthApi
 import com.medsy.data.remote.auth.api.RefreshApi
-import com.medsy.data.remote.pharmacy.api.PharmacyApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -34,10 +32,8 @@ object NetworkModule {
     @RefreshClient
     fun provideRefreshClient(
         localeInterceptor: LocaleInterceptor,
-        authInterceptor: AuthInterceptor,
     ): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(localeInterceptor)
-        .addInterceptor(authInterceptor)
         .addSafeLogging()
         .build()
 
@@ -54,12 +50,6 @@ object NetworkModule {
     fun provideRefreshApi(
         @RefreshRetrofit retrofit: Retrofit,
     ): RefreshApi = retrofit.create(RefreshApi::class.java)
-
-    @Provides
-    @Singleton
-    fun provideAuthApi(
-        @RefreshRetrofit retrofit: Retrofit,
-    ): AuthApi = retrofit.create(AuthApi::class.java)
 
     @Provides
     @Singleton
@@ -89,28 +79,18 @@ object NetworkModule {
         @AuthenticatedRetrofit retrofit: Retrofit,
     ): ApiService = retrofit.create(ApiService::class.java)
 
-    @Provides
-    @Singleton
-    fun providePharmacyApi(
-        @AuthenticatedRetrofit retrofit: Retrofit,
-    ): PharmacyApi =
-        retrofit.create(PharmacyApi::class.java)
-
-    private fun retrofit(moshi: Moshi, client: OkHttpClient): Retrofit {
-
-        return Retrofit.Builder()
+    private fun retrofit(moshi: Moshi, client: OkHttpClient): Retrofit =
+        Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
-    }
 
     private fun OkHttpClient.Builder.addSafeLogging(): OkHttpClient.Builder = apply {
         if (BuildConfig.DEBUG) {
             addInterceptor(
                 HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.HEADERS
-                    redactHeader("Authorization")
+                    level = HttpLoggingInterceptor.Level.BODY
                     redactHeader("Cookie")
                     redactHeader("Set-Cookie")
                 },

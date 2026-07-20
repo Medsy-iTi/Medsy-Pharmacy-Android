@@ -65,7 +65,7 @@ private const val OTP_LENGTH = 6
 @Composable
 fun OtpRoot(
     email: String,
-    onNavigateToProfessionalInfo: () -> Unit,
+    onNavigateNoPharmacy: () -> Unit,
     onNavigateBack: () -> Unit,
     viewModel: OtpViewModel = hiltViewModel()
 ) {
@@ -78,16 +78,16 @@ fun OtpRoot(
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is OtpUIEffect.NavigateToProfessionalInfo -> onNavigateToProfessionalInfo()
+                OtpUIEffect.NavigateNoPharmacy -> onNavigateNoPharmacy()
                 is OtpUIEffect.ShowError -> snackbarHostState.showError(context.getString(effect.messageRes))
             }
         }
     }
 
     OtpScreen(
-        state = state, 
-        onIntent = viewModel::onIntent, 
-        onNavigateBack = onNavigateBack, 
+        state = state,
+        onIntent = viewModel::onIntent,
+        onNavigateBack = onNavigateBack,
         snackbarHostState = snackbarHostState
     )
 }

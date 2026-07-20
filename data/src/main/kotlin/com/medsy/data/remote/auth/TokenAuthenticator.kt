@@ -1,41 +1,38 @@
 package com.medsy.data.remote.auth
 
 import com.medsy.data.local.auth.TokenStorage
-import com.medsy.data.mapper.auth.toDomain
-import com.medsy.data.remote.auth.api.AuthApi
+import com.medsy.data.remote.auth.api.RefreshApi
 import com.medsy.data.remote.auth.dto.RefreshRequestDto
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
 import javax.inject.Inject
-import javax.inject.Provider
-
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 class TokenAuthenticator @Inject constructor(
     private val tokenStorage: TokenStorage,
-    private val authApiProvider: Provider<AuthApi>
+    private val refreshApi: RefreshApi,
 ) : Authenticator {
-
     private val mutex = Mutex()
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        if (responseCount(response) >= 2) {
+        if (responseCount(response) >= MAX_ATTEMPTS) {
             tokenStorage.clear()
             return null
         }
 
-        val requestAccessToken = response.request.header("Authorization")?.removePrefix("Bearer ")
+        val failedToken = response.request.header("Authorization")
+            ?.removePrefix("Bearer ")
 
         return runBlocking {
             mutex.withLock {
-                val currentAccessToken = tokenStorage.accessToken()
-                if (currentAccessToken != null && currentAccessToken != requestAccessToken) {
+                val currentToken = tokenStorage.accessToken()
+                if (currentToken != null && currentToken != failedToken) {
                     return@runBlocking response.request.newBuilder()
-                        .header("Authorization", "Bearer $currentAccessToken")
+                        .header("Authorization", "Bearer $currentToken")
                         .build()
                 }
 
@@ -44,22 +41,25 @@ class TokenAuthenticator @Inject constructor(
                     return@runBlocking null
                 }
 
-                val result =
-                    runCatching { authApiProvider.get().refresh(RefreshRequestDto(refreshToken)) }
-                        .getOrNull()
+                val refreshResponse = runCatching {
+                    refreshApi.refresh(RefreshRequestDto(refreshToken))
+                }.getOrNull()
+                val body = refreshResponse?.body()
+                val tokens = body?.data
 
-                val body = result?.body()
-                if (result == null || !result.isSuccessful || body?.data == null) {
+                if (
+                    refreshResponse == null ||
+                    !refreshResponse.isSuccessful ||
+                    body?.success != true ||
+                    tokens == null
+                ) {
                     tokenStorage.clear()
                     return@runBlocking null
                 }
 
-                val newData = body.data
-                val newSession = newData.toDomain()
-                tokenStorage.save(newSession)
-
+                tokenStorage.updateTokens(tokens.accessToken, tokens.refreshToken)
                 response.request.newBuilder()
-                    .header("Authorization", "Bearer ${newSession.accessToken}")
+                    .header("Authorization", "Bearer ${tokens.accessToken}")
                     .build()
             }
         }
@@ -69,8 +69,13 @@ class TokenAuthenticator @Inject constructor(
         var count = 1
         var prior = response.priorResponse
         while (prior != null) {
-            count++; prior = prior.priorResponse
+            count += 1
+            prior = prior.priorResponse
         }
         return count
+    }
+
+    private companion object {
+        const val MAX_ATTEMPTS = 2
     }
 }

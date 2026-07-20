@@ -6,7 +6,7 @@ data class RegisterParams(
     val firstName: String,
     val lastName: String,
     val password: String,
-    val role: Role,
+    val role: AuthUserRole,
     val homeAddress: String?,
     val dob: String,
     val pharmacyId: Long? = null
