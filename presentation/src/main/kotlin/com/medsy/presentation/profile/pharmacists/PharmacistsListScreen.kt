@@ -160,6 +160,8 @@ fun PharmacistsListScreen(
                         state.pharmacists.forEachIndexed { index, pharmacist ->
                             PharmacistItem(
                                 name = pharmacist.fullName,
+                                email = pharmacist.email,
+                                phoneNumber = pharmacist.phoneNumber,
                                 roleBadge = if (pharmacist.isAdmin) stringResource(R.string.pharmacists_list_manager) else null,
                                 onClick = { if (!pharmacist.isAdmin) selectedPharmacist = pharmacist.fullName },
                                 trailingIcon = {
