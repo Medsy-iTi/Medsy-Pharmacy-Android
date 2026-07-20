@@ -10,6 +10,25 @@ data class LoginRequestDto(
 )
 
 @JsonClass(generateAdapter = true)
+data class RegisterRequestDto(
+    @Json(name = "email") val email: String,
+    @Json(name = "phoneNumber") val phoneNumber: String,
+    @Json(name = "firstName") val firstName: String,
+    @Json(name = "lastName") val lastName: String,
+    @Json(name = "password") val password: String,
+    @Json(name = "role") val role: String,
+    @Json(name = "homeAddress") val homeAddress: String?,
+    @Json(name = "dob") val dob: String?,
+    @Json(name = "pharmacyId") val pharmacyId: Long?,
+)
+
+@JsonClass(generateAdapter = true)
+data class VerifyOtpRequestDto(
+    @Json(name = "email") val email: String,
+    @Json(name = "otpCode") val otpCode: String,
+)
+
+@JsonClass(generateAdapter = true)
 data class AuthResponseDto(
     @Json(name = "accessToken") val accessToken: String,
     @Json(name = "refreshToken") val refreshToken: String,
@@ -23,4 +42,6 @@ data class UserResponseDto(
     @Json(name = "firstName") val firstName: String? = null,
     @Json(name = "lastName") val lastName: String? = null,
     @Json(name = "role") val role: String,
+    @Json(name = "homeAddress") val homeAddress: String? = null,
+    @Json(name = "dob") val dob: String? = null,
 )

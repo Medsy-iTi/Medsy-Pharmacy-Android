@@ -1,91 +1,148 @@
 package com.medsy.presentation.home
 
-import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.medsy.designsystem.ui.theme.MedsyTheme
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.medsy.presentation.R
-import com.medsy.presentation.common.PlaceholderScaffold
+import com.medsy.presentation.home.components.LatestOrdersSection
+import com.medsy.presentation.home.components.OverviewSection
+import com.medsy.presentation.home.components.PharmacyMainCard
 
 @Composable
-fun HomeRoot() {
-    HomeScreen()
-}
-
-@Composable
-fun HomeScreen(
-    modifier: Modifier = Modifier,
+fun HomeRoot(
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
-    var receiving by remember { mutableStateOf(false) }
-    PlaceholderScaffold(
-        title = stringResource(R.string.home_title),
-        supportingText = stringResource(R.string.home_supporting),
-        modifier = modifier,
-    ) {
-        Card {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.home_receiving_status),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                Switch(
-                    checked = receiving,
-                    onCheckedChange = { receiving = it },
-                )
-                Text(stringResource(R.string.home_receiving_placeholder))
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(viewModel) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                HomeUIEffect.NavigateToViewAllOrders -> {}
+                is HomeUIEffect.NavigateToOrderDetails -> {}
+                HomeUIEffect.OpenNotifications -> {}
             }
         }
-        DashboardCard(R.string.home_incoming_requests, R.string.home_incoming_requests_value)
-        DashboardCard(R.string.home_offers_sent, R.string.home_offers_sent_value)
-        DashboardCard(R.string.home_offers_selected, R.string.home_offers_selected_value)
-        DashboardCard(R.string.home_active_orders, R.string.home_active_orders_value)
-        DashboardCard(R.string.home_completed_orders, R.string.home_completed_orders_value)
-        DashboardCard(R.string.home_notifications, R.string.home_notifications_value)
     }
-}
 
+    HomeScreen(
+        state = state,
+        onIntent = viewModel::onIntent
+    )
+}
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DashboardCard(
-    @StringRes title: Int,
-    @StringRes value: Int,
+fun HomeScreen(
+    state: HomeUIState,
+    onIntent: (HomeUIIntent) -> Unit
 ) {
-    Card {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Text(stringResource(title), style = MaterialTheme.typography.titleMedium)
-            Text(stringResource(value), style = MaterialTheme.typography.bodyMedium)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.home_role_pharmacist),
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { onIntent(HomeUIIntent.OnNotificationsClicked) }) {
+                        BadgedBox(
+                            badge = {
+                                if (state.notificationsCount > 0) {
+                                    Badge(
+                                        containerColor = Color.Red,
+                                        contentColor = Color.White
+                                    ) {
+                                        Text(state.notificationsCount.toString())
+                                    }
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Notifications,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                ),
+                windowInsets = WindowInsets(0.dp)
+            )
         }
-    }
-}
+    ) { padding ->
+        if (state.isLoading) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .background(MaterialTheme.colorScheme.background),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp),
+                verticalArrangement = Arrangement.Top
+            ) {
+                item {
+                    PharmacyMainCard(state.pharmacyInfo)
+                }
 
-@Preview(showBackground = true)
-@Composable
-private fun HomePreview() {
-    MedsyTheme {
-        HomeScreen()
+                item {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    OverviewSection(state.stats)
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    LatestOrdersSection(
+                        orders = state.latestOrders,
+                        onViewAllClick = { onIntent(HomeUIIntent.OnViewAllOrdersClicked) },
+                        onOrderClick = { onIntent(HomeUIIntent.OnOrderClicked(it)) }
+                    )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
+            }
+        }
     }
 }

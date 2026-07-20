@@ -27,10 +27,12 @@ class RegisterPharmacyUseCase @Inject constructor(
             return MedsyResult.Error(MedsyError.Validation.INVALID_LOCATION)
         }
 
-        if (params.licensePdfBytes.isEmpty() ||
-            params.licensePdfBytes.size > MAX_LICENSE_PDF_BYTES
-        ) {
+        if (params.licensePdfBytes.isEmpty()) {
             return MedsyResult.Error(MedsyError.Validation.INVALID_LICENSE_DOCUMENT)
+        }
+
+        if (params.licensePdfBytes.size > MAX_LICENSE_PDF_BYTES) {
+            return MedsyResult.Error(MedsyError.Validation.PDF_TOO_LARGE)
         }
 
         return repository.registerPharmacy(params)

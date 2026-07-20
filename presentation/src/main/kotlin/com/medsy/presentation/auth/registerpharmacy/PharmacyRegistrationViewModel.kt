@@ -177,6 +177,9 @@ class PharmacyRegistrationViewModel @Inject constructor(
         this == MedsyError.Validation.INVALID_LICENSE_DOCUMENT ->
             R.string.pharmacy_registration_error_invalid_pdf
 
+        this == MedsyError.Validation.PDF_TOO_LARGE ->
+            R.string.pharmacy_registration_error_pdf_too_large
+
         this is MedsyError.Remote.Http && statusCode == 400 ->
             R.string.pharmacy_registration_error_submit_failed
 

@@ -45,26 +45,34 @@ private suspend fun <T, R> executeRestCall(
         val body = response.body()
 
         when {
-            !response.isSuccessful -> MedsyResult.Error(
-                MedsyError.Remote.Http(
-                    statusCode = response.code(),
-                    serverMessage = response.errorBody()
-                        ?.string()
-                        ?.let(::parseServerMessage)
-                        ?: response.message().takeIf(String::isNotBlank),
+            !response.isSuccessful -> {
+                MedsyResult.Error(
+                    MedsyError.Remote.Http(
+                        statusCode = response.code(),
+                        serverMessage = response.errorBody()
+                            ?.string()
+                            ?.let(::parseServerMessage)
+                            ?: response.message().takeIf(String::isNotBlank),
+                    )
                 )
-            )
+            }
 
-            body == null -> MedsyResult.Error(MedsyError.Remote.EmptyResponse)
+            body == null -> {
+                MedsyResult.Error(MedsyError.Remote.EmptyResponse)
+            }
 
-            !body.success -> MedsyResult.Error(
-                MedsyError.Remote.Http(
-                    statusCode = response.code(),
-                    serverMessage = body.message,
+            !body.success -> {
+                MedsyResult.Error(
+                    MedsyError.Remote.Http(
+                        statusCode = response.code(),
+                        serverMessage = body.message,
+                    )
                 )
-            )
+            }
 
-            else -> successResult(body)
+            else -> {
+                successResult(body)
+            }
         }
     } catch (error: CancellationException) {
         throw error

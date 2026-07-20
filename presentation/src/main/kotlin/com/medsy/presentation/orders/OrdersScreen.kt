@@ -3,6 +3,7 @@ package com.medsy.presentation.orders
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -16,12 +17,14 @@ import com.medsy.presentation.R
 import com.medsy.presentation.common.PlaceholderScaffold
 
 @Composable
-fun OrdersRoot() {
-    OrdersScreen()
+fun OrdersRoot(
+    onOrderClick: (String) -> Unit,
+) {
+    OrdersScreen(onOrderClick = onOrderClick)
 }
-
 @Composable
 fun OrdersScreen(
+    onOrderClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -48,13 +51,11 @@ fun OrdersScreen(
                 },
             ),
         )
-    }
-}
 
-@Preview(showBackground = true)
-@Composable
-private fun OrdersPreview() {
-    MedsyTheme {
-        OrdersScreen()
+        // TODO: remove once the real orders list is connected to the backend
+        // and each order card calls onOrderClick(order.id) directly.
+        TextButton(onClick = { onOrderClick("1258") }) {
+            Text(stringResource(R.string.orders_view_sample_order))
+        }
     }
 }

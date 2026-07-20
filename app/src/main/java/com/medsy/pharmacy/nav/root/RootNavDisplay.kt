@@ -1,11 +1,14 @@
 package com.medsy.pharmacy.nav.root
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -17,10 +20,11 @@ import com.medsy.presentation.auth.approval.ApprovalRoot
 import com.medsy.presentation.auth.approval.ApprovalScreenStatus
 import com.medsy.presentation.auth.login.LoginRoot
 import com.medsy.presentation.auth.nopharmacy.NoPharmacyRoot
+import com.medsy.presentation.auth.otp.OtpRoot
 import com.medsy.presentation.auth.register.RegistrationRoot
 import com.medsy.presentation.auth.registerpharmacy.PharmacyRegistrationRoot
-import com.medsy.presentation.auth.verification.VerificationRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
+import com.medsy.presentation.orderdetails.OrderDetailsRoot
 import com.medsy.presentation.splash.SplashRoot
 
 @Composable
@@ -90,16 +94,22 @@ fun RootNavDisplay() {
             }
             entry<Route.Registration> {
                 RegistrationRoot(
-                    openVerification = { backStack.navigateSingleTop(Route.Verification) },
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToSignIn = { replaceWith(Route.Login) },
+                    onNavigateToOtp = { email ->
+                        backStack.navigateSingleTop(Route.Verification(email))
+                    },
+                )
+            }
+            entry<Route.Verification> { route ->
+                OtpRoot(
+                    email = route.email,
+                    onNavigateNoPharmacy = { replaceWith(Route.NoPharmacy) },
+                    onNavigateBack = { backStack.removeLastOrNull() },
                 )
             }
             entry<Route.PharmacyRegistration> {
                 PharmacyRegistrationRoot(
-                    openPendingApproval = { replaceWith(Route.PendingApproval) },
-                )
-            }
-            entry<Route.Verification> {
-                VerificationRoot(
                     openPendingApproval = { replaceWith(Route.PendingApproval) },
                 )
             }
@@ -125,6 +135,23 @@ fun RootNavDisplay() {
                 NestedNavDisplay(
                     navigateBack = { backStack.removeLastOrNull() },
                     openLogin = { replaceWith(Route.Login) },
+                    openOrderDetails = { orderId ->
+                        backStack.navigateSingleTop(Route.OrderDetails(orderId))
+                    },
+                )
+            }
+            entry<Route.OrderDetails> { route ->
+                val context = LocalContext.current
+                OrderDetailsRoot(
+                    orderId = route.orderId,
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onDialPhoneNumber = { phoneNumber ->
+                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
+                        context.startActivity(intent)
+                    },
+                    onOpenLocationOnMap = { },
+                    onOpenPaymentSummary = { },
+                    onOpenCustomerChat = { },
                 )
             }
         },

@@ -1,18 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Medsy</string>
+    <string name="app_name">Medsy Pharmacy</string>
+    <string name="splash_app_name">Medsy Pharmacy</string>
+    <string name="splash_tagline">Your pharmacy, with ease.</string>
     <string name="splash_logo_description">Medsy Pharmacy logo</string>
-    <string name="splash_tagline">Your pharmacy, connected.</string>
 
 
-    <string name="onboarding_title">Run your pharmacy with Medsy</string>
-    <string name="onboarding_supporting">Respond to nearby medicine requests and manage fulfillment from one place.</string>
-    <string name="onboarding_receive_requests">Receive eligible nearby patient requests.</string>
-    <string name="onboarding_send_offers">Report availability and send clear, fixed-price offers.</string>
-    <string name="onboarding_manage_orders">Prepare and progress selected orders safely.</string>
+    <string name="onboarding_title_1">Nearby requests, moment by moment</string>
+    <string name="onboarding_desc_1">Follow open requests from nearby patients ordered by distance, with prescription photos attached.</string>
+    <string name="onboarding_title_2">Create accurate offers</string>
+    <string name="onboarding_desc_2">Verify item matching with the prescription, suggest alternatives when needed, and send the best offer to your patient.</string>
+    <string name="onboarding_title_3">Follow every order until completion</string>
+    <string name="onboarding_desc_3">Update order status with one click, and the patient receives the update automatically at every step.</string>
     <string name="action_get_started">Get started</string>
+    <string name="auth_documents_description">Upload pharmacy license and professional documents to verify your account.</string>
+    <string name="registration_pharmacy_license">Pharmacy License</string>
+    <string name="registration_pharmacy_license_desc">A clear photo of your official license</string>
+    <string name="registration_identity_document">Identity Document</string>
+    <string name="registration_identity_document_desc">Passport or National ID card</string>
+    <string name="registration_tax_card">Tax Card</string>
+    <string name="registration_tax_card_desc">Official tax identification document</string>
+    <string name="registration_address_placeholder">Pharmacy full address</string>
+    <string name="action_next">Next</string>
+    <string name="action_skip">Skip</string>
 
-    <string name="auth_login_title">Pharmacy sign in</string>
+    <string name="auth_register_provider_title">Create provider account</string>
+    <string name="auth_register_provider_subtitle">Complete registration steps to activate your account</string>
+    <string name="auth_step_personal_data">Personal\nData</string>
+    <string name="auth_step_pharmacy_info">Pharmacy\nInfo</string>
+    <string name="auth_section_pharmacy_info">Pharmacy Info</string>
+    <string name="auth_step_documents">Documents</string>
+    <string name="auth_step_review">Review</string>
+    <string name="auth_section_personal_data">Personal Data</string>
+    <string name="auth_first_name">First Name</string>
+    <string name="auth_last_name">Last Name</string>
+    <string name="auth_confirm_password">Confirm Password</string>
+    <string name="auth_already_have_account">Already have an account?</string>
+    <string name="content_desc_toggle_password_visibility">Toggle password visibility</string>
+    <string name="content_desc_back">Back</string>
+    <string name="error_required_fields">Please fill all required fields</string>
+    <string name="error_phone_invalid">Invalid phone number</string>
+    <string name="auth_invalid_code">Invalid verification code</string>
+    <string name="error_network">No internet connection</string>
+    <string name="error_generic">Something went wrong. Please try again</string>
+    <string name="error_phone_exists">Phone number is already registered</string>
+    <string name="error_email_exists">Email is already registered</string>
+    <string name="error_unauthorized">Invalid email or password</string>
+    <string name="error_bad_request">Invalid request</string>
+    <string name="error_forbidden">Access denied</string>
+    <string name="error_not_found">Resource not found</string>
+    <string name="error_conflict">Conflict error</string>
+    <string name="error_payload_too_large">File size is too large</string>
+    <string name="error_too_many_requests">Too many requests. Please slow down</string>
+    <string name="prescription_media_error">Error accessing media files</string>
     <string name="auth_login_supporting">Sign in with the registered pharmacy account.</string>
     <string name="auth_email">Email address</string>
     <string name="auth_phone">Phone number</string>
@@ -93,6 +133,11 @@
     <string name="pharmacy_registration_error_invalid_location">Choose a valid map location</string>
     <string name="pharmacy_registration_error_submit_failed">We could not register this pharmacy. Check the details or make sure your pharmacist account is not already assigned.</string>
 
+    <string name="otp_title">Verify your email</string>
+    <string name="otp_subtitle">We\'ve sent a 6-digit verification code to %1$s</string>
+    <string name="auth_verify_otp">Verify and Continue</string>
+    <string name="auth_resend_cooldown">Resend code in %1$s</string>
+    <string name="auth_resend_otp">Resend Code</string>
     <string name="verification_title">Verify your contact</string>
     <string name="verification_supporting">Enter the verification code sent to the registered pharmacy contact.</string>
     <string name="verification_code">Verification code</string>
@@ -119,6 +164,36 @@
     <string name="approval_suspended_guidance_body">Contact Medsy support to understand the suspension and the required next steps.</string>
     <string name="approval_back_to_login">Back to sign in</string>
 
+    <string name="home_role_pharmacist">Pharmacist</string>
+    <string name="home_pharmacy_name">Al-Amal Pharmacy</string>
+    <string name="home_pharmacy_address">Nile St., Maadi, Cairo</string>
+    <string name="home_pharmacy_status_open">Open now until 11:00 PM</string>
+    <string name="home_pharmacy_id_label">Pharmacy ID</string>
+    <string name="home_pharmacy_id_value">PH123456</string>
+    <string name="home_ratings_format">%1$s (%2$s ratings)</string>
+
+    <string name="home_overview_title">Overview</string>
+    <string name="home_stat_new_orders">New Orders</string>
+    <string name="home_stat_in_progress">In Progress</string>
+    <string name="home_stat_delivered_today">Delivered Today</string>
+    <string name="home_stat_total_sales">Total Sales</string>
+    <string name="home_stat_total_sales_value">3,240</string>
+
+    <string name="home_latest_orders_title">Latest Orders</string>
+    <string name="home_action_view_all">View All</string>
+    <string name="home_action_view_all_orders">View All Orders</string>
+
+    <string name="home_order_status_new">New</string>
+    <string name="home_order_status_preparing">In Preparation</string>
+    <string name="home_order_status_delivered">Delivered</string>
+    <string name="home_order_time_ago">%1$d mins ago</string>
+
+    <string name="home_nav_home">Home</string>
+    <string name="home_nav_orders">Orders</string>
+    <string name="home_nav_products">Products</string>
+    <string name="home_nav_customers">Customers</string>
+    <string name="home_nav_more">More</string>
+
     <string name="home_title">Pharmacy dashboard</string>
     <string name="home_supporting">Operational summary for requests, offers, and orders.</string>
     <string name="home_receiving_status">Receiving status</string>
@@ -143,11 +218,21 @@
     <string name="orders_active_empty">No active orders are connected yet.</string>
     <string name="orders_history_empty">No completed orders are connected yet.</string>
 
-    <string name="profile_title">Pharmacy profile</string>
-    <string name="profile_supporting">Manage local preferences and view pharmacy account placeholders.</string>
-    <string name="profile_account_placeholder">Pharmacy details and license information will appear here.</string>
-    <string name="profile_approval_placeholder">Approval status: placeholder</string>
-    <string name="profile_receiving_placeholder">Receiving-status management will be connected to the server.</string>
+    <string name="profile_title">Profile</string>
+    <string name="profile_supporting">Manage pharmacy configuration and settings.</string>
+    <string name="profile_verified_pharmacy">Verified pharmacy</string>
+    <string name="profile_ratings_count">(128 ratings)</string>
+    <string name="profile_phone_number">Phone number</string>
+    <string name="profile_change">Change</string>
+    <string name="profile_license">License</string>
+    <string name="profile_license_view">View professional license</string>
+    <string name="profile_registered_location">Registered location</string>
+    <string name="profile_location_value">Nile St, Maadi, Cairo</string>
+    <string name="profile_edit_request">Data modification request</string>
+    <string name="profile_edit_request_sub">Request data modification from admin</string>
+    <string name="profile_receiving_status">Order receiving status</string>
+    <string name="profile_status_open">Open</string>
+    <string name="profile_status_closed">Closed</string>
     <string name="profile_theme">Appearance</string>
     <string name="profile_theme_system">System</string>
     <string name="profile_theme_light">Light</string>
@@ -158,4 +243,24 @@
     <string name="profile_logout">Log out</string>
     <string name="medsy_logo_content_desc">Medsy Logo\n</string>
     <string name="auth_error_no_pharmacy">You must be assigned to a pharmacy</string>
+
+    <!--  Order Details  -->
+    <string name="order_details_title">Order Details</string>
+    <string name="order_details_new_badge">New</string>
+    <string name="order_details_back_desc">Back</string>
+    <string name="order_details_call_desc">Call customer</string>
+    <string name="order_details_location_desc">Open location</string>
+    <string name="order_details_order_number_format">#%1$s</string>
+    <string name="order_details_minutes_ago">%1$d min ago</string>
+    <string name="order_details_price_egp">%1$d EGP</string>
+    <string name="order_details_requested_medicines">Requested medicines</string>
+    <string name="order_details_customer_notes">Customer notes</string>
+    <string name="order_details_total">Order total</string>
+    <string name="order_details_view_payment_summary">View payment summary</string>
+    <string name="order_details_reject">Reject order</string>
+    <string name="order_details_contact_customer">Contact customer</string>
+    <string name="order_details_accept">Accept order</string>
+    <string name="order_details_accepted_message">Order accepted</string>
+    <string name="order_details_rejected_message">Order rejected</string>
+    <string name="orders_view_sample_order">Sample Order</string>
 </resources>

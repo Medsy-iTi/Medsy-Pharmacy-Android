@@ -20,7 +20,7 @@ sealed interface Route : NavKey {
     data object PharmacyRegistration : Route
 
     @Serializable
-    data object Verification : Route
+    data class Verification(val email: String) : Route
 
     @Serializable
     data object NoPharmacy : Route
@@ -33,6 +33,9 @@ sealed interface Route : NavKey {
 
     @Serializable
     data object Suspended : Route
+
+    @Serializable
+    data class OrderDetails(val orderId: String) : Route
 
     @Serializable
     data object NestedNav : Route {

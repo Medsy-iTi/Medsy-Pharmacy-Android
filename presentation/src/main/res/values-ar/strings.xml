@@ -1,18 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ميدزي</string>
-    <string name="splash_logo_description">شعار ميدزي للصيدليات</string>
+    <string name="app_name">ميدزي للصيدليات</string>
+    <string name="splash_app_name">ميدزي للصيدليات</string>
     <string name="splash_tagline">صيدليتك، بكل سهولة.</string>
+    <string name="splash_logo_description">شعار ميدزي للصيدليات</string>
 
 
-    <string name="onboarding_title">أدر صيدليتك مع ميدزي</string>
-    <string name="onboarding_supporting">استجب لطلبات الأدوية القريبة وأدر تجهيزها من مكان واحد.</string>
-    <string name="onboarding_receive_requests">استقبل طلبات المرضى القريبة والمؤهلة.</string>
-    <string name="onboarding_send_offers">سجّل التوفر وأرسل عروضًا واضحة بالأسعار الثابتة.</string>
-    <string name="onboarding_manage_orders">جهّز الطلبات المختارة وحدّث حالتها بأمان.</string>
+    <string name="onboarding_title_1">طلبات قريبة منك، لحظة بلحظة</string>
+    <string name="onboarding_desc_1">تابع الطلبات المفتوحة من المرضى القريبين مرتبة حسب المسافة، مع صور الروشتة المرفقة.</string>
+    <string name="onboarding_title_2">أنشئ عروضًا دقيقة</string>
+    <string name="onboarding_desc_2">تحقق من مطابقة الأصناف للروشتة، اقترح بدائل عند الحاجة، وأرسل أفضل عرض لمريضك.</string>
+    <string name="onboarding_title_3">تابع كل طلب حتى اكتماله</string>
+    <string name="onboarding_desc_3">حدّث حالة الطلب بضغطة واحدة، ويصل التحديث للمريض تلقائيًا في كل خطوة.</string>
     <string name="action_get_started">ابدأ الآن</string>
+    <string name="auth_documents_description">ارفع تراخيص الصيدلية والمستندات المهنية للتحقق من حسابك.</string>
+    <string name="registration_pharmacy_license">ترخيص الصيدلية</string>
+    <string name="registration_pharmacy_license_desc">صورة واضحة لترخيص الصيدلية الرسمي</string>
+    <string name="registration_identity_document">وثيقة الهوية</string>
+    <string name="registration_identity_document_desc">جواز السفر أو بطاقة الرقم القومي</string>
+    <string name="registration_tax_card">البطاقة الضريبية</string>
+    <string name="registration_tax_card_desc">وثيقة التعريف الضريبي الرسمية</string>
+    <string name="registration_address_placeholder">عنوان الصيدلية بالتفصيل</string>
+    <string name="action_next">التالي</string>
+    <string name="action_skip">تخطي</string>
 
-    <string name="auth_login_title">تسجيل دخول الصيدلية</string>
+    <string name="auth_register_provider_title">إنشاء حساب مقدم خدمة</string>
+    <string name="auth_register_provider_subtitle">أكمل خطوات التسجيل لتفعيل حسابك</string>
+    <string name="auth_step_personal_data">البيانات\nالشخصية</string>
+    <string name="auth_step_pharmacy_info">بيانات\nالصيدلية</string>
+    <string name="auth_section_pharmacy_info">بيانات الصيدلية</string>
+    <string name="auth_step_documents">المستندات</string>
+    <string name="auth_step_review">مراجعة</string>
+    <string name="auth_section_personal_data">البيانات الشخصية</string>
+    <string name="auth_first_name">الاسم الأول</string>
+    <string name="auth_last_name">اسم العائلة</string>
+    <string name="auth_confirm_password">تأكيد كلمة المرور</string>
+    <string name="auth_already_have_account">لديك حساب بالفعل؟</string>
+    <string name="content_desc_toggle_password_visibility">تبديل رؤية كلمة المرور</string>
+    <string name="content_desc_back">رجوع</string>
+    <string name="error_required_fields">يرجى ملء جميع الحقول المطلوبة</string>
+    <string name="error_phone_invalid">رقم هاتف غير صحيح</string>
+    <string name="auth_invalid_code">رمز تحقق غير صحيح</string>
+    <string name="error_network">لا يوجد اتصال بالإنترنت</string>
+    <string name="error_generic">حدث خطأ ما، يرجى المحاولة مرة أخرى</string>
+    <string name="error_phone_exists">رقم الهاتف مسجل بالفعل</string>
+    <string name="error_email_exists">البريد الإلكتروني مسجل بالفعل</string>
+    <string name="error_unauthorized">البريد الإلكتروني أو كلمة المرور غير صحيحة</string>
+    <string name="error_bad_request">طلب غير صالح</string>
+    <string name="error_forbidden">تم رفض الوصول</string>
+    <string name="error_not_found">المورد غير موجود</string>
+    <string name="error_conflict">خطأ في التعارض</string>
+    <string name="error_payload_too_large">حجم الملف كبير جداً</string>
+    <string name="error_too_many_requests">طلبات كثيرة جداً، يرجى الانتظار</string>
+    <string name="prescription_media_error">خطأ في الوصول إلى ملفات الميديا</string>
     <string name="auth_login_supporting">سجّل الدخول باستخدام حساب الصيدلية المسجل.</string>
     <string name="auth_email">البريد الإلكتروني</string>
     <string name="auth_phone">رقم الهاتف</string>
@@ -93,6 +133,11 @@
     <string name="pharmacy_registration_error_invalid_location">اختر موقع خريطة صحيحًا</string>
     <string name="pharmacy_registration_error_submit_failed">تعذر تسجيل هذه الصيدلية. راجع البيانات أو تأكد أن حساب الصيدلي غير مرتبط بصيدلية بالفعل.</string>
 
+    <string name="otp_title">تحقق من بريدك الإلكتروني</string>
+    <string name="otp_subtitle">لقد أرسلنا رمز تحقق مكون من 6 أرقام إلى %1$s</string>
+    <string name="auth_verify_otp">التحقق والمتابعة</string>
+    <string name="auth_resend_cooldown">إعادة إرسال الرمز خلال %1$s</string>
+    <string name="auth_resend_otp">إعادة إرسال الرمز</string>
     <string name="verification_title">تحقق من وسيلة التواصل</string>
     <string name="verification_supporting">أدخل رمز التحقق المرسل إلى جهة تواصل الصيدلية المسجلة.</string>
     <string name="verification_code">رمز التحقق</string>
@@ -119,6 +164,36 @@
     <string name="approval_suspended_guidance_body">تواصل مع دعم Medsy لمعرفة سبب الإيقاف والخطوات المطلوبة.</string>
     <string name="approval_back_to_login">العودة لتسجيل الدخول</string>
 
+    <string name="home_role_pharmacist">صيدلي</string>
+    <string name="home_pharmacy_name">صيدلية الأمل</string>
+    <string name="home_pharmacy_address">شارع النيل، المعادي، القاهرة</string>
+    <string name="home_pharmacy_status_open">مفتوح الآن حتى 11:00 مساءً</string>
+    <string name="home_pharmacy_id_label">رقم الصيدلية</string>
+    <string name="home_pharmacy_id_value">PH123456</string>
+    <string name="home_ratings_format">%1$s (%2$s تقييم)</string>
+
+    <string name="home_overview_title">نظرة عامة</string>
+    <string name="home_stat_new_orders">طلبات جديدة</string>
+    <string name="home_stat_in_progress">قيد التجهيز</string>
+    <string name="home_stat_delivered_today">تم التوصيل اليوم</string>
+    <string name="home_stat_total_sales">إجمالي المبيعات</string>
+    <string name="home_stat_total_sales_value">3,240</string>
+
+    <string name="home_latest_orders_title">أحدث الطلبات</string>
+    <string name="home_action_view_all">عرض الكل</string>
+    <string name="home_action_view_all_orders">عرض جميع الطلبات</string>
+
+    <string name="home_order_status_new">جديد</string>
+    <string name="home_order_status_preparing">قيد التجهيز</string>
+    <string name="home_order_status_delivered">تم التوصيل</string>
+    <string name="home_order_time_ago">منذ %1$d دقائق</string>
+
+    <string name="home_nav_home">الرئيسية</string>
+    <string name="home_nav_orders">الطلبات</string>
+    <string name="home_nav_products">المنتجات</string>
+    <string name="home_nav_customers">العملاء</string>
+    <string name="home_nav_more">المزيد</string>
+
     <string name="home_title">لوحة الصيدلية</string>
     <string name="home_supporting">ملخص تشغيلي للطلبات والعروض وطلبات الشراء.</string>
     <string name="home_receiving_status">حالة استقبال الطلبات</string>
@@ -143,11 +218,21 @@
     <string name="orders_active_empty">لم يتم ربط طلبات نشطة بعد.</string>
     <string name="orders_history_empty">لم يتم ربط طلبات مكتملة بعد.</string>
 
-    <string name="profile_title">ملف الصيدلية</string>
-    <string name="profile_supporting">أدر التفضيلات المحلية واعرض بيانات حساب الصيدلية المؤقتة.</string>
-    <string name="profile_account_placeholder">ستظهر هنا بيانات الصيدلية والترخيص.</string>
-    <string name="profile_approval_placeholder">حالة الموافقة: واجهة مؤقتة</string>
-    <string name="profile_receiving_placeholder">سيتم ربط إدارة استقبال الطلبات بالخادم.</string>
+    <string name="profile_title">الملف الشخصي</string>
+    <string name="profile_supporting">إدارة إعدادات وبيانات الصيدلية.</string>
+    <string name="profile_verified_pharmacy">صيدلية معتمدة</string>
+    <string name="profile_ratings_count">(128 تقييم)</string>
+    <string name="profile_phone_number">رقم الهاتف</string>
+    <string name="profile_change">تغيير</string>
+    <string name="profile_license">الترخيص</string>
+    <string name="profile_license_view">عرض رخصة مزاولة المهنة</string>
+    <string name="profile_registered_location">الموقع المسجل</string>
+    <string name="profile_location_value">شارع النيل، المعادي، القاهرة</string>
+    <string name="profile_edit_request">طلب تعديل بيانات</string>
+    <string name="profile_edit_request_sub">طلب تعديل البيانات من الإدارة</string>
+    <string name="profile_receiving_status">حالة استقبال الطلبات</string>
+    <string name="profile_status_open">مفتوح</string>
+    <string name="profile_status_closed">مغلق</string>
     <string name="profile_theme">المظهر</string>
     <string name="profile_theme_system">النظام</string>
     <string name="profile_theme_light">فاتح</string>
@@ -157,5 +242,25 @@
     <string name="profile_language_english">English</string>
     <string name="profile_logout">تسجيل الخروج</string>
     <string name="medsy_logo_content_desc">Medsy Logo\n</string>
-    <string name="auth_error_no_pharmacy">You must be assigned to a pharmacy</string>
+    <string name="auth_error_no_pharmacy">يجب أن يكون حسابك مرتبطًا بصيدلية</string>
+
+    <!--  Order Details  -->
+    <string name="order_details_title">تفاصيل الطلب</string>
+    <string name="order_details_new_badge">جديد</string>
+    <string name="order_details_back_desc">رجوع</string>
+    <string name="order_details_call_desc">اتصال بالعميل</string>
+    <string name="order_details_location_desc">فتح الموقع</string>
+    <string name="order_details_order_number_format">#%1$s</string>
+    <string name="order_details_minutes_ago">منذ %1$d دقائق</string>
+    <string name="order_details_price_egp">%1$d جنيه</string>
+    <string name="order_details_requested_medicines">الأدوية المطلوبة</string>
+    <string name="order_details_customer_notes">ملاحظات العميل</string>
+    <string name="order_details_total">إجمالي الطلب</string>
+    <string name="order_details_view_payment_summary">عرض ملخص الدفع</string>
+    <string name="order_details_reject">رفض الطلب</string>
+    <string name="order_details_contact_customer">تواصل مع العميل</string>
+    <string name="order_details_accept">قبول الطلب</string>
+    <string name="order_details_accepted_message">تم قبول الطلب</string>
+    <string name="order_details_rejected_message">تم رفض الطلب</string>
+    <string name="orders_view_sample_order">طلب تجريبي</string>
 </resources>

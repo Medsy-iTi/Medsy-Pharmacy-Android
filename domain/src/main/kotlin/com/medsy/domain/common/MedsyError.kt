@@ -26,6 +26,7 @@ sealed interface MedsyError {
         INVALID_PHONE_NUMBER,
         INVALID_LOCATION,
         INVALID_LICENSE_DOCUMENT,
+        PDF_TOO_LARGE,
         INVALID_OTP,
     }
 

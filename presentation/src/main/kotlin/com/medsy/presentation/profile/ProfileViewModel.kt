@@ -9,8 +9,9 @@ import com.medsy.domain.common.preferences.usecase.ObserveUserPreferencesUseCase
 import com.medsy.domain.common.preferences.usecase.SetThemeModeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -22,13 +23,22 @@ class ProfileViewModel @Inject constructor(
     private val setThemeMode: SetThemeModeUseCase,
     private val clearSession: ClearSessionUseCase,
 ) : ViewModel() {
-    val state = observePreferences()
-        .map { ProfileState(themeMode = it.themeMode) }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = ProfileState(),
+
+    private val isReceivingOrdersFlow = MutableStateFlow(true)
+
+    val state = combine(
+        observePreferences(),
+        isReceivingOrdersFlow
+    ) { prefs, isReceiving ->
+        ProfileState(
+            themeMode = prefs.themeMode,
+            isReceivingOrders = isReceiving
         )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000L),
+        initialValue = ProfileState(),
+    )
 
     private val mutableEffect = Channel<ProfileUIEffect>(Channel.BUFFERED)
     val effect = mutableEffect.receiveAsFlow()
@@ -42,6 +52,9 @@ class ProfileViewModel @Inject constructor(
                 AppCompatDelegate.setApplicationLocales(
                     LocaleListCompat.forLanguageTags(intent.languageTag),
                 )
+            }
+            is ProfileUIIntent.ReceivingStatusChanged -> {
+                isReceivingOrdersFlow.value = intent.isReceiving
             }
             ProfileUIIntent.Logout -> viewModelScope.launch {
                 clearSession()
