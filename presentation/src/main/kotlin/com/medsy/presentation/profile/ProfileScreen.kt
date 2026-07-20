@@ -137,7 +137,7 @@ fun ProfileScreen(
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text = state.pharmacist?.fullName ?: stringResource(R.string.profile_dummy_name),
+                                text = state.pharmacist?.fullName ?: "",
                                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                                 color = MaterialTheme.colorScheme.onSurface
                             )
@@ -155,12 +155,7 @@ fun ProfileScreen(
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                             color = MaterialTheme.colorScheme.primary
                         )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = stringResource(R.string.profile_experience_years, stringResource(R.string.profile_dummy_experience)),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+
                     }
                 }
             }
@@ -168,10 +163,8 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             PharmacyInfoCard(
-                pharmacyName = state.pharmacy?.name ?: stringResource(R.string.profile_dummy_pharmacy_name),
-                rating = "4.8", // Keep static for now or extract to string resource
-                ratingsCountRes = R.string.profile_dummy_ratings,
-                verifiedTextRes = R.string.profile_verified_pharmacy,
+                pharmacyName = state.pharmacy?.name ?: "",
+                pharmacyAddress = state.pharmacy?.address,
                 onClick = { /* Navigate to pharmacy details */ }
             )
 
@@ -258,7 +251,7 @@ fun ProfileScreen(
                     ProfileItemRow(
                         icon = Icons.Outlined.PeopleOutline,
                         title = stringResource(R.string.profile_pharmacists_in_pharmacy),
-                        subtitle = stringResource(R.string.profile_pharmacists_count, stringResource(R.string.profile_dummy_pharmacist_count)),
+                        subtitle = stringResource(R.string.profile_pharmacists_count, state.pharmacy?.pharmacists?.size ?: 0),
                         onClick = { onIntent(ProfileUIIntent.NavigateToPharmacistsList) }
                     )
 

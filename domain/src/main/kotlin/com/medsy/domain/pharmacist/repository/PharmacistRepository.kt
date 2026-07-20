@@ -1,5 +1,6 @@
 package com.medsy.domain.pharmacist.repository
 
+import com.medsy.domain.common.EmptyMedsyResult
 import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
 import com.medsy.domain.pharmacist.model.Pharmacist

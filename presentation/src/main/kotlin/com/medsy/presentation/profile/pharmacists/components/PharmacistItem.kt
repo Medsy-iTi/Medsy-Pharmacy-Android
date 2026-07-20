@@ -28,7 +28,6 @@ import com.medsy.presentation.R
 @Composable
 fun PharmacistItem(
     name: String,
-    experience: String,
     roleBadge: String?,
     onClick: () -> Unit,
     trailingIcon: @Composable () -> Unit
@@ -76,11 +75,6 @@ fun PharmacistItem(
                 text = stringResource(R.string.profile_verified_pharmacist),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                text = stringResource(R.string.profile_experience_years, experience),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         trailingIcon()

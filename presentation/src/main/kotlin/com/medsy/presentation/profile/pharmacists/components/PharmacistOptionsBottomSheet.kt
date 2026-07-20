@@ -187,11 +187,6 @@ fun PharmacistOptionsBottomSheet(
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.primary
                         )
-                        Text(
-                            text = stringResource(R.string.profile_experience_years, stringResource(R.string.pharmacists_list_dummy_experience_2)),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
                     }
                 }
 

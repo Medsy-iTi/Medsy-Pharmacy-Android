@@ -37,9 +37,7 @@ import com.medsy.designsystem.R as DesignR
 @Composable
 fun PharmacyInfoCard(
     pharmacyName: String,
-    rating: String,
-    ratingsCountRes: Int,
-    verifiedTextRes: Int,
+    pharmacyAddress: String?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -83,20 +81,15 @@ fun PharmacyInfoCard(
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.onSurface
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Icon(
-                        imageVector = Icons.Outlined.Verified,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(16.dp)
+                }
+                if (!pharmacyAddress.isNullOrBlank()) {
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = pharmacyAddress,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = "المعادي، القاهرة",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
             }
         }
     }

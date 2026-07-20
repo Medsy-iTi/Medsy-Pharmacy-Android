@@ -8,6 +8,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import com.medsy.data.di.AuthenticatedRetrofit
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
@@ -23,7 +24,7 @@ abstract class PharmacistModule {
     companion object {
         @Provides
         @Singleton
-        fun providePharmacistApi(retrofit: Retrofit): PharmacistApi {
+        fun providePharmacistApi(@AuthenticatedRetrofit retrofit: Retrofit): PharmacistApi {
             return retrofit.create(PharmacistApi::class.java)
         }
     }

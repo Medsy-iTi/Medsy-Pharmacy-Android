@@ -125,10 +125,8 @@ fun PharmacistsListScreen(
         ) {
             // Pharmacy Info Card
             PharmacyInfoCard(
-                pharmacyName = state.pharmacyName.takeIf { it.isNotBlank() } ?: stringResource(R.string.profile_dummy_pharmacy_name),
-                rating = "4.8", // Static for now
-                ratingsCountRes = R.string.profile_ratings_count,
-                verifiedTextRes = R.string.profile_verified_pharmacy,
+                pharmacyName = state.pharmacyName,
+                pharmacyAddress = null, // Or add address to state if available later
                 onClick = {}
             )
 
@@ -162,7 +160,6 @@ fun PharmacistsListScreen(
                         state.pharmacists.forEachIndexed { index, pharmacist ->
                             PharmacistItem(
                                 name = pharmacist.fullName,
-                                experience = stringResource(R.string.profile_dummy_experience), // static for now
                                 roleBadge = if (pharmacist.isAdmin) stringResource(R.string.pharmacists_list_manager) else null,
                                 onClick = { if (!pharmacist.isAdmin) selectedPharmacist = pharmacist.fullName },
                                 trailingIcon = {

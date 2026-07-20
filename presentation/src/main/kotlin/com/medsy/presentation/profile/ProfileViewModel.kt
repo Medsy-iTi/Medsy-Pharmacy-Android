@@ -39,21 +39,27 @@ class ProfileViewModel @Inject constructor(
     private val pharmacyFlow = MutableStateFlow<MyPharmacy?>(null)
     private val errorFlow = MutableStateFlow<MedsyError?>(null)
 
-    val state = combine(
-        observePreferences(),
-        isReceivingOrdersFlow,
+    private val dataFlow = combine(
         isLoadingFlow,
         pharmacistFlow,
         pharmacyFlow,
         errorFlow
-    ) { prefs, isReceiving, isLoading, pharmacist, pharmacy, error ->
+    ) { isLoading, pharmacist, pharmacy, error ->
+        DataState(isLoading, pharmacist, pharmacy, error)
+    }
+
+    val state = combine(
+        observePreferences(),
+        isReceivingOrdersFlow,
+        dataFlow
+    ) { prefs, isReceiving, data ->
         ProfileState(
             themeMode = prefs.themeMode,
             isReceivingOrders = isReceiving,
-            isLoading = isLoading,
-            pharmacist = pharmacist,
-            pharmacy = pharmacy,
-            error = error
+            isLoading = data.isLoading,
+            pharmacist = data.pharmacist,
+            pharmacy = data.pharmacy,
+            error = data.error
         )
     }.stateIn(
         scope = viewModelScope,
@@ -120,4 +126,11 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
+
+    private data class DataState(
+        val isLoading: Boolean,
+        val pharmacist: Pharmacist?,
+        val pharmacy: MyPharmacy?,
+        val error: MedsyError?
+    )
 }

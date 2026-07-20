@@ -4,8 +4,9 @@ import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
 import com.medsy.domain.invitation.model.PharmacyInvitation
 import com.medsy.domain.invitation.repository.InvitationRepository
+import javax.inject.Inject
 
-class InvitePharmacistUseCase(
+class InvitePharmacistUseCase @Inject constructor(
     private val repository: InvitationRepository
 ) {
     suspend operator fun invoke(pharmacyId: Long, email: String): MedsyResult<PharmacyInvitation, MedsyError> {

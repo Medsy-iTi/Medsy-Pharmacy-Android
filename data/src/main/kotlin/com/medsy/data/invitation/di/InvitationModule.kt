@@ -8,6 +8,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import com.medsy.data.di.AuthenticatedRetrofit
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
@@ -23,7 +24,7 @@ abstract class InvitationModule {
     companion object {
         @Provides
         @Singleton
-        fun provideInvitationApi(retrofit: Retrofit): InvitationApi {
+        fun provideInvitationApi(@AuthenticatedRetrofit retrofit: Retrofit): InvitationApi {
             return retrofit.create(InvitationApi::class.java)
         }
     }
