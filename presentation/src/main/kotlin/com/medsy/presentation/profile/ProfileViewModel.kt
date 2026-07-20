@@ -17,28 +17,74 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import com.medsy.domain.common.fold
+import com.medsy.domain.common.MedsyError
+import com.medsy.domain.pharmacist.model.Pharmacist
+import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
+import com.medsy.domain.pharmacy.model.MyPharmacy
+import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
+
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     observePreferences: ObserveUserPreferencesUseCase,
     private val setThemeMode: SetThemeModeUseCase,
     private val clearSession: ClearSessionUseCase,
+    private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
+    private val getMyPharmacy: GetMyPharmacyUseCase,
 ) : ViewModel() {
 
     private val isReceivingOrdersFlow = MutableStateFlow(true)
+    private val isLoadingFlow = MutableStateFlow(false)
+    private val pharmacistFlow = MutableStateFlow<Pharmacist?>(null)
+    private val pharmacyFlow = MutableStateFlow<MyPharmacy?>(null)
+    private val errorFlow = MutableStateFlow<MedsyError?>(null)
 
     val state = combine(
         observePreferences(),
-        isReceivingOrdersFlow
-    ) { prefs, isReceiving ->
+        isReceivingOrdersFlow,
+        isLoadingFlow,
+        pharmacistFlow,
+        pharmacyFlow,
+        errorFlow
+    ) { prefs, isReceiving, isLoading, pharmacist, pharmacy, error ->
         ProfileState(
             themeMode = prefs.themeMode,
-            isReceivingOrders = isReceiving
+            isReceivingOrders = isReceiving,
+            isLoading = isLoading,
+            pharmacist = pharmacist,
+            pharmacy = pharmacy,
+            error = error
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000L),
         initialValue = ProfileState(),
     )
+
+    init {
+        loadProfileData()
+    }
+
+    private fun loadProfileData() {
+        viewModelScope.launch {
+            isLoadingFlow.value = true
+            errorFlow.value = null
+            
+            val pharmacistResult = getCurrentPharmacist()
+            pharmacistResult.fold(
+                onSuccess = { pharmacistFlow.value = it },
+                onError = { errorFlow.value = it }
+            )
+
+            val pharmacyResult = getMyPharmacy()
+            pharmacyResult.fold(
+                onSuccess = { pharmacyFlow.value = it },
+                onError = { errorFlow.value = it }
+            )
+
+            isLoadingFlow.value = false
+        }
+    }
 
     private val mutableEffect = Channel<ProfileUIEffect>(Channel.BUFFERED)
     val effect = mutableEffect.receiveAsFlow()
