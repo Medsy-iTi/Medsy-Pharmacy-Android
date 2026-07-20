@@ -127,8 +127,7 @@ fun ProfileScreen(
 
             PharmacyInfoCard(
                 pharmacyName = state.pharmacy?.name ?: "",
-                pharmacyAddress = state.pharmacy?.address,
-                onClick = { /* Navigate to pharmacy details */ }
+                pharmacyAddress = state.pharmacy?.address
             )
 
             Spacer(modifier = Modifier.height(24.dp))

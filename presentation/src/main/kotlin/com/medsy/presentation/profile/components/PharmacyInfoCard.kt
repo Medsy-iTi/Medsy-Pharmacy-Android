@@ -38,14 +38,12 @@ import com.medsy.designsystem.R as DesignR
 fun PharmacyInfoCard(
     pharmacyName: String,
     pharmacyAddress: String?,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .clickable(onClick = onClick),
+            .clip(RoundedCornerShape(16.dp)),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
