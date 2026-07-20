@@ -47,6 +47,36 @@
     <string name="approval_suspended_supporting">This pharmacy cannot receive new requests while suspended. Existing order access is subject to backend authorization.</string>
     <string name="approval_back_to_login">Back to sign in</string>
 
+    <string name="home_role_pharmacist">Pharmacist</string>
+    <string name="home_pharmacy_name">Al-Amal Pharmacy</string>
+    <string name="home_pharmacy_address">Nile St., Maadi, Cairo</string>
+    <string name="home_pharmacy_status_open">Open now until 11:00 PM</string>
+    <string name="home_pharmacy_id_label">Pharmacy ID</string>
+    <string name="home_pharmacy_id_value">PH123456</string>
+    <string name="home_ratings_format">%1$s (%2$s ratings)</string>
+
+    <string name="home_overview_title">Overview</string>
+    <string name="home_stat_new_orders">New Orders</string>
+    <string name="home_stat_in_progress">In Progress</string>
+    <string name="home_stat_delivered_today">Delivered Today</string>
+    <string name="home_stat_total_sales">Total Sales</string>
+    <string name="home_stat_total_sales_value">3,240</string>
+
+    <string name="home_latest_orders_title">Latest Orders</string>
+    <string name="home_action_view_all">View All</string>
+    <string name="home_action_view_all_orders">View All Orders</string>
+
+    <string name="home_order_status_new">New</string>
+    <string name="home_order_status_preparing">In Preparation</string>
+    <string name="home_order_status_delivered">Delivered</string>
+    <string name="home_order_time_ago">%1$d mins ago</string>
+
+    <string name="home_nav_home">Home</string>
+    <string name="home_nav_orders">Orders</string>
+    <string name="home_nav_products">Products</string>
+    <string name="home_nav_customers">Customers</string>
+    <string name="home_nav_more">More</string>
+
     <string name="home_title">Pharmacy dashboard</string>
     <string name="home_supporting">Operational summary for requests, offers, and orders.</string>
     <string name="home_receiving_status">Receiving status</string>
