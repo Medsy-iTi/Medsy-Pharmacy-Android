@@ -137,7 +137,7 @@ fun ProfileScreen(
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text = stringResource(R.string.profile_dummy_name),
+                                text = state.pharmacist?.fullName ?: stringResource(R.string.profile_dummy_name),
                                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                                 color = MaterialTheme.colorScheme.onSurface
                             )
@@ -167,16 +167,15 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // ─── Pharmacy info card ──────────────────────────────────────────
             PharmacyInfoCard(
-                pharmacyName = "صيدلية النهضة",
-                rating = "4.8",
-                ratingsCountRes = R.string.profile_ratings_count,
+                pharmacyName = state.pharmacy?.name ?: stringResource(R.string.profile_dummy_pharmacy_name),
+                rating = "4.8", // Keep static for now or extract to string resource
+                ratingsCountRes = R.string.profile_dummy_ratings,
                 verifiedTextRes = R.string.profile_verified_pharmacy,
-                onClick = { /* View Pharmacy Details */ }
+                onClick = { /* Navigate to pharmacy details */ }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // ─── Settings & Logout Card ──────────────────────────────────────
             Card(
