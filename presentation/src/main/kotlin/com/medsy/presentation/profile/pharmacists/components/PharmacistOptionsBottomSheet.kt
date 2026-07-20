@@ -52,6 +52,7 @@ import com.medsy.presentation.R
 @Composable
 fun PharmacistOptionsBottomSheet(
     pharmacistName: String,
+    pharmacyName: String,
     onDismiss: () -> Unit,
     onRemoveConfirmed: () -> Unit
 ) {
@@ -102,7 +103,7 @@ fun PharmacistOptionsBottomSheet(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = stringResource(R.string.pharmacist_options_remove_confirm_desc),
+                    text = stringResource(R.string.pharmacist_options_remove_confirm_desc, pharmacistName, pharmacyName),
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant

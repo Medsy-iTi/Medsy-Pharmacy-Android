@@ -319,7 +319,7 @@
     <string name="pharmacist_options_view_profile">عرض الملف الشخصي</string>
     <string name="pharmacist_options_remove">إزالة من الصيدلية</string>
     <string name="pharmacist_options_remove_confirm_title">إزالة الصيدلي من الصيدلية؟</string>
-    <string name="pharmacist_options_remove_confirm_desc">سيتم إزالة د. سارة علي من صيدلية النهضة\nهل أنت متأكد من هذا الإجراء؟</string>
+    <string name="pharmacist_options_remove_confirm_desc">سيتم إزالة %1$s من صيدلية %2$s\nهل أنت متأكد من هذا الإجراء؟</string>
     <string name="pharmacist_options_cancel">إلغاء</string>
     <string name="pharmacist_options_remove_action">إزالة</string>    <string name="profile_gender_male">ذكر</string>
     <string name="profile_gender_female">أنثى</string>

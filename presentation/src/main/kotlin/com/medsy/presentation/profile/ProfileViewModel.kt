@@ -55,14 +55,20 @@ class ProfileViewModel @Inject constructor(
         DataState(isLoading, pharmacist, pharmacy, error)
     }
 
+    private val uiFlagsFlow = combine(
+        isLoggingOutFlow,
+        isAvatarSheetOpenFlow,
+        showLogoutDialogFlow
+    ) { isLoggingOut, isAvatarSheetOpen, showLogoutDialog ->
+        UiFlags(isLoggingOut, isAvatarSheetOpen, showLogoutDialog)
+    }
+
     val state = combine(
         observePreferences(),
         isReceivingOrdersFlow,
-        isLoggingOutFlow,
-        isAvatarSheetOpenFlow,
-        showLogoutDialogFlow,
+        uiFlagsFlow,
         dataFlow
-    ) { prefs, isReceiving, isLoggingOut, isAvatarSheetOpen, showLogoutDialog, data ->
+    ) { prefs, isReceiving, uiFlags, data ->
         ProfileState(
             themeMode = prefs.themeMode,
             isReceivingOrders = isReceiving,
@@ -71,9 +77,9 @@ class ProfileViewModel @Inject constructor(
             pharmacy = data.pharmacy,
             error = data.error,
             isAvatarFemale = prefs.isAvatarFemale,
-            isLoggingOut = isLoggingOut,
-            isAvatarSheetOpen = isAvatarSheetOpen,
-            showLogoutDialog = showLogoutDialog
+            isLoggingOut = uiFlags.isLoggingOut,
+            isAvatarSheetOpen = uiFlags.isAvatarSheetOpen,
+            showLogoutDialog = uiFlags.showLogoutDialog
         )
     }.stateIn(
         scope = viewModelScope,
@@ -169,5 +175,11 @@ class ProfileViewModel @Inject constructor(
         val pharmacist: Pharmacist?,
         val pharmacy: MyPharmacy?,
         val error: MedsyError?
+    )
+
+    private data class UiFlags(
+        val isLoggingOut: Boolean,
+        val isAvatarSheetOpen: Boolean,
+        val showLogoutDialog: Boolean
     )
 }

@@ -321,7 +321,7 @@
     <string name="pharmacist_options_view_profile">View Profile</string>
     <string name="pharmacist_options_remove">Remove from Pharmacy</string>
     <string name="pharmacist_options_remove_confirm_title">Remove pharmacist from pharmacy?</string>
-    <string name="pharmacist_options_remove_confirm_desc">Dr. Sara Ali will be removed from Al Nahda Pharmacy, are you sure about this action?</string>
+    <string name="pharmacist_options_remove_confirm_desc">%1$s will be removed from %2$s, are you sure about this action?</string>
     <string name="pharmacist_options_cancel">Cancel</string>
     <string name="pharmacist_options_remove_action">Remove</string>    <string name="profile_gender_male">Male</string>
     <string name="profile_gender_female">Female</string>

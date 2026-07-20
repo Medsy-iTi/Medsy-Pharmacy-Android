@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Native OS splash background in light mode to match Theme.MedsyPharmacy window background -->
+    <color name="splash_background">#F5F8FF</color>
+</resources>

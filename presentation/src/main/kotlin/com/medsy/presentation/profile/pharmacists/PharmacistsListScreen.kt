@@ -244,6 +244,7 @@ fun PharmacistsListScreen(
     selectedPharmacist?.let { name ->
         PharmacistOptionsBottomSheet(
             pharmacistName = name,
+            pharmacyName = state.pharmacyName,
             onDismiss = { selectedPharmacist = null },
             onRemoveConfirmed = {
                 // Handle remove action
