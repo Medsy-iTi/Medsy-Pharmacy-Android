@@ -47,7 +47,7 @@ fun OrderDetailsTopBar(
             text = stringResource(R.string.order_details_title),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.extendedColors.darkBlueColor,
             modifier = Modifier.align(Alignment.Center),
         )
 
