@@ -104,6 +104,19 @@
     <string name="approval_rejected_supporting">The pharmacy registration was rejected. Review the administrator reason before submitting corrected information.</string>
     <string name="approval_suspended_title">Account suspended</string>
     <string name="approval_suspended_supporting">This pharmacy cannot receive new requests while suspended. Existing order access is subject to backend authorization.</string>
+    <string name="approval_verification_animation_desc">Verification review animation</string>
+    <string name="approval_pending_status">Under review</string>
+    <string name="approval_rejected_status">Needs correction</string>
+    <string name="approval_suspended_status">Access limited</string>
+    <string name="approval_documents_title">Verification documents</string>
+    <string name="approval_pending_documents_body">Your pharmacy license and submitted details are in the admin review queue.</string>
+    <string name="approval_rejected_documents_body">Some submitted details did not pass review. Submit corrected information after checking the admin reason.</string>
+    <string name="approval_suspended_documents_body">Your pharmacy profile is restricted. Sensitive pharmacy data stays protected while access is reviewed.</string>
+    <string name="approval_pending_guidance_title">What happens next?</string>
+    <string name="approval_pending_guidance_body">Once approved, Medsy will unlock nearby patient requests and order management for this pharmacy.</string>
+    <string name="approval_support_guidance_title">Need help?</string>
+    <string name="approval_rejected_guidance_body">Contact Medsy support or your pharmacy admin before resubmitting documents.</string>
+    <string name="approval_suspended_guidance_body">Contact Medsy support to understand the suspension and the required next steps.</string>
     <string name="approval_back_to_login">Back to sign in</string>
 
     <string name="home_title">Pharmacy dashboard</string>

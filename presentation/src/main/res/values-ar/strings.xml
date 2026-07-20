@@ -104,6 +104,19 @@
     <string name="approval_rejected_supporting">تم رفض تسجيل الصيدلية. راجع سبب الإدارة قبل إرسال البيانات المصححة.</string>
     <string name="approval_suspended_title">الحساب موقوف</string>
     <string name="approval_suspended_supporting">لا يمكن لهذه الصيدلية استقبال طلبات جديدة أثناء الإيقاف. يخضع الوصول للطلبات الحالية لصلاحيات الخادم.</string>
+    <string name="approval_verification_animation_desc">رسم متحرك لمراجعة التحقق</string>
+    <string name="approval_pending_status">قيد المراجعة</string>
+    <string name="approval_rejected_status">يحتاج إلى تصحيح</string>
+    <string name="approval_suspended_status">الوصول محدود</string>
+    <string name="approval_documents_title">مستندات التحقق</string>
+    <string name="approval_pending_documents_body">ترخيص الصيدلية والبيانات المرسلة موجودة الآن في قائمة مراجعة الإدارة.</string>
+    <string name="approval_rejected_documents_body">بعض البيانات المرسلة لم تجتز المراجعة. أرسل البيانات المصححة بعد مراجعة سبب الإدارة.</string>
+    <string name="approval_suspended_documents_body">ملف الصيدلية مقيّد حاليًا. تظل بيانات الصيدلية الحساسة محمية أثناء مراجعة الوصول.</string>
+    <string name="approval_pending_guidance_title">ماذا يحدث بعد ذلك؟</string>
+    <string name="approval_pending_guidance_body">بعد الموافقة، ستفتح Medsy طلبات المرضى القريبة وإدارة الطلبات لهذه الصيدلية.</string>
+    <string name="approval_support_guidance_title">هل تحتاج مساعدة؟</string>
+    <string name="approval_rejected_guidance_body">تواصل مع دعم Medsy أو مسؤول الصيدلية قبل إعادة إرسال المستندات.</string>
+    <string name="approval_suspended_guidance_body">تواصل مع دعم Medsy لمعرفة سبب الإيقاف والخطوات المطلوبة.</string>
     <string name="approval_back_to_login">العودة لتسجيل الدخول</string>
 
     <string name="home_title">لوحة الصيدلية</string>
