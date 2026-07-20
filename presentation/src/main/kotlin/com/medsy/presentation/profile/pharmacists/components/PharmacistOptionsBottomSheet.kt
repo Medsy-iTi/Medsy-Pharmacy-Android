@@ -72,7 +72,7 @@ fun PharmacistOptionsBottomSheet(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (showRemoveConfirmation) {
-                // Confirmation State
+              
                 Box(
                     modifier = Modifier
                         .size(64.dp)
@@ -141,14 +141,13 @@ fun PharmacistOptionsBottomSheet(
                     }
                 }
             } else {
-                // Options State
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onDismiss) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack, // using arrow back as in design to close/back? The design shows back arrow for bottom sheet options.
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack, 
                             contentDescription = stringResource(R.string.order_details_back_desc)
                         )
                     }
@@ -158,18 +157,17 @@ fun PharmacistOptionsBottomSheet(
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.width(48.dp)) // balance the icon
+                    Spacer(modifier = Modifier.width(48.dp))
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Pharmacist info
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_profile_placeholder), // Needs a dummy or placeholder
+                        painter = painterResource(id = R.drawable.ic_profile_placeholder), 
                         contentDescription = null,
                         modifier = Modifier
                             .size(56.dp)
@@ -199,7 +197,7 @@ fun PharmacistOptionsBottomSheet(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Options list
+            
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -214,11 +212,11 @@ fun PharmacistOptionsBottomSheet(
                         )
                 ) {
                     Column {
-                        // View Profile
+                        
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { /* View Profile */ }
+                                .clickable {  }
                                 .padding(16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -245,7 +243,7 @@ fun PharmacistOptionsBottomSheet(
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
 
-                        // Remove
+                        
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
