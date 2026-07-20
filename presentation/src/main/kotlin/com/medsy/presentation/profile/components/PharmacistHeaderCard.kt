@@ -35,6 +35,8 @@ import com.medsy.presentation.R
 @Composable
 fun PharmacistHeaderCard(
     pharmacist: Pharmacist?,
+    isAvatarFemale: Boolean,
+    onAvatarClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -50,12 +52,13 @@ fun PharmacistHeaderCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_pharmacy), // Using the same placeholder
+                painter = painterResource(id = if (isAvatarFemale) R.drawable.ic_pharmacy_womman else R.drawable.ic_pharmacy),
                 contentDescription = null,
                 modifier = Modifier
                     .size(72.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .androidx.compose.foundation.clickable { onAvatarClick() },
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(16.dp))

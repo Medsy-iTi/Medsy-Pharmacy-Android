@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.medsy.domain.auth.usecase.ClearSessionUseCase
 import com.medsy.domain.common.preferences.usecase.ObserveUserPreferencesUseCase
 import com.medsy.domain.common.preferences.usecase.SetThemeModeUseCase
+import com.medsy.domain.common.preferences.usecase.SetAvatarGenderUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +29,7 @@ import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
 class ProfileViewModel @Inject constructor(
     observePreferences: ObserveUserPreferencesUseCase,
     private val setThemeMode: SetThemeModeUseCase,
+    private val setAvatarGender: SetAvatarGenderUseCase,
     private val clearSession: ClearSessionUseCase,
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
@@ -59,7 +61,8 @@ class ProfileViewModel @Inject constructor(
             isLoading = data.isLoading,
             pharmacist = data.pharmacist,
             pharmacy = data.pharmacy,
-            error = data.error
+            error = data.error,
+            isAvatarFemale = prefs.isAvatarFemale
         )
     }.stateIn(
         scope = viewModelScope,
@@ -99,6 +102,9 @@ class ProfileViewModel @Inject constructor(
         when (intent) {
             is ProfileUIIntent.ThemeChanged -> viewModelScope.launch {
                 setThemeMode(intent.themeMode)
+            }
+            is ProfileUIIntent.ToggleAvatarGender -> viewModelScope.launch {
+                setAvatarGender(intent.isFemale)
             }
             is ProfileUIIntent.LanguageChanged -> {
                 AppCompatDelegate.setApplicationLocales(
