@@ -98,12 +98,6 @@ fun PharmacyInfoCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-
-            Icon(
-                imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
-            )
         }
     }
 }
