@@ -76,10 +76,6 @@ fun ProfileRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     
-    LaunchedEffect(Unit) {
-        viewModel.onIntent(ProfileUIIntent.Refresh)
-    }
-    
     LaunchedEffect(viewModel) {
         viewModel.effect.collect {
             when (it) {

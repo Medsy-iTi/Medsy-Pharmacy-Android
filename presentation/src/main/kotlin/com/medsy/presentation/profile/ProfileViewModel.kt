@@ -71,18 +71,18 @@ class ProfileViewModel @Inject constructor(
         loadProfileData()
     }
 
-    private fun loadProfileData() {
+    private fun loadProfileData(forceRefresh: Boolean = false) {
         viewModelScope.launch {
             isLoadingFlow.value = true
             errorFlow.value = null
             
-            val pharmacistResult = getCurrentPharmacist()
+            val pharmacistResult = getCurrentPharmacist(forceRefresh)
             pharmacistResult.fold(
                 onSuccess = { pharmacistFlow.value = it },
                 onError = { errorFlow.value = it }
             )
 
-            val pharmacyResult = getMyPharmacy()
+            val pharmacyResult = getMyPharmacy(forceRefresh)
             pharmacyResult.fold(
                 onSuccess = { pharmacyFlow.value = it },
                 onError = { errorFlow.value = it }
@@ -122,7 +122,7 @@ class ProfileViewModel @Inject constructor(
                 mutableEffect.send(ProfileUIEffect.OpenPersonalInfo)
             }
             ProfileUIIntent.Refresh -> {
-                loadProfileData()
+                loadProfileData(forceRefresh = true)
             }
         }
     }

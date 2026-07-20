@@ -239,6 +239,7 @@ fun PharmacistsListScreen(
                 )
             }
         }
+        }
     }
 
     selectedPharmacist?.let { name ->
