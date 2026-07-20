@@ -140,7 +140,11 @@ fun RootNavDisplay() {
             entry<Route.InvitationSent> {
                 com.medsy.presentation.profile.invitationsent.InvitationSentRoot(
                     navigateBack = { backStack.removeLastOrNull() },
-                    returnToProfile = { backStack.popUntil { it == Route.NestedNav } }
+                    returnToProfile = {
+                        while (backStack.isNotEmpty() && backStack.last() != Route.NestedNav) {
+                            backStack.removeLastOrNull()
+                        }
+                    }
                 )
             }
             entry<Route.PharmacistsList> {

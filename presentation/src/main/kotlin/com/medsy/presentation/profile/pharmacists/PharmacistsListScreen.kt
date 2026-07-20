@@ -128,7 +128,7 @@ fun PharmacistsListScreen(
                 rating = "4.8",
                 ratingsCountRes = R.string.profile_ratings_count,
                 verifiedTextRes = R.string.profile_verified_pharmacy,
-                onClick = null
+                onClick = {}
             )
 
             Spacer(modifier = Modifier.height(24.dp))

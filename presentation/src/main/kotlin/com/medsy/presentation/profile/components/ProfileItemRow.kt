@@ -27,6 +27,8 @@ fun ProfileItemRow(
     title: String,
     subtitle: String?,
     modifier: Modifier = Modifier,
+    iconTint: androidx.compose.ui.graphics.Color? = null,
+    titleColor: androidx.compose.ui.graphics.Color? = null,
     showChevron: Boolean = true,
     trailing: @Composable () -> Unit = {},
     onClick: (() -> Unit)? = null
@@ -42,7 +44,7 @@ fun ProfileItemRow(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
+            tint = iconTint ?: MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(24.dp)
         )
 
@@ -53,7 +55,7 @@ fun ProfileItemRow(
                 text = title,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = titleColor ?: MaterialTheme.colorScheme.onSurface
                 )
             )
             if (subtitle != null) {
