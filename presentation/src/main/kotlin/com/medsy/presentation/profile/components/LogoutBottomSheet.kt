@@ -1,7 +1,7 @@
 package com.medsy.presentation.profile.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,13 +41,10 @@ fun LogoutBottomSheet(
     onLogoutConfirmed: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val isDark = isSystemInDarkTheme()
-
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = if (isDark) Color(0xFF181B26) else MaterialTheme.colorScheme.surface,
-        dragHandle = null,
+        containerColor = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
     ) {
         Column(
@@ -126,5 +123,6 @@ fun LogoutBottomSheet(
                 }
             }
         }
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
