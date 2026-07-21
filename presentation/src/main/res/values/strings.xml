@@ -321,7 +321,24 @@
     <string name="pharmacist_options_view_profile">View Profile</string>
     <string name="pharmacist_options_remove">Remove from Pharmacy</string>
     <string name="pharmacist_options_remove_confirm_title">Remove pharmacist from pharmacy?</string>
-    <string name="pharmacist_options_remove_confirm_desc">Dr. Sara Ali will be removed from Al Nahda Pharmacy, are you sure about this action?</string>
+    <string name="pharmacist_options_remove_confirm_desc">%1$s will be removed from %2$s, are you sure about this action?</string>
     <string name="pharmacist_options_cancel">Cancel</string>
-    <string name="pharmacist_options_remove_action">Remove</string>
+    <string name="pharmacist_options_remove_action">Remove</string>    <string name="profile_gender_male">Male</string>
+    <string name="profile_gender_female">Female</string>
+
+    <string name="profile_personal_info_title">Personal Information</string>
+    <string name="profile_pharmacist_information">Pharmacist information</string>
+    <string name="profile_first_name">First name</string>
+    <string name="profile_last_name">Last name</string>
+    <string name="profile_email_address">Email address</string>
+    <string name="profile_national_id">National ID</string>
+    <string name="profile_home_address">Home address</string>
+    <string name="profile_date_of_birth">Date of birth</string>
+    <string name="profile_not_provided">Not provided</string>
+    <string name="profile_save_changes">Save Changes</string>
+
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="profile_logout_confirm_title">Log Out</string>
+    <string name="profile_logout_confirm_desc">Are you sure you want to log out?</string>
 </resources>

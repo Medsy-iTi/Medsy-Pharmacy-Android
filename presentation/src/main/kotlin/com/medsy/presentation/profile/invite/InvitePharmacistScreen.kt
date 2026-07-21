@@ -155,7 +155,11 @@ fun InvitePharmacistScreen(
                         )
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    singleLine = true
+                    singleLine = true,
+                    isError = state.error != null,
+                    supportingText = if (state.error != null) {
+                        { Text(text = state.error, color = MaterialTheme.colorScheme.error) }
+                    } else null
                 )
             }
 
@@ -168,12 +172,20 @@ fun InvitePharmacistScreen(
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(12.dp),
-                enabled = state.email.isNotBlank()
+                enabled = state.email.isNotBlank() && !state.isLoading
             ) {
-                Text(
-                    text = stringResource(R.string.invite_pharmacist_send_action),
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-                )
+                if (state.isLoading) {
+                    androidx.compose.material3.CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(
+                        text = stringResource(R.string.invite_pharmacist_send_action),
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))

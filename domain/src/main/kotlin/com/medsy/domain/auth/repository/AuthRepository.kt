@@ -18,4 +18,6 @@ interface AuthRepository {
         email: String,
         password: String,
     ): MedsyResult<AuthSession, MedsyError.Remote>
+
+    suspend fun logout(refreshToken: String): EmptyMedsyResult<MedsyError.Remote>
 }

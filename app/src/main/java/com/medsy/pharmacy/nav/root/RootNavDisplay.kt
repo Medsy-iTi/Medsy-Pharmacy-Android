@@ -139,7 +139,8 @@ fun RootNavDisplay() {
                         backStack.navigateSingleTop(Route.OrderDetails(orderId))
                     },
                     openInvitePharmacist = { backStack.navigateSingleTop(Route.InvitePharmacist) },
-                    openPharmacistsList = { backStack.navigateSingleTop(Route.PharmacistsList) }
+                    openPharmacistsList = { backStack.navigateSingleTop(Route.PharmacistsList) },
+                    openPersonalInfo = { backStack.navigateSingleTop(Route.PersonalInfo) }
                 )
             }
             entry<Route.OrderDetails> { route ->
@@ -176,6 +177,11 @@ fun RootNavDisplay() {
                 com.medsy.presentation.profile.pharmacists.PharmacistsListRoot(
                     navigateBack = { backStack.removeLastOrNull() },
                     navigateToInvitePharmacist = { backStack.navigateSingleTop(Route.InvitePharmacist) }
+                )
+            }
+            entry<Route.PersonalInfo> {
+                com.medsy.presentation.profile.personalinfo.PersonalInfoRoot(
+                    navigateBack = { backStack.removeLastOrNull() }
                 )
             }
         },

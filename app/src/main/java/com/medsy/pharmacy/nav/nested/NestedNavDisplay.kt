@@ -36,7 +36,8 @@ fun NestedNavDisplay(
     openLogin: () -> Unit,
     openOrderDetails: (String) -> Unit,
     openInvitePharmacist: () -> Unit,
-    openPharmacistsList: () -> Unit
+    openPharmacistsList: () -> Unit,
+    openPersonalInfo: () -> Unit
     ) {
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration {
@@ -109,7 +110,8 @@ fun NestedNavDisplay(
                     ProfileRoot(
                         openLogin = openLogin,
                         openInvitePharmacist = openInvitePharmacist,
-                        openPharmacistsList = openPharmacistsList
+                        openPharmacistsList = openPharmacistsList,
+                        openPersonalInfo = openPersonalInfo
                     ) 
                 }
             },

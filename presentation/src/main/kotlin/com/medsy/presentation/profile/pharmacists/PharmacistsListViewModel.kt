@@ -10,14 +10,49 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import com.medsy.domain.common.fold
+import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
+
 @HiltViewModel
-class PharmacistsListViewModel @Inject constructor() : ViewModel() {
+class PharmacistsListViewModel @Inject constructor(
+    private val getMyPharmacy: GetMyPharmacyUseCase
+) : ViewModel() {
 
     private val _state = MutableStateFlow(PharmacistsListState())
     val state = _state.asStateFlow()
 
     private val _effect = Channel<PharmacistsListUIEffect>()
     val effect = _effect.receiveAsFlow()
+
+    init {
+        loadPharmacists()
+    }
+
+    private fun loadPharmacists(forceRefresh: Boolean = false) {
+        viewModelScope.launch {
+            val loadingJob = launch {
+                kotlinx.coroutines.delay(100)
+                _state.value = _state.value.copy(isLoading = true, error = null)
+            }
+            val result = getMyPharmacy(forceRefresh)
+            loadingJob.cancel()
+            result.fold(
+                onSuccess = { pharmacy ->
+                    _state.value = _state.value.copy(
+                        isLoading = false,
+                        pharmacyName = pharmacy.name,
+                        pharmacists = pharmacy.pharmacists
+                    )
+                },
+                onError = { error ->
+                    _state.value = _state.value.copy(
+                        isLoading = false,
+                        error = error
+                    )
+                }
+            )
+        }
+    }
 
     fun onIntent(intent: PharmacistsListUIIntent) {
         when (intent) {
@@ -26,6 +61,9 @@ class PharmacistsListViewModel @Inject constructor() : ViewModel() {
             }
             PharmacistsListUIIntent.InvitePharmacist -> {
                 viewModelScope.launch { _effect.send(PharmacistsListUIEffect.NavigateToInvitePharmacist) }
+            }
+            PharmacistsListUIIntent.Refresh -> {
+                loadPharmacists(forceRefresh = true)
             }
         }
     }

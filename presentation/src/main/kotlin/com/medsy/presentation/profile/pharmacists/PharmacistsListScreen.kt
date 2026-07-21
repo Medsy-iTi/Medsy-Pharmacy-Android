@@ -60,6 +60,8 @@ import com.medsy.presentation.R
 import com.medsy.presentation.profile.components.PharmacyInfoCard
 import com.medsy.presentation.profile.pharmacists.components.PharmacistItem
 import com.medsy.presentation.profile.pharmacists.components.PharmacistOptionsBottomSheet
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import com.medsy.presentation.profile.components.ShimmerPharmacistsList
 
 @Composable
 fun PharmacistsListRoot(
@@ -116,20 +118,23 @@ fun PharmacistsListScreen(
             )
         }
     ) { paddingValues ->
-        Column(
+        PullToRefreshBox(
+            isRefreshing = state.isLoading,
+            onRefresh = { onIntent(PharmacistsListUIIntent.Refresh) },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 24.dp)
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp, vertical = 24.dp)
+            ) {
             // Pharmacy Info Card
             PharmacyInfoCard(
-                pharmacyName = "صيدلية النهضة",
-                rating = "4.8",
-                ratingsCountRes = R.string.profile_ratings_count,
-                verifiedTextRes = R.string.profile_verified_pharmacy,
-                onClick = {}
+                pharmacyName = state.pharmacyName,
+                pharmacyAddress = null // Or add address to state if available later
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -144,55 +149,55 @@ fun PharmacistsListScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Pharmacists List Box
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = Color.Transparent,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
-                        shape = RoundedCornerShape(12.dp)
-                    )
-            ) {
-                Column {
-                    // Pharmacist 1 (Manager)
-                    PharmacistItem(
-                        name = stringResource(R.string.profile_dummy_name),
-                        experience = stringResource(R.string.profile_dummy_experience),
-                        roleBadge = stringResource(R.string.pharmacists_list_manager),
-                        onClick = { /* navigate to profile */ },
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            if (state.isLoading && state.pharmacists.isEmpty()) {
+                ShimmerPharmacistsList()
+            } else if (state.pharmacists.isNotEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Color.Transparent,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .border(
+                            width = 1.dp,
+                            color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                ) {
+                    Column {
+                        state.pharmacists.forEachIndexed { index, pharmacist ->
+                            PharmacistItem(
+                                name = pharmacist.fullName,
+                                email = pharmacist.email,
+                                phoneNumber = pharmacist.phoneNumber,
+                                roleBadge = if (pharmacist.isAdmin) stringResource(R.string.pharmacists_list_manager) else null,
+                                onClick = { if (!pharmacist.isAdmin) selectedPharmacist = pharmacist.fullName },
+                                trailingIcon = {
+                                    if (pharmacist.isAdmin) {
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    } else {
+                                        Icon(
+                                            imageVector = Icons.Outlined.MoreVert,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
                             )
-                        }
-                    )
 
-                    HorizontalDivider(
-                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    // Pharmacist 2
-                    val name2 = stringResource(R.string.pharmacists_list_dummy_name_2)
-                    PharmacistItem(
-                        name = name2,
-                        experience = stringResource(R.string.pharmacists_list_dummy_experience_2),
-                        roleBadge = null,
-                        onClick = { selectedPharmacist = name2 },
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Outlined.MoreVert,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                            if (index < state.pharmacists.lastIndex) {
+                                HorizontalDivider(
+                                    color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                )
+                            }
                         }
-                    )
+                    }
                 }
             }
 
@@ -233,11 +238,13 @@ fun PharmacistsListScreen(
                 )
             }
         }
+        }
     }
 
     selectedPharmacist?.let { name ->
         PharmacistOptionsBottomSheet(
             pharmacistName = name,
+            pharmacyName = state.pharmacyName,
             onDismiss = { selectedPharmacist = null },
             onRemoveConfirmed = {
                 // Handle remove action

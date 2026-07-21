@@ -28,4 +28,9 @@ interface AuthApi {
     suspend fun login(
         @Body body: LoginRequestDto,
     ): Response<ApiResponse<AuthResponseDto>>
+
+    @POST("api/v1/auth/logout")
+    suspend fun logout(
+        @Body body: com.medsy.data.auth.remote.dto.LogoutRequestDto,
+    ): Response<ApiResponse<Any>>
 }

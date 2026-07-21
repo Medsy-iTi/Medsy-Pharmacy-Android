@@ -4,6 +4,7 @@ import com.medsy.data.auth.mapper.toDomain
 import com.medsy.data.auth.mapper.toDto
 import com.medsy.data.auth.remote.api.AuthApi
 import com.medsy.data.auth.remote.dto.LoginRequestDto
+import com.medsy.data.auth.remote.dto.LogoutRequestDto
 import com.medsy.data.auth.remote.dto.VerifyOtpRequestDto
 import com.medsy.data.remote.network.safeApiCall
 import com.medsy.data.remote.network.safeEmptyRestCall
@@ -37,4 +38,7 @@ class AuthRepositoryImpl @Inject constructor(
     ): MedsyResult<AuthSession, MedsyError.Remote> =
         safeApiCall { api.login(LoginRequestDto(email.trim(), password)) }
             .map { it.toDomain() }
+
+    override suspend fun logout(refreshToken: String): EmptyMedsyResult<MedsyError.Remote> =
+        safeEmptyRestCall { api.logout(LogoutRequestDto(refreshToken)) }
 }

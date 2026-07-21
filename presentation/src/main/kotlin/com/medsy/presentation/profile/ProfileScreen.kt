@@ -37,6 +37,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -59,9 +61,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.medsy.designsystem.ui.theme.MedsyTheme
 import com.medsy.domain.common.preferences.model.ThemeMode
 import com.medsy.presentation.R
+import com.medsy.presentation.profile.components.AvatarSelectionBottomSheet
 import com.medsy.presentation.profile.components.LanguageBottomSheet
+import com.medsy.presentation.profile.components.LogoutBottomSheet
+import com.medsy.presentation.profile.components.PharmacistHeaderCard
 import com.medsy.presentation.profile.components.PharmacyInfoCard
 import com.medsy.presentation.profile.components.ProfileItemRow
+import com.medsy.presentation.profile.components.ProfileSettingsSection
 import com.medsy.presentation.profile.components.ThemeBottomSheet
 
 @Composable
@@ -69,15 +75,18 @@ fun ProfileRoot(
     openLogin: () -> Unit,
     openInvitePharmacist: () -> Unit,
     openPharmacistsList: () -> Unit,
+    openPersonalInfo: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    
     LaunchedEffect(viewModel) {
         viewModel.effect.collect {
             when (it) {
                 ProfileUIEffect.OpenLogin -> openLogin()
                 ProfileUIEffect.OpenInvitePharmacist -> openInvitePharmacist()
                 ProfileUIEffect.OpenPharmacistsList -> openPharmacistsList()
+                ProfileUIEffect.OpenPersonalInfo -> openPersonalInfo()
             }
         }
     }
@@ -111,238 +120,26 @@ fun ProfileScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 24.dp)
         ) {
-          
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
-            ) {
-                Row(
-                    modifier = Modifier.padding(20.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_pharmacy),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(72.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.surfaceVariant),
-                        contentScale = ContentScale.Crop
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = stringResource(R.string.profile_dummy_name),
-                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Icon(
-                                imageVector = Icons.Filled.Verified,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = stringResource(R.string.profile_verified_pharmacist),
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = stringResource(R.string.profile_experience_years, stringResource(R.string.profile_dummy_experience)),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
-
+            PharmacistHeaderCard(
+                pharmacist = state.pharmacist,
+                isAvatarFemale = state.isAvatarFemale,
+                onAvatarClick = { onIntent(ProfileUIIntent.OpenAvatarSheet) }
+            )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // ─── Pharmacy info card ──────────────────────────────────────────
             PharmacyInfoCard(
-                pharmacyName = "صيدلية النهضة",
-                rating = "4.8",
-                ratingsCountRes = R.string.profile_ratings_count,
-                verifiedTextRes = R.string.profile_verified_pharmacy,
-                onClick = { /* View Pharmacy Details */ }
+                pharmacyName = state.pharmacy?.name ?: "",
+                pharmacyAddress = state.pharmacy?.address
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // ─── Settings & Logout Card ──────────────────────────────────────
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                border = cardBorder
-            ) {
-                Column {
-                    // Order status switch
-                    ProfileItemRow(
-                        icon = Icons.Outlined.Storefront,
-                        title = stringResource(R.string.profile_receiving_status),
-                        subtitle = null,
-                        showChevron = false,
-                        trailing = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            color = if (state.isReceivingOrders) {
-                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
-                                            } else {
-                                                if (isDark) Color.White.copy(alpha = 0.1f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)
-                                            },
-                                            shape = RoundedCornerShape(8.dp)
-                                        )
-                                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                                ) {
-                                    Text(
-                                        text = stringResource(
-                                            if (state.isReceivingOrders) R.string.profile_status_open
-                                            else R.string.profile_status_closed
-                                        ),
-                                        style = MaterialTheme.typography.labelSmall.copy(
-                                            fontWeight = FontWeight.Bold,
-                                            color = if (state.isReceivingOrders) {
-                                                MaterialTheme.colorScheme.primary
-                                            } else {
-                                                MaterialTheme.colorScheme.onSurfaceVariant
-                                            }
-                                        )
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Switch(
-                                    checked = state.isReceivingOrders,
-                                    onCheckedChange = { onIntent(ProfileUIIntent.ReceivingStatusChanged(it)) },
-                                    colors = SwitchDefaults.colors(
-                                        checkedThumbColor = Color.White,
-                                        checkedTrackColor = MaterialTheme.colorScheme.primary,
-                                        uncheckedThumbColor = if (isDark) Color.White else MaterialTheme.colorScheme.outline,
-                                        uncheckedTrackColor = if (isDark) Color.White.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surfaceVariant,
-                                        uncheckedBorderColor = if (isDark) Color.White.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline
-                                    )
-                                )
-                            }
-                        }
-                    )
-
-                    HorizontalDivider(
-                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    // Personal Info
-                    ProfileItemRow(
-                        icon = Icons.Outlined.PersonOutline,
-                        title = stringResource(R.string.profile_my_personal_info),
-                        subtitle = null,
-                        onClick = { onIntent(ProfileUIIntent.NavigateToPersonalInfo) }
-                    )
-
-                    HorizontalDivider(
-                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    // Pharmacists in Pharmacy
-                    ProfileItemRow(
-                        icon = Icons.Outlined.PeopleOutline,
-                        title = stringResource(R.string.profile_pharmacists_in_pharmacy),
-                        subtitle = stringResource(R.string.profile_pharmacists_count, stringResource(R.string.profile_dummy_pharmacist_count)),
-                        onClick = { onIntent(ProfileUIIntent.NavigateToPharmacistsList) }
-                    )
-
-                    HorizontalDivider(
-                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    // Invite Pharmacist
-                    ProfileItemRow(
-                        icon = Icons.Outlined.PersonAddAlt,
-                        title = stringResource(R.string.profile_invite_pharmacist),
-                        subtitle = null,
-                        onClick = { onIntent(ProfileUIIntent.NavigateToInvitePharmacist) }
-                    )
-
-                    HorizontalDivider(
-                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    // Edit Profile
-                    ProfileItemRow(
-                        icon = Icons.Outlined.EditNote,
-                        title = stringResource(R.string.profile_edit_profile),
-                        subtitle = null,
-                        onClick = { onIntent(ProfileUIIntent.NavigateToEditProfile) }
-                    )
-
-                    HorizontalDivider(
-                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    // Language Item
-                    ProfileItemRow(
-                        icon = Icons.Outlined.Language,
-                        title = stringResource(R.string.profile_language),
-                        subtitle = stringResource(
-                            if (androidx.appcompat.app.AppCompatDelegate.getApplicationLocales().toLanguageTags().contains("ar")) {
-                                R.string.profile_language_arabic
-                            } else {
-                                R.string.profile_language_english
-                            }
-                        ),
-                        onClick = { showLanguageSheet = true }
-                    )
-
-                    HorizontalDivider(
-                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    // Appearance Item (Outlined icon)
-                    ProfileItemRow(
-                        icon = Icons.Outlined.DarkMode,
-                        title = stringResource(R.string.profile_theme),
-                        subtitle = stringResource(
-                            when (state.themeMode) {
-                                ThemeMode.System -> R.string.profile_theme_system
-                                ThemeMode.Light -> R.string.profile_theme_light
-                                ThemeMode.Dark -> R.string.profile_theme_dark
-                            }
-                        ),
-                        onClick = { showThemeSheet = true }
-                    )
-
-                    HorizontalDivider(
-                        color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    // Logout Item
-                    ProfileItemRow(
-                        icon = Icons.AutoMirrored.Outlined.ExitToApp,
-                        title = stringResource(R.string.profile_logout),
-                        subtitle = null,
-                        iconTint = MaterialTheme.colorScheme.error,
-                        titleColor = MaterialTheme.colorScheme.error,
-                        onClick = { onIntent(ProfileUIIntent.Logout) }
-                    )
-                }
-            }
+            ProfileSettingsSection(
+                state = state,
+                onIntent = onIntent,
+                onShowLanguageSheet = { showLanguageSheet = true },
+                onShowThemeSheet = { showThemeSheet = true }
+            )
         }
     }
 
@@ -365,6 +162,24 @@ fun ProfileScreen(
                 onIntent(ProfileUIIntent.ThemeChanged(mode))
                 showThemeSheet = false
             }
+        )
+    }
+
+    if (state.isAvatarSheetOpen) {
+        AvatarSelectionBottomSheet(
+            isAvatarFemale = state.isAvatarFemale,
+            onDismiss = { onIntent(ProfileUIIntent.CloseAvatarSheet) },
+            onAvatarSelected = { isFemale ->
+                onIntent(ProfileUIIntent.ToggleAvatarGender(isFemale))
+                onIntent(ProfileUIIntent.CloseAvatarSheet)
+            }
+        )
+    }
+
+    if (state.showLogoutDialog) {
+        LogoutBottomSheet(
+            onDismiss = { onIntent(ProfileUIIntent.HideLogoutDialog) },
+            onLogoutConfirmed = { onIntent(ProfileUIIntent.Logout) }
         )
     }
 }

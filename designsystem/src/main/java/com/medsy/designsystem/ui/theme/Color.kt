@@ -56,8 +56,8 @@ internal val surfaceContainerHighestLight = Color(0xFFE2E7EF)
 
 
 // Dark theme
-internal val primaryDark = Color(0xFFB8C8FF)
-internal val onPrimaryDark = Color(0xFF002B73)
+internal val primaryDark = Color(0xFF1668FF) // Same as primaryLight
+internal val onPrimaryDark = Color(0xFFFFFFFF)
 internal val primaryContainerDark = Color(0xFF2B56B3)
 internal val onPrimaryContainerDark = Color(0xFFE5ECFF)
 

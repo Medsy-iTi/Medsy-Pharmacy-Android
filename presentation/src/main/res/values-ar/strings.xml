@@ -319,7 +319,24 @@
     <string name="pharmacist_options_view_profile">عرض الملف الشخصي</string>
     <string name="pharmacist_options_remove">إزالة من الصيدلية</string>
     <string name="pharmacist_options_remove_confirm_title">إزالة الصيدلي من الصيدلية؟</string>
-    <string name="pharmacist_options_remove_confirm_desc">سيتم إزالة د. سارة علي من صيدلية النهضة\nهل أنت متأكد من هذا الإجراء؟</string>
+    <string name="pharmacist_options_remove_confirm_desc">سيتم إزالة %1$s من صيدلية %2$s\nهل أنت متأكد من هذا الإجراء؟</string>
     <string name="pharmacist_options_cancel">إلغاء</string>
-    <string name="pharmacist_options_remove_action">إزالة</string>
+    <string name="pharmacist_options_remove_action">إزالة</string>    <string name="profile_gender_male">ذكر</string>
+    <string name="profile_gender_female">أنثى</string>
+
+    <string name="profile_personal_info_title">البيانات الشخصية</string>
+    <string name="profile_pharmacist_information">معلومات الصيدلي</string>
+    <string name="profile_first_name">الاسم الأول</string>
+    <string name="profile_last_name">الاسم الأخير</string>
+    <string name="profile_email_address">البريد الإلكتروني</string>
+    <string name="profile_national_id">الرقم القومي</string>
+    <string name="profile_home_address">عنوان السكن</string>
+    <string name="profile_date_of_birth">تاريخ الميلاد</string>
+    <string name="profile_not_provided">غير متوفر</string>
+    <string name="profile_save_changes">حفظ التغييرات</string>
+
+    <string name="dialog_ok">موافق</string>
+    <string name="dialog_cancel">إلغاء</string>
+    <string name="profile_logout_confirm_title">تسجيل الخروج</string>
+    <string name="profile_logout_confirm_desc">هل أنت متأكد من تسجيل الخروج؟</string>
 </resources>

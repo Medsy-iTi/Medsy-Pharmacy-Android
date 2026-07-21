@@ -24,9 +24,13 @@ class PharmacyRepositoryImpl @Inject constructor(
 ) : PharmacyRepository {
     private val createPharmacyAdapter = moshi.adapter(CreatePharmacyRequestDto::class.java)
 
-    override suspend fun getMyPharmacy(): MedsyResult<MyPharmacy, MedsyError> =
-        safeApiCall { api.getMyPharmacy() }.fold(
+    private var cachedPharmacy: MyPharmacy? = null
 
+    override suspend fun getMyPharmacy(forceRefresh: Boolean): MedsyResult<MyPharmacy, MedsyError> {
+        if (!forceRefresh && cachedPharmacy != null) {
+            return MedsyResult.Success(cachedPharmacy!!)
+        }
+        val result = safeApiCall { api.getMyPharmacy() }.fold(
             onSuccess = { MedsyResult.Success(it.toDomain()) },
             onError = { error: MedsyError ->
                 if (error is MedsyError.Remote.Http && error.statusCode == HTTP_NOT_FOUND) {
@@ -36,6 +40,11 @@ class PharmacyRepositoryImpl @Inject constructor(
                 }
             }
         )
+        if (result is MedsyResult.Success) {
+            cachedPharmacy = result.data
+        }
+        return result
+    }
 
     override suspend fun registerPharmacy(
         params: RegisterPharmacyParams,
