@@ -1,52 +1,33 @@
 package com.medsy.data.orders.repository
 
 import com.medsy.data.orders.datasource.OrdersRemoteDataSource
-import com.medsy.data.orders.model.OrderSummaryEntity
-import com.medsy.data.orders.model.toDomain
-import com.medsy.domain.orders.model.OrderDetails
-import com.medsy.domain.orders.model.OrderStatus
-import com.medsy.domain.orders.model.OrderSummary
-import com.medsy.domain.orders.model.PaymentMethod
+import com.medsy.domain.orders.model.OrderDetailsDomain
+import com.medsy.domain.orders.model.OrderPageDomain
 import com.medsy.domain.orders.repository.OrdersRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import toDomain
 import javax.inject.Inject
 
 class OrdersRepositoryImpl @Inject constructor(
     private val remoteDataSource: OrdersRemoteDataSource
 ) : OrdersRepository {
 
-    override fun getOrders(): Flow<List<OrderSummary>> {
-        return remoteDataSource.getOrdersStream().map { entities ->
-            entities.map { entity: OrderSummaryEntity ->
-                entity.toDomain()
-            }
+    override suspend fun getCurrentPharmacyRequests(
+        page: Int,
+        size: Int,
+        sort: List<String>?
+    ): Result<OrderPageDomain> {
+        return runCatching {
+            val response = remoteDataSource.getCurrentPharmacyRequests(page, size, sort)
+            response.toDomain()
         }
     }
 
-    override suspend fun getOrderDetails(orderId: String): OrderDetails {
-        val response = remoteDataSource.getOrderDetails(orderId)
-        return response.toDomain()
+    override suspend fun getOrderDetails(orderId: Long): Result<OrderDetailsDomain?> {
+        return runCatching {
+            val response = remoteDataSource.getCurrentPharmacyRequests(page = 0, size = 50, sort = null)
+            val matchedDto = response.content.find { it.id == orderId }
+            matchedDto?.toDomain()
+        }
     }
 }
 
-fun OrderSummaryEntity.toDomain(): OrderSummary {
-    return OrderSummary(
-        id = id,
-        minutesAgo = minutesAgo,
-        status = when (status) {
-            "NEW" -> OrderStatus.New
-            "IN_PROGRESS" -> OrderStatus.InProgress
-            else -> OrderStatus.New
-        },
-        customerName = customerName,
-        customerPhone = customerPhone,
-        customerAddress = customerAddress,
-        total = total,
-        paymentMethod = when (paymentMethod) {
-            "VISA" -> PaymentMethod.Visa
-            else -> PaymentMethod.Cash
-        },
-        paymentCardLastDigits = paymentCardLastDigits,
-    )
-}

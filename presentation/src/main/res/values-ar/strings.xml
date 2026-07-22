@@ -335,6 +335,8 @@
     <string name="profile_date_of_birth">تاريخ الميلاد</string>
     <string name="profile_not_provided">غير متوفر</string>
     <string name="profile_save_changes">حفظ التغييرات</string>
+    <string name="orders_filter_cancelled">الملغاة</string>
+    <string name="orders_filter_completed">المكتملة</string>
 
     <string name="dialog_ok">موافق</string>
     <string name="dialog_cancel">إلغاء</string>

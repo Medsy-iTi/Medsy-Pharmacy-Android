@@ -1,11 +1,12 @@
 package com.medsy.data.orders.datasource
 
-import com.medsy.data.orders.model.OrderDetailsResponse
-import com.medsy.data.orders.model.OrderSummaryEntity
-import kotlinx.coroutines.flow.Flow
+import com.medsy.data.orders.model.OrderDetailsDto
+import com.medsy.data.orders.model.OrderPageResponseDto
 
 interface OrdersRemoteDataSource {
-    fun getOrdersStream(): Flow<List<OrderSummaryEntity>>
-    suspend fun getOrderDetails(orderId: String): OrderDetailsResponse
-
+    suspend fun getCurrentPharmacyRequests(
+        page: Int,
+        size: Int,
+        sort: List<String>?
+    ): OrderPageResponseDto
 }

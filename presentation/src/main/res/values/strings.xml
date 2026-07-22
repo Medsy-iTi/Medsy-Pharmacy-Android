@@ -342,6 +342,8 @@
     <string name="profile_date_of_birth">Date of birth</string>
     <string name="profile_not_provided">Not provided</string>
     <string name="profile_save_changes">Save Changes</string>
+    <string name="orders_filter_cancelled">Cancelled</string>
+    <string name="orders_filter_completed">Completed</string>
 
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>

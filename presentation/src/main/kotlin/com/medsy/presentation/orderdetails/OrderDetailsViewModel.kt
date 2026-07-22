@@ -6,7 +6,7 @@ import com.medsy.domain.orders.usecase.GetOrderDetailsUseCase
 import com.medsy.presentation.R
 import com.medsy.presentation.orderdetails.model.Order
 import com.medsy.presentation.orderdetails.model.OrderMedicineItem
-import com.medsy.presentation.orderdetails.model.toPresentation
+import com.medsy.presentation.orderdetails.mapper.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -23,7 +23,7 @@ class OrderDetailsViewModel@Inject constructor(
     private val getOrderDetailsUseCase: GetOrderDetailsUseCase
     ) : ViewModel() {
 
-    private var loadedOrderId: String? = null
+    private var loadedOrderId: Long? = null
 
     private val _state = MutableStateFlow(OrderDetailsUIState())
     val state = _state
@@ -39,9 +39,10 @@ class OrderDetailsViewModel@Inject constructor(
     fun onIntent(intent: OrderDetailsUIIntent) {
         when (intent) {
             is OrderDetailsUIIntent.LoadOrder -> {
-                if (loadedOrderId != intent.orderId) {
-                    loadedOrderId = intent.orderId
-                    loadOrder(intent.orderId)
+                val idLong = intent.orderId
+                if (loadedOrderId != idLong) {
+                    loadedOrderId = idLong
+                    loadOrder(idLong)
                 }
             }
 
@@ -71,36 +72,35 @@ class OrderDetailsViewModel@Inject constructor(
         }
     }
 
-    private fun loadOrder(id: String) {
+    private fun loadOrder(id: Long) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            try {
-                val domainOrder = getOrderDetailsUseCase(id)
-
-                if (domainOrder != null) {
-                    val presentationOrder = domainOrder.toPresentation()
-
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            order = presentationOrder
-                        )
+            getOrderDetailsUseCase(id)
+                .onSuccess { domainOrder ->
+                    if (domainOrder != null) {
+                        val presentationOrder = domainOrder.toPresentation()
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                order = presentationOrder
+                            )
+                        }
+                    } else {
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                            )
+                        }
                     }
-                } else {
+                }
+                .onFailure { throwable ->
                     _state.update {
                         it.copy(
                             isLoading = false,
                         )
                     }
                 }
-            } catch (e: Exception) {
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                    )
-                }
-            }
         }
     }
 

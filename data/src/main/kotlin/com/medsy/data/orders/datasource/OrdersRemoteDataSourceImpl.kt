@@ -1,73 +1,26 @@
 package com.medsy.data.orders.datasource
 
-import com.medsy.data.orders.model.OrderDetailsResponse
-import com.medsy.data.orders.model.OrderItemResponse
-import com.medsy.data.orders.model.OrderSummaryEntity
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import com.medsy.data.orders.model.OrderDetailsDto
+import com.medsy.data.orders.model.OrderPageResponseDto
+import com.medsy.data.remote.api.ApiService
 import javax.inject.Inject
 
-class OrdersRemoteDataSourceImpl @Inject constructor() : OrdersRemoteDataSource {
-    override fun getOrdersStream(): Flow<List<OrderSummaryEntity>> = flow {
-        delay(300) // simulated data fetch
-        emit(
-            listOf(
-                OrderSummaryEntity(
-                    id = "1258",
-                    minutesAgo = 5,
-                    status = "NEW",
-                    customerName = "Omar Ramadan",
-                    customerPhone = "011 522 671 25",
-                    customerAddress = "Nile St, Maadi, Cairo",
-                    total = 165.0,
-                    paymentMethod = "CASH",
-                    paymentCardLastDigits = null,
-                ),
-                OrderSummaryEntity(
-                    id = "1257",
-                    minutesAgo = 15,
-                    status = "IN_PROGRESS",
-                    customerName = "Mennatallah Mahmoud",
-                    customerPhone = "010 9876 5432",
-                    customerAddress = "Nile St, Maadi",
-                    total = 230.0,
-                    paymentMethod = "VISA",
-                    paymentCardLastDigits = "3456",
-                ),
-            )
-        )
-    }
+class OrdersRemoteDataSourceImpl @Inject constructor(
+    private val apiService: ApiService
+) : OrdersRemoteDataSource {
 
-    override suspend fun getOrderDetails(orderId: String): OrderDetailsResponse {
-        delay(300) // simulated network delay
+    override suspend fun getCurrentPharmacyRequests(
+        page: Int,
+        size: Int,
+        sort: List<String>?
+    ): OrderPageResponseDto {
+        val response = apiService.getCurrentPharmacyRequests(page, size, sort)
+        val responseBody = response.body()
 
-        return OrderDetailsResponse(
-            id = orderId,
-            minutesAgo = 5,
-            status = "NEW",
-            customerName = "Omar Ramadan",
-            customerPhone = "011 522 671 25",
-            customerAddress = "Nile St, Maadi, Cairo",
-            total = 165.0,
-            paymentMethod = "CASH",
-            paymentCardLastDigits = null,
-            items = listOf(
-                OrderItemResponse(
-                    id = "item_1",
-                    name = "Panadol Extra",
-                    quantity = 2,
-                    price = 65.0,
-                    imageUrl = null
-                ),
-                OrderItemResponse(
-                    id = "item_2",
-                    name = "Vitamin C",
-                    quantity = 1,
-                    price = 35.0,
-                    imageUrl = null
-                )
-            )
-        )
+        if (response.isSuccessful && responseBody?.success == true) {
+            return responseBody.data ?: throw Exception("Pharmacy requests data is null")
+        } else {
+            throw Exception(responseBody?.message ?: "Failed to fetch current pharmacy requests")
+        }
     }
 }

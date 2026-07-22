@@ -4,6 +4,8 @@ enum class OrderStatus {
     New,
     InProgress,
     Delivered,
+    Cancelled,
+    Completed,
 }
 
 enum class PaymentMethod {
@@ -13,8 +15,8 @@ enum class PaymentMethod {
 }
 
 data class OrderSummary(
-    val id: String,
-    val minutesAgo: Int,
+    val id: Long,
+    val minutesAgo: String,
     val status: OrderStatus,
     val customerName: String,
     val customerPhone: String,
@@ -29,18 +31,32 @@ enum class OrderFilter {
     New,
     InProgress,
     Delivered,
+    Cancelled,
+    Completed,
 }
 
 private fun OrderStatus.toFilter(): OrderFilter = when (this) {
     OrderStatus.New -> OrderFilter.New
     OrderStatus.InProgress -> OrderFilter.InProgress
     OrderStatus.Delivered -> OrderFilter.Delivered
+    OrderStatus.Cancelled -> OrderFilter.Cancelled
+    OrderStatus.Completed -> OrderFilter.Completed
 }
 
-fun OrderSummary.matchesFilter(filter: OrderFilter): Boolean =
-    filter == OrderFilter.All || status.toFilter() == filter
 
-fun OrderSummary.matchesQuery(query: String): Boolean =
-    query.isBlank() ||
-        customerName.contains(query, ignoreCase = true) ||
-        id.contains(query, ignoreCase = true)
+fun OrderSummary.matchesFilter(filter: OrderFilter): Boolean {
+    return when (filter) {
+        OrderFilter.All -> true
+        OrderFilter.New -> this.status == OrderStatus.New
+        OrderFilter.InProgress -> this.status == OrderStatus.InProgress
+        OrderFilter.Completed -> this.status == OrderStatus.Completed
+        OrderFilter.Cancelled -> this.status == OrderStatus.Cancelled
+        OrderFilter.Delivered -> this.status == OrderStatus.Delivered
+    }
+}
+
+fun OrderSummary.matchesQuery(query: String): Boolean {
+    if (query.isBlank()) return true
+
+    return this.id.toString().contains(query, ignoreCase = true)
+}

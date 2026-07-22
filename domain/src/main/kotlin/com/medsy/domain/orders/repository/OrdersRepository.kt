@@ -1,10 +1,16 @@
 package com.medsy.domain.orders.repository
 
-import com.medsy.domain.orders.model.OrderDetails
-import com.medsy.domain.orders.model.OrderSummary
-import kotlinx.coroutines.flow.Flow
+import com.medsy.domain.orders.model.OrderDetailsDomain
+import com.medsy.domain.orders.model.OrderPageDomain
+
 
 interface OrdersRepository {
-    fun getOrders(): Flow<List<OrderSummary>>
-    suspend fun getOrderDetails(orderId: String): OrderDetails?
+
+    suspend fun getCurrentPharmacyRequests(
+        page: Int,
+        size: Int,
+        sort: List<String>?
+    ): Result<OrderPageDomain>
+
+    suspend fun getOrderDetails(orderId: Long): Result<OrderDetailsDomain?>
 }

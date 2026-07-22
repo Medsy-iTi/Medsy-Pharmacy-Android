@@ -40,6 +40,17 @@ fun OrderStatusBadge(
             MaterialTheme.extendedColors.neutralContent,
             R.string.orders_filter_delivered,
         )
+        OrderStatus.Cancelled -> Triple(
+            MaterialTheme.extendedColors.redContainer,
+            MaterialTheme.extendedColors.redContent,
+            R.string.orders_filter_cancelled,
+        )
+        OrderStatus.Completed -> Triple(
+            MaterialTheme.extendedColors.greenContainer,
+            MaterialTheme.extendedColors.greenContent,
+            R.string.orders_filter_completed,
+        )
+
     }
 
     Box(

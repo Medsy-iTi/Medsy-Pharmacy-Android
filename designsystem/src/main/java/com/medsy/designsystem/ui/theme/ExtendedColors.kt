@@ -20,7 +20,11 @@ data class ExtendedColors(
     val purpleContent: Color,
     val neutralContainer: Color,
     val neutralContent: Color,
-    val darkBlueColor: Color
+    val darkBlueColor: Color,
+    val redContainer: Color,
+    val redContent: Color,
+    val greenContainer: Color,
+    val greenContent: Color
 )
 
 internal val LocalExtendedColors = staticCompositionLocalOf {
@@ -45,6 +49,10 @@ internal val lightExtendedColors = ExtendedColors(
     neutralContainer = Color(0xFFF3F4F6),
     neutralContent = Color(0xFF6B7280),
     darkBlueColor = Color(0xFF010326),
+    redContainer = Color(0xFFFEE2E2),
+    redContent = Color(0xFFEF4444),
+    greenContainer = Color(0xFFDCFCE7),
+    greenContent = Color(0xFF22C55E),
 )
 
 internal val darkExtendedColors = ExtendedColors(
@@ -61,4 +69,8 @@ internal val darkExtendedColors = ExtendedColors(
     neutralContainer = Color(0xFF1F2937),
     neutralContent = Color(0xFF9CA3AF),
     darkBlueColor = Color(0xFF010326),
+    redContainer = Color(0xFF450A0A),
+    redContent = Color(0xFFF87171),
+    greenContainer = Color(0xFF064E3B),
+    greenContent = Color(0xFF4ADE80),
 )

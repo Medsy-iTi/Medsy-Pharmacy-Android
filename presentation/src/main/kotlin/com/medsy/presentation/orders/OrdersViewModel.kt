@@ -2,7 +2,8 @@ package com.medsy.presentation.orders
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.medsy.domain.orders.usecase.GetOrdersUseCase
+import com.medsy.domain.orders.model.OrderDetailsDomain
+import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -14,13 +15,9 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.medsy.domain.orders.model.OrderStatus as DomainOrderStatus
-import com.medsy.domain.orders.model.PaymentMethod as DomainPaymentMethod
-import com.medsy.domain.orders.model.OrderSummary as DomainOrderSummary
-
 @HiltViewModel
 class OrdersViewModel @Inject constructor(
-    private val getOrdersUseCase: GetOrdersUseCase
+    private val getCurrentPharmacyRequestsUseCase: GetCurrentPharmacyRequestsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(OrdersUIState())
@@ -62,51 +59,46 @@ class OrdersViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            getOrdersUseCase()
-                .catch { _ ->
-                    _state.update {
-                        it.copy(isLoading = false)
-                    }
-                }
-                .collect { domainOrders ->
-                    val uiOrders = domainOrders.map { it.toPresentation() }
+            // كمثال بنطلب الصفحة الأولى بـ size 10، وتقدر تربطها بالـ Pagination لاحقاً
+            val result = getCurrentPharmacyRequestsUseCase(page = 0, size = 10)
 
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            orders = uiOrders
-                        )
-                    }
+            result.onSuccess { orderPage ->
+                val uiOrders = orderPage.content.map { it.toPresentation() }
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        orders = uiOrders
+                    )
                 }
+            }.onFailure { exception ->
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                    )
+                }
+            }
         }
     }
-
     private fun sendEffect(effect: OrdersUIEffect) {
         viewModelScope.launch {
             mutableEffect.send(effect)
         }
     }
 }
-
-fun DomainOrderSummary.toPresentation(): OrderSummary {
+fun OrderDetailsDomain.toPresentation(): OrderSummary {
     return OrderSummary(
         id = id,
-        minutesAgo = minutesAgo,
+        minutesAgo = createdAt,
         status = when (status) {
-            DomainOrderStatus.New -> OrderStatus.New
-            DomainOrderStatus.InProgress -> OrderStatus.InProgress
-            DomainOrderStatus.Delivered -> OrderStatus.Delivered
+            "PENDING", "NEW" -> OrderStatus.New
+            "IN_PROGRESS" -> OrderStatus.InProgress
             else -> OrderStatus.New
         },
-        customerName = customerName,
-        customerPhone = customerPhone,
-        customerAddress = customerAddress,
-        total = total.toInt(),
-        paymentMethod = when (paymentMethod) {
-            DomainPaymentMethod.Cash -> PaymentMethod.Cash
-            DomainPaymentMethod.Visa -> PaymentMethod.Visa
-            else -> PaymentMethod.Cash
-        },
-        paymentCardLastDigits = paymentCardLastDigits,
+        customerName = "Customer #$customerId",
+        customerPhone = "",
+        customerAddress = deliveryAddress ?: "",
+        total = 0,
+        paymentMethod = PaymentMethod.Cash,
+        paymentCardLastDigits = null,
     )
 }

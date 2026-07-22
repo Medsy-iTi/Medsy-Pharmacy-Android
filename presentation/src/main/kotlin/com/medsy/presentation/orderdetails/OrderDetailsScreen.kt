@@ -33,7 +33,7 @@ import com.medsy.presentation.orderdetails.components.RequestedMedicinesSection
 
 @Composable
 fun OrderDetailsRoot(
-    orderId: String,
+    orderId: Long,
     onNavigateBack: () -> Unit,
     onDialPhoneNumber: (String) -> Unit,
     onOpenLocationOnMap: () -> Unit,

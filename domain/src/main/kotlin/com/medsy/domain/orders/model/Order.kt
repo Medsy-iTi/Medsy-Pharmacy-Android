@@ -1,26 +1,27 @@
 package com.medsy.domain.orders.model
 
-enum class OrderStatus {
-    New,
-    InProgress,
-    Completed,
-    Cancelled,
-    Delivered
-}
+data class OrderDetailsDomain(
+    val id: Long,
+    val customerId: Long,
+    val deliveryLatitude: Double?,
+    val deliveryLongitude: Double?,
+    val deliveryAddress: String?,
+    val status: String,
+    val createdAt: String,
+    val items: List<OrderItemDomain>
+)
 
-enum class PaymentMethod {
-    Cash,
-    Visa
-}
+data class OrderItemDomain(
+    val id: Long,
+    val productId: Long,
+    val quantity: Int
+)
 
-data class OrderSummary(
-    val id: String,
-    val minutesAgo: Int,
-    val status: OrderStatus,
-    val customerName: String,
-    val customerPhone: String,
-    val customerAddress: String,
-    val total: Double,
-    val paymentMethod: PaymentMethod,
-    val paymentCardLastDigits: String? = null,
+data class OrderPageDomain(
+    val content: List<OrderDetailsDomain>,
+    val pageNumber: Int,
+    val pageSize: Int,
+    val totalElements: Long,
+    val totalPages: Int,
+    val last: Boolean
 )

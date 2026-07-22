@@ -149,6 +149,8 @@ fun OrderCard(
                 )
 
                 OrderStatus.Delivered -> Unit
+                OrderStatus.Cancelled -> Unit
+                OrderStatus.Completed -> Unit
             }
         }
     }
