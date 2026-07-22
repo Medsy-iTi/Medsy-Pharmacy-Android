@@ -102,9 +102,9 @@ fun ProfileSettingsSection(
                             colors = SwitchDefaults.colors(
                                 checkedThumbColor = Color.White,
                                 checkedTrackColor = MaterialTheme.colorScheme.primary,
-                                uncheckedThumbColor = if (isDark) Color.White else MaterialTheme.colorScheme.outline,
-                                uncheckedTrackColor = if (isDark) Color.White.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surfaceVariant,
-                                uncheckedBorderColor = if (isDark) Color.White.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline
+                                uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                                uncheckedBorderColor = MaterialTheme.colorScheme.outline
                             )
                         )
                     }

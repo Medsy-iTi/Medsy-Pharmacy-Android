@@ -59,12 +59,9 @@ class PharmacistRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setPresence(onDuty: Boolean): MedsyResult<com.medsy.domain.pharmacist.model.PresenceStatus, MedsyError> {
-        val call = if (onDuty) {
-            { api.onDuty() }
-        } else {
-            { api.offDuty() }
-        }
-        return safeApiCall(call).map { dto ->
+        return safeApiCall {
+            if (onDuty) api.onDuty() else api.offDuty()
+        }.map { dto ->
             com.medsy.domain.pharmacist.model.PresenceStatus(
                 onDuty = dto.onDuty ?: false,
                 lastHeartbeatAt = dto.lastHeartbeatAt.orEmpty()
