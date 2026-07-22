@@ -23,8 +23,10 @@ import com.medsy.domain.common.fold
 import com.medsy.domain.common.MedsyError
 import com.medsy.domain.pharmacist.model.Pharmacist
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
+import com.medsy.domain.pharmacist.usecase.SetPharmacistPresenceUseCase
 import com.medsy.domain.pharmacy.model.MyPharmacy
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
+import android.util.Log
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -34,11 +36,13 @@ class ProfileViewModel @Inject constructor(
     private val logoutUseCase: LogoutUseCase,
     private val clearSession: ClearSessionUseCase,
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
+    private val setPharmacistPresence: SetPharmacistPresenceUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
 ) : ViewModel() {
 
     private val isReceivingOrdersFlow = MutableStateFlow(true)
     private val isLoadingFlow = MutableStateFlow(false)
+    private val isPresenceSwitchLoadingFlow = MutableStateFlow(false)
     private val pharmacistFlow = MutableStateFlow<Pharmacist?>(null)
     private val pharmacyFlow = MutableStateFlow<MyPharmacy?>(null)
     private val errorFlow = MutableStateFlow<MedsyError?>(null)
@@ -58,9 +62,10 @@ class ProfileViewModel @Inject constructor(
     private val uiFlagsFlow = combine(
         isLoggingOutFlow,
         isAvatarSheetOpenFlow,
-        showLogoutDialogFlow
-    ) { isLoggingOut, isAvatarSheetOpen, showLogoutDialog ->
-        UiFlags(isLoggingOut, isAvatarSheetOpen, showLogoutDialog)
+        showLogoutDialogFlow,
+        isPresenceSwitchLoadingFlow
+    ) { isLoggingOut, isAvatarSheetOpen, showLogoutDialog, isPresenceSwitchLoading ->
+        UiFlags(isLoggingOut, isAvatarSheetOpen, showLogoutDialog, isPresenceSwitchLoading)
     }
 
     val state = combine(
@@ -79,7 +84,8 @@ class ProfileViewModel @Inject constructor(
             isAvatarFemale = prefs.isAvatarFemale,
             isLoggingOut = uiFlags.isLoggingOut,
             isAvatarSheetOpen = uiFlags.isAvatarSheetOpen,
-            showLogoutDialog = uiFlags.showLogoutDialog
+            showLogoutDialog = uiFlags.showLogoutDialog,
+            isPresenceSwitchLoading = uiFlags.isPresenceSwitchLoading
         )
     }.stateIn(
         scope = viewModelScope,
@@ -133,8 +139,20 @@ class ProfileViewModel @Inject constructor(
                     LocaleListCompat.forLanguageTags(intent.languageTag),
                 )
             }
-            is ProfileUIIntent.ReceivingStatusChanged -> {
-                isReceivingOrdersFlow.value = intent.isReceiving
+            is ProfileUIIntent.ReceivingStatusChanged -> viewModelScope.launch {
+                isPresenceSwitchLoadingFlow.value = true
+                val result = setPharmacistPresence(intent.isReceiving)
+                result.fold(
+                    onSuccess = { status ->
+                        Log.d("PharmacistPresence", "Presence updated successfully: onDuty=${status.onDuty}, lastHeartbeatAt=${status.lastHeartbeatAt}")
+                        isReceivingOrdersFlow.value = status.onDuty
+                    },
+                    onError = { error ->
+                        Log.e("PharmacistPresence", "Failed to update presence: $error")
+                        // Revert is not necessary if we don't optimistically update it, it will just bounce back when recomposed
+                    }
+                )
+                isPresenceSwitchLoadingFlow.value = false
             }
             is ProfileUIIntent.OpenAvatarSheet -> {
                 isAvatarSheetOpenFlow.value = true
@@ -180,6 +198,7 @@ class ProfileViewModel @Inject constructor(
     private data class UiFlags(
         val isLoggingOut: Boolean,
         val isAvatarSheetOpen: Boolean,
-        val showLogoutDialog: Boolean
+        val showLogoutDialog: Boolean,
+        val isPresenceSwitchLoading: Boolean
     )
 }
