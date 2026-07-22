@@ -98,6 +98,7 @@ fun ProfileSettingsSection(
                         Switch(
                             checked = state.isReceivingOrders,
                             onCheckedChange = { onIntent(ProfileUIIntent.ReceivingStatusChanged(it)) },
+                            enabled = !state.isPresenceSwitchLoading,
                             colors = SwitchDefaults.colors(
                                 checkedThumbColor = Color.White,
                                 checkedTrackColor = MaterialTheme.colorScheme.primary,
