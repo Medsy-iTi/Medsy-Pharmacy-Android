@@ -3,6 +3,8 @@ package com.medsy.presentation.orderdetails
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medsy.presentation.R
+import com.medsy.presentation.orderdetails.model.Order
+import com.medsy.presentation.orderdetails.model.OrderMedicineItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -58,6 +60,10 @@ class OrderDetailsViewModel @Inject constructor() : ViewModel() {
                 sendEffect(OrderDetailsUIEffect.OpenCustomerChat)
 
             OrderDetailsUIIntent.AcceptOrderClicked -> acceptOrder()
+
+            is OrderDetailsUIIntent.PharmacistNotesChanged -> {
+                _state.update { it.copy(pharmacistNotes = intent.notes) }
+            }
         }
     }
 

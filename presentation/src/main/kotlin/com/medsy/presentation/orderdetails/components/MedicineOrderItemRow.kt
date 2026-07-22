@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.medsy.designsystem.ui.theme.extendedColors
 import com.medsy.presentation.R
-import com.medsy.presentation.orderdetails.OrderMedicineItem
+import com.medsy.presentation.orderdetails.model.OrderMedicineItem
 
 @Composable
 fun MedicineOrderItemRow(

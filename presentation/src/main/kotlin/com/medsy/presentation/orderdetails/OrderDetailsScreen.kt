@@ -29,6 +29,8 @@ import com.medsy.presentation.orderdetails.components.OrderActionButtons
 import com.medsy.presentation.orderdetails.components.OrderDetailsTopBar
 import com.medsy.presentation.orderdetails.components.OrderInfoCard
 import com.medsy.presentation.orderdetails.components.OrderTotalSummaryRow
+import com.medsy.presentation.orderdetails.components.PharmacistNotesSection
+import com.medsy.presentation.orderdetails.components.PrescriptionImageSection
 import com.medsy.presentation.orderdetails.components.RequestedMedicinesSection
 
 @Composable
@@ -130,12 +132,26 @@ fun OrderDetailsScreen(
                     modifier = Modifier.padding(top = 24.dp),
                 )
 
+                PrescriptionImageSection(
+                    imageUrl = order.prescriptionUrl,
+                    onImageClick = {},
+                    modifier = Modifier.padding(top = 24.dp),
+                )
+
                 if (!order.customerNotes.isNullOrBlank()) {
                     CustomerNotesSection(
                         notes = order.customerNotes,
                         modifier = Modifier.padding(top = 24.dp),
                     )
                 }
+
+                PharmacistNotesSection(
+                    notes = state.pharmacistNotes,
+                    onNotesChanged = { newNotes ->
+                        onIntent(OrderDetailsUIIntent.PharmacistNotesChanged(newNotes))
+                    },
+                    modifier = Modifier.padding(top = 24.dp),
+                )
 
                 OrderTotalSummaryRow(
                     total = order.total,

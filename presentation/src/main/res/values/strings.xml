@@ -165,4 +165,9 @@
     <string name="order_details_accepted_message">Order accepted</string>
     <string name="order_details_rejected_message">Order rejected</string>
     <string name="orders_view_sample_order">Sample Order</string>
+    <string name="pharmacist_notes_title">Notes for Customer</string>
+    <string name="pharmacist_notes_placeholder">Add any notes regarding alternatives, pricing, etc...</string>
+    <string name="prescription_section_title">Customer Prescription</string>
+    <string name="prescription_image_content_description">Customer prescription image</string>
+
 </resources>

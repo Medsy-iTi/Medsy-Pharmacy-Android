@@ -162,4 +162,8 @@
     <string name="order_details_accepted_message">تم قبول الطلب</string>
     <string name="order_details_rejected_message">تم رفض الطلب</string>
     <string name="orders_view_sample_order">طلب تجريبي</string>
+    <string name="pharmacist_notes_title">ملاحظات للعميل</string>
+    <string name="pharmacist_notes_placeholder">أضف أي ملاحظات بخصوص البدائل، الأسعار، أو غيرها...</string>
+    <string name="prescription_section_title">روشتة العميل</string>
+    <string name="prescription_image_content_description">صورة روشتة العميل</string>
 </resources>
