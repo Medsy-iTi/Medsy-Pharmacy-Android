@@ -1,7 +1,7 @@
 package com.medsy.data.di
 
-import com.medsy.data.orders.datasource.OrdersLocalDataSource
-import com.medsy.data.orders.datasource.OrdersLocalDataSourceImpl
+import com.medsy.data.orders.datasource.OrdersRemoteDataSource
+import com.medsy.data.orders.datasource.OrdersRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,6 +15,6 @@ abstract class LocalDataSourcesModule {
     @Binds
     @Singleton
     abstract fun bindOrdersLocalDataSource(
-        impl: OrdersLocalDataSourceImpl
-    ): OrdersLocalDataSource
+        impl: OrdersRemoteDataSourceImpl
+    ): OrdersRemoteDataSource
 }

@@ -1,7 +1,9 @@
-package com.medsy.data.repository
+package com.medsy.data.orders.repository
 
-import com.medsy.data.orders.datasource.OrdersLocalDataSource
+import com.medsy.data.orders.datasource.OrdersRemoteDataSource
 import com.medsy.data.orders.model.OrderSummaryEntity
+import com.medsy.data.orders.model.toDomain
+import com.medsy.domain.orders.model.OrderDetails
 import com.medsy.domain.orders.model.OrderStatus
 import com.medsy.domain.orders.model.OrderSummary
 import com.medsy.domain.orders.model.PaymentMethod
@@ -9,18 +11,22 @@ import com.medsy.domain.orders.repository.OrdersRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-import kotlin.collections.map
 
 class OrdersRepositoryImpl @Inject constructor(
-    private val localDataSource: OrdersLocalDataSource
+    private val remoteDataSource: OrdersRemoteDataSource
 ) : OrdersRepository {
 
     override fun getOrders(): Flow<List<OrderSummary>> {
-        return localDataSource.getOrdersStream().map { entities ->
+        return remoteDataSource.getOrdersStream().map { entities ->
             entities.map { entity: OrderSummaryEntity ->
                 entity.toDomain()
             }
         }
+    }
+
+    override suspend fun getOrderDetails(orderId: String): OrderDetails {
+        val response = remoteDataSource.getOrderDetails(orderId)
+        return response.toDomain()
     }
 }
 

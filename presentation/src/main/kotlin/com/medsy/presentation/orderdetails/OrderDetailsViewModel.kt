@@ -2,9 +2,11 @@ package com.medsy.presentation.orderdetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.medsy.domain.orders.usecase.GetOrderDetailsUseCase
 import com.medsy.presentation.R
 import com.medsy.presentation.orderdetails.model.Order
 import com.medsy.presentation.orderdetails.model.OrderMedicineItem
+import com.medsy.presentation.orderdetails.model.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -17,7 +19,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class OrderDetailsViewModel @Inject constructor() : ViewModel() {
+class OrderDetailsViewModel@Inject constructor(
+    private val getOrderDetailsUseCase: GetOrderDetailsUseCase
+    ) : ViewModel() {
 
     private var loadedOrderId: String? = null
 
@@ -70,46 +74,33 @@ class OrderDetailsViewModel @Inject constructor() : ViewModel() {
     private fun loadOrder(id: String) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            delay(300)
 
-            val order = Order(
-                id = id,
-                isNew = true,
-                minutesAgo = 5,
-                customerName = "Omar Ramadan",
-                customerPhone = "01152267125",
-                customerAddress = "Nile St, Maadi, Cairo",
-                items = listOf(
-                    OrderMedicineItem(
-                        id = "panadol-extra",
-                        name = "Panadol Extra",
-                        packInfo = "500 mg · 24 Tablets",
-                        quantity = 2,
-                        price = 68,
-                        imageUrl = "https://example.com/images/panadol_extra.png",
-                    ),
-                    OrderMedicineItem(
-                        id = "augmentin-1g",
-                        name = "Augmentin 1g",
-                        packInfo = "14 Tablets",
-                        quantity = 1,
-                        price = 120,
-                        imageUrl = "https://example.com/images/augmentin_1g.png",
-                    ),
-                    OrderMedicineItem(
-                        id = "vitamin-c-1000",
-                        name = "Vitamin C 1000mg",
-                        packInfo = "20 Effervescent Tablets",
-                        quantity = 1,
-                        price = 75,
-                        imageUrl = "https://example.com/images/vitamin_c_1000.png",
-                    ),
-                ),
-                customerNotes = "Please deliver the order after 5 PM.",
-                total = 263,
-            )
+            try {
+                val domainOrder = getOrderDetailsUseCase(id)
 
-            _state.update { it.copy(isLoading = false, order = order) }
+                if (domainOrder != null) {
+                    val presentationOrder = domainOrder.toPresentation()
+
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            order = presentationOrder
+                        )
+                    }
+                } else {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                    )
+                }
+            }
         }
     }
 

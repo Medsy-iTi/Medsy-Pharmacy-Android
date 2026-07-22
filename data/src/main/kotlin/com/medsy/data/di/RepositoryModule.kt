@@ -1,6 +1,6 @@
 package com.medsy.data.di
 
-import com.medsy.data.repository.OrdersRepositoryImpl
+import com.medsy.data.orders.repository.OrdersRepositoryImpl
 import com.medsy.domain.orders.repository.OrdersRepository
 import dagger.Binds
 import dagger.Module
