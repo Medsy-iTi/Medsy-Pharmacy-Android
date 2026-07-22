@@ -217,6 +217,7 @@
     <string name="orders_history">السجل</string>
     <string name="orders_active_empty">لم يتم ربط طلبات نشطة بعد.</string>
     <string name="orders_history_empty">لم يتم ربط طلبات مكتملة بعد.</string>
+    <string name="no_customer_notes">لا توجد ملاحظات من العميل</string>
 
     <string name="profile_title">الملف الشخصي</string>
     <string name="profile_supporting">إدارة إعدادات وبيانات الصيدلية.</string>

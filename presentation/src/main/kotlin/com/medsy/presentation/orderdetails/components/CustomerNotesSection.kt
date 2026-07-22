@@ -22,6 +22,7 @@ fun CustomerNotesSection(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
+
         Text(
             text = stringResource(R.string.order_details_customer_notes),
             style = MaterialTheme.typography.titleMedium,
@@ -39,14 +40,18 @@ fun CustomerNotesSection(
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
             ),
         ) {
-            if (notes != null) {
-                Text(
-                    text = notes,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(16.dp),
-                )
+            val displayText = if (notes.isNullOrBlank()) {
+                stringResource(R.string.no_customer_notes)
+            } else {
+                notes
             }
+
+            Text(
+                text = displayText,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(16.dp),
+            )
         }
     }
 }
