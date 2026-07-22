@@ -19,12 +19,13 @@ import com.medsy.pharmacy.nav.nested.NestedNavDisplay
 import com.medsy.presentation.auth.approval.ApprovalRoot
 import com.medsy.presentation.auth.approval.ApprovalScreenStatus
 import com.medsy.presentation.auth.login.LoginRoot
+import com.medsy.presentation.auth.nopharmacy.NoPharmacyRoot
+import com.medsy.presentation.auth.otp.OtpRoot
 import com.medsy.presentation.auth.register.RegistrationRoot
-import com.medsy.presentation.auth.verification.VerificationRoot
+import com.medsy.presentation.auth.registerpharmacy.PharmacyRegistrationRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
 import com.medsy.presentation.orderdetails.OrderDetailsRoot
 import com.medsy.presentation.splash.SplashRoot
-import com.medsy.presentation.splash.SplashUIEffect
 
 @Composable
 fun RootNavDisplay() {
@@ -67,6 +68,10 @@ fun RootNavDisplay() {
                     openOnBoarding = { replaceWith(Route.Onboarding) },
                     openLogin = { replaceWith(Route.Login) },
                     openHome = { replaceWith(Route.NestedNav) },
+                    openNoPharmacy = { replaceWith(Route.NoPharmacy) },
+                    openPendingApproval = { replaceWith(Route.PendingApproval) },
+                    openRejected = { replaceWith(Route.Rejected) },
+                    openSuspended = { replaceWith(Route.Suspended) },
                 )
             }
             entry<Route.Onboarding> {
@@ -75,16 +80,36 @@ fun RootNavDisplay() {
             entry<Route.Login> {
                 LoginRoot(
                     openHome = { replaceWith(Route.NestedNav) },
+                    openNoPharmacy = { replaceWith(Route.NoPharmacy) },
                     openRegistration = { backStack.navigateSingleTop(Route.Registration) },
+                )
+            }
+            entry<Route.NoPharmacy> {
+                NoPharmacyRoot(
+                    openPharmacyRegistration = {
+                        backStack.navigateSingleTop(Route.PharmacyRegistration)
+                    },
+                    openLogin = { replaceWith(Route.Login) },
                 )
             }
             entry<Route.Registration> {
                 RegistrationRoot(
-                    openVerification = { backStack.navigateSingleTop(Route.Verification) },
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToSignIn = { replaceWith(Route.Login) },
+                    onNavigateToOtp = { email ->
+                        backStack.navigateSingleTop(Route.OTPVerification(email))
+                    },
                 )
             }
-            entry<Route.Verification> {
-                VerificationRoot(
+            entry<Route.OTPVerification> { route ->
+                OtpRoot(
+                    email = route.email,
+                    onNavigateNoPharmacy = { replaceWith(Route.NoPharmacy) },
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                )
+            }
+            entry<Route.PharmacyRegistration> {
+                PharmacyRegistrationRoot(
                     openPendingApproval = { replaceWith(Route.PendingApproval) },
                 )
             }
@@ -113,6 +138,9 @@ fun RootNavDisplay() {
                     openOrderDetails = { orderId ->
                         backStack.navigateSingleTop(Route.OrderDetails(orderId))
                     },
+                    openInvitePharmacist = { backStack.navigateSingleTop(Route.InvitePharmacist) },
+                    openPharmacistsList = { backStack.navigateSingleTop(Route.PharmacistsList) },
+                    openPersonalInfo = { backStack.navigateSingleTop(Route.PersonalInfo) }
                 )
             }
             entry<Route.OrderDetails> { route ->
@@ -124,11 +152,38 @@ fun RootNavDisplay() {
                         val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
                         context.startActivity(intent)
                     },
-                    onOpenLocationOnMap = { /* TODO: pass real coordinates once the order model carries them */ },
-                    onOpenPaymentSummary = { /* TODO: navigate once a payment summary route exists */ },
-                    onOpenCustomerChat = { /* TODO: navigate once a customer chat route exists */ },
+                    onOpenLocationOnMap = { },
+                    onOpenPaymentSummary = { },
+                    onOpenCustomerChat = { },
+                )
+            }
+            entry<Route.InvitePharmacist> {
+                com.medsy.presentation.profile.invite.InvitePharmacistRoot(
+                    navigateBack = { backStack.removeLastOrNull() },
+                    navigateToInvitationSent = { backStack.navigateSingleTop(Route.InvitationSent) }
+                )
+            }
+            entry<Route.InvitationSent> {
+                com.medsy.presentation.profile.invitationsent.InvitationSentRoot(
+                    navigateBack = { backStack.removeLastOrNull() },
+                    returnToProfile = {
+                        while (backStack.isNotEmpty() && backStack.last() != Route.NestedNav) {
+                            backStack.removeLastOrNull()
+                        }
+                    }
+                )
+            }
+            entry<Route.PharmacistsList> {
+                com.medsy.presentation.profile.pharmacists.PharmacistsListRoot(
+                    navigateBack = { backStack.removeLastOrNull() },
+                    navigateToInvitePharmacist = { backStack.navigateSingleTop(Route.InvitePharmacist) }
+                )
+            }
+            entry<Route.PersonalInfo> {
+                com.medsy.presentation.profile.personalinfo.PersonalInfoRoot(
+                    navigateBack = { backStack.removeLastOrNull() }
                 )
             }
         },
-        )
+    )
 }

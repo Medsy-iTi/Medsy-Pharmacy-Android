@@ -50,6 +50,11 @@ class TokenStorage @Inject constructor(
         save(current.copy(accessToken = accessToken, refreshToken = refreshToken))
     }
 
+    fun updateApprovalStatus(status: PharmacyApprovalStatus) {
+        val current = mutableSession.value ?: return
+        save(current.copy(account = current.account.copy(approvalStatus = status)))
+    }
+
     fun clear() {
         preferences.edit { clear() }
         mutableSession.value = null

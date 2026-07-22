@@ -9,4 +9,5 @@ interface UserPreferencesRepository {
 
     suspend fun setThemeMode(themeMode: ThemeMode)
     suspend fun setOnboardingCompleted()
+    suspend fun setAvatarFemale(isFemale: Boolean)
 }

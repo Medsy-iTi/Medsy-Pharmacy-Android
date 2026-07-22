@@ -47,6 +47,10 @@ fun SplashRoot(
     openOnBoarding: () -> Unit,
     openLogin: () -> Unit,
     openHome: () -> Unit,
+    openNoPharmacy: () -> Unit,
+    openPendingApproval: () -> Unit,
+    openRejected: () -> Unit,
+    openSuspended: () -> Unit,
     viewModel: SplashViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(viewModel) {
@@ -54,16 +58,16 @@ fun SplashRoot(
             when (effect) {
                 SplashUIEffect.OpenHome -> openHome()
                 SplashUIEffect.OpenLogin -> openLogin()
+                SplashUIEffect.OpenNoPharmacy -> openNoPharmacy()
                 SplashUIEffect.OpenOnboarding -> openOnBoarding()
-                SplashUIEffect.OpenPendingApproval -> {}
-                SplashUIEffect.OpenRejected -> {}
-                SplashUIEffect.OpenSuspended -> {}
+                SplashUIEffect.OpenPendingApproval -> openPendingApproval()
+                SplashUIEffect.OpenRejected -> openRejected()
+                SplashUIEffect.OpenSuspended -> openSuspended()
             }
         }
     }
     SplashScreen()
 }
-
 @Composable
 fun SplashScreen() {
     val logoScale = remember { Animatable(0.55f) }
@@ -156,7 +160,7 @@ fun SplashScreen() {
                     text = stringResource(R.string.splash_app_name),
                     style = MaterialTheme.typography.displaySmall.copy(
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.extendedColors.blueContent,
+                        color = MaterialTheme.colorScheme.primary,
                         letterSpacing = (-0.5).sp
                     ),
                     textAlign = TextAlign.Center

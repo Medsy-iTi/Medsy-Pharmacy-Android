@@ -1,0 +1,39 @@
+package com.medsy.presentation.auth.register.components
+
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
+import com.medsy.designsystem.components.MedsyTextField
+
+@Composable
+fun AuthTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    labelRes: Int,
+    leadingIcon: ImageVector? = null,
+    modifier: Modifier = Modifier,
+    errorRes: Int? = null,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+) {
+    MedsyTextField(
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = { Text(stringResource(labelRes)) },
+        leadingIcon = if (leadingIcon != null) {
+            { Icon(imageVector = leadingIcon, contentDescription = null) }
+        } else null,
+        trailingIcon = trailingIcon,
+        visualTransformation = visualTransformation,
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        errorRes = errorRes,
+        modifier = modifier
+    )
+}

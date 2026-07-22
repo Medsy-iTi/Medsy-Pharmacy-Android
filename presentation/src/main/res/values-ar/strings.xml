@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">ميدزي للصيدليات</string>
     <string name="splash_app_name">ميدزي للصيدليات</string>
     <string name="splash_tagline">صيدليتك، بكل سهولة.</string>
     <string name="splash_logo_description">شعار ميدزي للصيدليات</string>
@@ -12,19 +13,91 @@
     <string name="onboarding_title_3">تابع كل طلب حتى اكتماله</string>
     <string name="onboarding_desc_3">حدّث حالة الطلب بضغطة واحدة، ويصل التحديث للمريض تلقائيًا في كل خطوة.</string>
     <string name="action_get_started">ابدأ الآن</string>
+    <string name="auth_documents_description">ارفع تراخيص الصيدلية والمستندات المهنية للتحقق من حسابك.</string>
+    <string name="registration_pharmacy_license">ترخيص الصيدلية</string>
+    <string name="registration_pharmacy_license_desc">صورة واضحة لترخيص الصيدلية الرسمي</string>
+    <string name="registration_identity_document">وثيقة الهوية</string>
+    <string name="registration_identity_document_desc">جواز السفر أو بطاقة الرقم القومي</string>
+    <string name="registration_tax_card">البطاقة الضريبية</string>
+    <string name="registration_tax_card_desc">وثيقة التعريف الضريبي الرسمية</string>
+    <string name="registration_address_placeholder">عنوان الصيدلية بالتفصيل</string>
     <string name="action_next">التالي</string>
     <string name="action_skip">تخطي</string>
 
-    <string name="auth_login_title">تسجيل دخول الصيدلية</string>
+    <string name="auth_register_provider_title">إنشاء حساب مقدم خدمة</string>
+    <string name="auth_register_provider_subtitle">أكمل خطوات التسجيل لتفعيل حسابك</string>
+    <string name="auth_step_personal_data">البيانات\nالشخصية</string>
+    <string name="auth_step_pharmacy_info">بيانات\nالصيدلية</string>
+    <string name="auth_section_pharmacy_info">بيانات الصيدلية</string>
+    <string name="auth_step_documents">المستندات</string>
+    <string name="auth_step_review">مراجعة</string>
+    <string name="auth_section_personal_data">البيانات الشخصية</string>
+    <string name="auth_first_name">الاسم الأول</string>
+    <string name="auth_last_name">اسم العائلة</string>
+    <string name="auth_confirm_password">تأكيد كلمة المرور</string>
+    <string name="auth_already_have_account">لديك حساب بالفعل؟</string>
+    <string name="content_desc_toggle_password_visibility">تبديل رؤية كلمة المرور</string>
+    <string name="content_desc_back">رجوع</string>
+    <string name="error_required_fields">يرجى ملء جميع الحقول المطلوبة</string>
+    <string name="error_phone_invalid">رقم هاتف غير صحيح</string>
+    <string name="auth_invalid_code">رمز تحقق غير صحيح</string>
+    <string name="error_network">لا يوجد اتصال بالإنترنت</string>
+    <string name="error_generic">حدث خطأ ما، يرجى المحاولة مرة أخرى</string>
+    <string name="error_phone_exists">رقم الهاتف مسجل بالفعل</string>
+    <string name="error_email_exists">البريد الإلكتروني مسجل بالفعل</string>
+    <string name="error_unauthorized">البريد الإلكتروني أو كلمة المرور غير صحيحة</string>
+    <string name="error_bad_request">طلب غير صالح</string>
+    <string name="error_forbidden">تم رفض الوصول</string>
+    <string name="error_not_found">المورد غير موجود</string>
+    <string name="error_conflict">خطأ في التعارض</string>
+    <string name="error_payload_too_large">حجم الملف كبير جداً</string>
+    <string name="error_too_many_requests">طلبات كثيرة جداً، يرجى الانتظار</string>
+    <string name="prescription_media_error">خطأ في الوصول إلى ملفات الميديا</string>
     <string name="auth_login_supporting">سجّل الدخول باستخدام حساب الصيدلية المسجل.</string>
+    <string name="auth_email">البريد الإلكتروني</string>
     <string name="auth_phone">رقم الهاتف</string>
     <string name="auth_password">كلمة المرور</string>
+    <string name="auth_show_password">إظهار كلمة المرور</string>
+    <string name="auth_hide_password">إخفاء كلمة المرور</string>
     <string name="auth_login_action">تسجيل الدخول</string>
-    <string name="auth_register_action">تسجيل صيدلية</string>
+    <string name="auth_register_action">انشاء حساب</string>
+    <string name="login_motto">استقبل الطلبات، أرسل العروض، وأدر الطلبات.</string>
+    <string name="login_account_type_hint">لحسابات الصيدليات المعتمدة</string>
+    <string name="login_forgot_password">هل نسيت كلمة المرور؟</string>
+    <string name="login_no_account_full">ليس لديك حساب صيدلية؟ %1$s</string>
+    <string name="auth_error_required_field">هذا الحقل مطلوب</string>
+    <string name="auth_error_password_min_6">يجب ألا تقل كلمة المرور عن 6 أحرف</string>
+    <string name="auth_error_invalid_credentials">البريد الإلكتروني أو كلمة المرور غير صحيحة</string>
+    <string name="auth_error_authentication_required">يرجى تسجيل الدخول مرة أخرى</string>
+    <string name="auth_error_pharmacists_only">هذا التطبيق مخصص لحسابات الصيادلة فقط</string>
+    <string name="auth_error_invalid_phone">أدخل رقم هاتف صحيح</string>
+    <string name="auth_error_invalid_otp">أدخل رمز تحقق صحيح</string>
     <string name="auth_placeholder_notice">هذه واجهة مؤقتة قابلة للتنقل. ستتم إضافة الاتصال بالخادم بعد تثبيت عقد واجهة الصيدليات.</string>
 
+    <string name="no_pharmacy_title">لا توجد صيدلية مرتبطة</string>
+    <string name="no_pharmacy_supporting">حساب الصيدلي هذا غير مرتبط بأي صيدلية حتى الآن.</string>
+    <string name="no_pharmacy_owner_invite">سجّل صيدلية جديدة، أو اطلب من مالك الصيدلية أو مسؤولها دعوتك باستخدام بريد هذا الحساب.</string>
+    <string name="no_pharmacy_back_to_login">العودة إلى تسجيل الدخول</string>
+    <string name="no_pharmacy_animation_content_desc">صيادلة يراجعون طلب حساب صيدلية</string>
+    <string name="no_pharmacy_register_pharmacy">تسجيل صيدلية</string>
+    <string name="no_pharmacy_register_title">سجّل صيدليتك</string>
+    <string name="no_pharmacy_register_body">أنشئ ملف الصيدلية، وأضف موقعها على الخريطة، وارفع ملف الترخيص PDF للمراجعة.</string>
+    <string name="no_pharmacy_invite_title">تعمل بالفعل في صيدلية؟</string>
+    <string name="no_pharmacy_invite_body">اطلب من مالك الصيدلية أو المسؤول دعوتك باستخدام البريد الإلكتروني لهذا الحساب.</string>
+    <string name="no_pharmacy_review_title">يبدأ الوصول بعد المراجعة</string>
+    <string name="no_pharmacy_review_body">سيُبقي ميدزي الطلبات مخفية حتى تصبح حالة ربط الصيدلية والموافقة جاهزة.</string>
+
+    <string name="error_no_internet">لا يوجد اتصال بالإنترنت</string>
+    <string name="error_request_timeout">انتهت مهلة الطلب. حاول مرة أخرى.</string>
+    <string name="error_serialization">تعذر قراءة استجابة الخادم</string>
+    <string name="error_empty_response">أعاد الخادم استجابة فارغة</string>
+    <string name="error_server">حدث خطأ في الخادم</string>
+    <string name="error_unknown">حدث خطأ ما</string>
+    <string name="error_invalid_location">أدخل موقعًا صحيحًا</string>
+    <string name="error_invalid_document">اختر مستندًا صحيحًا</string>
+
     <string name="registration_title">سجّل صيدليتك</string>
-    <string name="registration_supporting">أدخل بيانات الصيدلية ومستندات التحقق المطلوبة لموافقة الإدارة.</string>
+    <string name="registration_supporting">أدخل بيانات الصيدلية والتحقق المطلوبة لموافقة الإدارة.</string>
     <string name="registration_pharmacy_name">اسم الصيدلية</string>
     <string name="registration_license_number">رقم الترخيص</string>
     <string name="registration_phone">رقم الهاتف</string>
@@ -34,6 +107,37 @@
     <string name="registration_documents">مستندات التحقق — واجهة مؤقتة</string>
     <string name="registration_continue">المتابعة إلى التحقق</string>
 
+    <string name="pharmacy_registration_title">سجّل صيدليتك</string>
+    <string name="pharmacy_registration_supporting">أضف بيانات الصيدلية، واختر موقعها على الخريطة، وارفع ملف الترخيص PDF للمراجعة.</string>
+    <string name="pharmacy_registration_pharmacy_name">اسم الصيدلية</string>
+    <string name="pharmacy_registration_phone">رقم الهاتف</string>
+    <string name="pharmacy_registration_address">عنوان الصيدلية</string>
+    <string name="pharmacy_registration_submit">إرسال للمراجعة</string>
+    <string name="pharmacy_registration_badge">ملف الترخيص PDF مطلوب قبل التفعيل</string>
+    <string name="pharmacy_registration_map_title">موقع الصيدلية على الخريطة</string>
+    <string name="pharmacy_registration_map_hint">حرّك الخريطة حتى يكون الدبوس فوق مدخل الصيدلية، ثم أكّد الموقع.</string>
+    <string name="pharmacy_registration_map_expand">تكبير الخريطة</string>
+    <string name="pharmacy_registration_map_use_pin">استخدام هذا الموقع</string>
+    <string name="pharmacy_registration_map_permission_denied">لم يتم منح إذن الموقع، لذلك تبدأ الخريطة من القاهرة. حرّك الدبوس يدويًا.</string>
+    <string name="pharmacy_registration_location_selected">تم الاختيار: %1$.5f، %2$.5f</string>
+    <string name="pharmacy_registration_license_pdf_title">ملف ترخيص الصيدلية PDF</string>
+    <string name="pharmacy_registration_license_pdf_limit">PDF فقط، بحد أقصى 1 ميجابايت.</string>
+    <string name="pharmacy_registration_select_license">رفع ملف الترخيص PDF</string>
+    <string name="pharmacy_registration_replace_license">استبدال ملف الترخيص PDF</string>
+    <string name="pharmacy_registration_license_selected">تم اختيار %1$s · %2$d كيلوبايت</string>
+    <string name="pharmacy_registration_error_location_required">اختر موقع الصيدلية من الخريطة</string>
+    <string name="pharmacy_registration_error_license_required">ارفع ملف ترخيص الصيدلية PDF</string>
+    <string name="pharmacy_registration_error_invalid_pdf">اختر ملف PDF صحيح</string>
+    <string name="pharmacy_registration_error_pdf_too_large">يجب أن يكون ملف الترخيص 1 ميجابايت أو أقل</string>
+    <string name="pharmacy_registration_error_read_pdf">تعذرت قراءة هذا الملف. اختر ملفًا آخر.</string>
+    <string name="pharmacy_registration_error_invalid_location">اختر موقع خريطة صحيحًا</string>
+    <string name="pharmacy_registration_error_submit_failed">تعذر تسجيل هذه الصيدلية. راجع البيانات أو تأكد أن حساب الصيدلي غير مرتبط بصيدلية بالفعل.</string>
+
+    <string name="otp_title">تحقق من بريدك الإلكتروني</string>
+    <string name="otp_subtitle">لقد أرسلنا رمز تحقق مكون من 6 أرقام إلى %1$s</string>
+    <string name="auth_verify_otp">التحقق والمتابعة</string>
+    <string name="auth_resend_cooldown">إعادة إرسال الرمز خلال %1$s</string>
+    <string name="auth_resend_otp">إعادة إرسال الرمز</string>
     <string name="verification_title">تحقق من وسيلة التواصل</string>
     <string name="verification_supporting">أدخل رمز التحقق المرسل إلى جهة تواصل الصيدلية المسجلة.</string>
     <string name="verification_code">رمز التحقق</string>
@@ -45,6 +149,19 @@
     <string name="approval_rejected_supporting">تم رفض تسجيل الصيدلية. راجع سبب الإدارة قبل إرسال البيانات المصححة.</string>
     <string name="approval_suspended_title">الحساب موقوف</string>
     <string name="approval_suspended_supporting">لا يمكن لهذه الصيدلية استقبال طلبات جديدة أثناء الإيقاف. يخضع الوصول للطلبات الحالية لصلاحيات الخادم.</string>
+    <string name="approval_verification_animation_desc">رسم متحرك لمراجعة التحقق</string>
+    <string name="approval_pending_status">قيد المراجعة</string>
+    <string name="approval_rejected_status">يحتاج إلى تصحيح</string>
+    <string name="approval_suspended_status">الوصول محدود</string>
+    <string name="approval_documents_title">مستندات التحقق</string>
+    <string name="approval_pending_documents_body">ترخيص الصيدلية والبيانات المرسلة موجودة الآن في قائمة مراجعة الإدارة.</string>
+    <string name="approval_rejected_documents_body">بعض البيانات المرسلة لم تجتز المراجعة. أرسل البيانات المصححة بعد مراجعة سبب الإدارة.</string>
+    <string name="approval_suspended_documents_body">ملف الصيدلية مقيّد حاليًا. تظل بيانات الصيدلية الحساسة محمية أثناء مراجعة الوصول.</string>
+    <string name="approval_pending_guidance_title">ماذا يحدث بعد ذلك؟</string>
+    <string name="approval_pending_guidance_body">بعد الموافقة، ستفتح Medsy طلبات المرضى القريبة وإدارة الطلبات لهذه الصيدلية.</string>
+    <string name="approval_support_guidance_title">هل تحتاج مساعدة؟</string>
+    <string name="approval_rejected_guidance_body">تواصل مع دعم Medsy أو مسؤول الصيدلية قبل إعادة إرسال المستندات.</string>
+    <string name="approval_suspended_guidance_body">تواصل مع دعم Medsy لمعرفة سبب الإيقاف والخطوات المطلوبة.</string>
     <string name="approval_back_to_login">العودة لتسجيل الدخول</string>
 
     <string name="home_role_pharmacist">صيدلي</string>
@@ -124,6 +241,8 @@
     <string name="profile_language_arabic">العربية</string>
     <string name="profile_language_english">English</string>
     <string name="profile_logout">تسجيل الخروج</string>
+    <string name="medsy_logo_content_desc">Medsy Logo\n</string>
+    <string name="auth_error_no_pharmacy">يجب أن يكون حسابك مرتبطًا بصيدلية</string>
 
     <!--  Orders — filters & search  -->
     <string name="orders_filter_all">جميع الطلبات</string>
@@ -162,6 +281,64 @@
     <string name="order_details_accepted_message">تم قبول الطلب</string>
     <string name="order_details_rejected_message">تم رفض الطلب</string>
     <string name="orders_view_sample_order">طلب تجريبي</string>
+    <!-- New Profile Strings -->
+    <string name="profile_header_title">الملف الشخصي</string>
+    <string name="profile_verified_pharmacist">صيدلي مرخص</string>
+    <string name="profile_experience_years">خبرة %1$s سنوات</string>
+    <string name="profile_my_personal_info">بياناتي الشخصية</string>
+    <string name="profile_pharmacists_in_pharmacy">الصيادلة في الصيدلية</string>
+    <string name="profile_pharmacists_count">%1$s صيدلي</string>
+    <string name="profile_invite_pharmacist">دعوة صيدلي</string>
+    <string name="profile_edit_profile">تعديل الملف الشخصي</string>
+    <string name="profile_dummy_name">د. أحمد محمد</string>
+    <string name="profile_dummy_experience">7</string>
+    <string name="profile_dummy_pharmacist_count">2</string>
+
+    <!-- Invite Pharmacist -->
+    <string name="invite_pharmacist_title">دعوة صيدلي للانضمام</string>
+    <string name="invite_pharmacist_subtitle">ادخل البريد الإلكتروني الخاص بالصيدلي لإرسال دعوة للانضمام إلى صيدليتك</string>
+    <string name="invite_pharmacist_email">البريد الإلكتروني</string>
+    <string name="invite_pharmacist_email_hint">example@email.com</string>
+    <string name="invite_pharmacist_send_action">إرسال الدعوة</string>
+
+    <!-- Invitation Sent -->
+    <string name="invitation_sent_title">تم إرسال الدعوة بنجاح!</string>
+    <string name="invitation_sent_subtitle">تم إرسال دعوة إلى البريد الإلكتروني وسيتم إشعاره عند قبول الدعوة</string>
+    <string name="invitation_sent_waiting">بانتظار قبول الدعوة</string>
+    <string name="invitation_sent_invite_another">دعوة صيدلي آخر</string>
+    <string name="invitation_sent_return_profile">العودة للملف الشخصي</string>
+
+    <!-- Pharmacists in Pharmacy -->
+    <string name="pharmacists_list_title">الصيادلة (%1$d)</string>
+    <string name="pharmacists_list_manager">مدير</string>
+    <string name="pharmacists_list_dummy_name_2">د. سارة علي</string>
+    <string name="pharmacists_list_dummy_experience_2">4</string>
+
+    <!-- Pharmacist Options -->
+    <string name="pharmacist_options_title">خيارات الصيدلي</string>
+    <string name="pharmacist_options_view_profile">عرض الملف الشخصي</string>
+    <string name="pharmacist_options_remove">إزالة من الصيدلية</string>
+    <string name="pharmacist_options_remove_confirm_title">إزالة الصيدلي من الصيدلية؟</string>
+    <string name="pharmacist_options_remove_confirm_desc">سيتم إزالة %1$s من صيدلية %2$s\nهل أنت متأكد من هذا الإجراء؟</string>
+    <string name="pharmacist_options_cancel">إلغاء</string>
+    <string name="pharmacist_options_remove_action">إزالة</string>    <string name="profile_gender_male">ذكر</string>
+    <string name="profile_gender_female">أنثى</string>
+
+    <string name="profile_personal_info_title">البيانات الشخصية</string>
+    <string name="profile_pharmacist_information">معلومات الصيدلي</string>
+    <string name="profile_first_name">الاسم الأول</string>
+    <string name="profile_last_name">الاسم الأخير</string>
+    <string name="profile_email_address">البريد الإلكتروني</string>
+    <string name="profile_national_id">الرقم القومي</string>
+    <string name="profile_home_address">عنوان السكن</string>
+    <string name="profile_date_of_birth">تاريخ الميلاد</string>
+    <string name="profile_not_provided">غير متوفر</string>
+    <string name="profile_save_changes">حفظ التغييرات</string>
+
+    <string name="dialog_ok">موافق</string>
+    <string name="dialog_cancel">إلغاء</string>
+    <string name="profile_logout_confirm_title">تسجيل الخروج</string>
+    <string name="profile_logout_confirm_desc">هل أنت متأكد من تسجيل الخروج؟</string>
     <string name="pharmacist_notes_title">ملاحظات للعميل</string>
     <string name="pharmacist_notes_placeholder">أضف أي ملاحظات بخصوص البدائل، الأسعار، أو غيرها...</string>
     <string name="prescription_section_title">روشتة العميل</string>

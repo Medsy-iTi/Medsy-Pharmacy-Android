@@ -20,11 +20,13 @@ class UserPreferencesRepositoryImpl @Inject constructor(
 
     override val preferences: Flow<UserPreferences> = kotlinx.coroutines.flow.combine(
         localDataSource.themeMode,
-        localDataSource.isOnboardingCompleted
-    ) { storedMode, isOnboardingCompleted ->
+        localDataSource.isOnboardingCompleted,
+        localDataSource.isAvatarFemale
+    ) { storedMode, isOnboardingCompleted, isAvatarFemale ->
         UserPreferences(
             themeMode = storedMode.toThemeMode(),
-            isOnboardingCompleted = isOnboardingCompleted
+            isOnboardingCompleted = isOnboardingCompleted,
+            isAvatarFemale = isAvatarFemale
         )
     }
 
@@ -34,6 +36,10 @@ class UserPreferencesRepositoryImpl @Inject constructor(
 
     override suspend fun setOnboardingCompleted() {
         localDataSource.setOnboardingCompleted()
+    }
+
+    override suspend fun setAvatarFemale(isFemale: Boolean) {
+        localDataSource.setAvatarFemale(isFemale)
     }
 
     private fun String?.toThemeMode(): ThemeMode = when (this) {

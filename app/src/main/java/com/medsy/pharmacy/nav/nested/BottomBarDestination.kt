@@ -1,6 +1,5 @@
 package com.medsy.pharmacy.nav.nested
 
-import com.medsy.pharmacy.R as AppR
 import com.medsy.pharmacy.nav.root.Route
 import com.medsy.presentation.R as PresentationR
 
@@ -23,7 +22,7 @@ enum class BottomBarDestination(
         route = Route.NestedNav.Orders,
     ),
     Profile(
-        title = AppR.string.nav_profile,
+        title = PresentationR.string.profile_title,
         icon = PresentationR.drawable.person_outlined,
         selectedIcon = PresentationR.drawable.person,
         route = Route.NestedNav.Profile,

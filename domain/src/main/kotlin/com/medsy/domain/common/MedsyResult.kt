@@ -14,6 +14,13 @@ inline fun <D, E : MedsyError, R> MedsyResult<D, E>.map(
     is MedsyResult.Error -> this
 }
 
+suspend inline fun <D, E : MedsyError, R> MedsyResult<D, E>.flatMap(
+    transform: suspend (D) -> MedsyResult<R, E>,
+): MedsyResult<R, E> = when (this) {
+    is MedsyResult.Success -> transform(data)
+    is MedsyResult.Error -> this
+}
+
 inline fun <D, E : MedsyError, R> MedsyResult<D, E>.fold(
     onSuccess: (D) -> R,
     onError: (E) -> R,

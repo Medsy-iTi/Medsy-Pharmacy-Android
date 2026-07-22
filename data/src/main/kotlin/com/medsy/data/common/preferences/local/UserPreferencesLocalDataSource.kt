@@ -20,6 +20,7 @@ class UserPreferencesLocalDataSource @Inject constructor(
     private companion object {
         val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
         val IS_ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("is_onboarding_completed")
+        val IS_AVATAR_FEMALE_KEY = booleanPreferencesKey("is_avatar_female")
     }
 
     val themeMode: Flow<String?> = dataStore.data
@@ -29,6 +30,10 @@ class UserPreferencesLocalDataSource @Inject constructor(
     val isOnboardingCompleted: Flow<Boolean> = dataStore.data
         .catch { emit(emptyPreferences()) }
         .map { preferences -> preferences[IS_ONBOARDING_COMPLETED_KEY] ?: false }
+
+    val isAvatarFemale: Flow<Boolean> = dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { preferences -> preferences[IS_AVATAR_FEMALE_KEY] ?: false }
 
     suspend fun setThemeMode(themeMode: String) {
         try {
@@ -47,6 +52,15 @@ class UserPreferencesLocalDataSource @Inject constructor(
             }
         } catch (_: IOException) {
             // Keep the last successfully stored preference when storage is unavailable.
+        }
+    }
+
+    suspend fun setAvatarFemale(isFemale: Boolean) {
+        try {
+            dataStore.edit { preferences ->
+                preferences[IS_AVATAR_FEMALE_KEY] = isFemale
+            }
+        } catch (_: IOException) {
         }
     }
 }
