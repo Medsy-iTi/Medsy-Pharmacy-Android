@@ -17,7 +17,9 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.net.HttpURLConnection.HTTP_NOT_FOUND
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class PharmacyRepositoryImpl @Inject constructor(
     private val api: PharmacyApi,
     moshi: Moshi,

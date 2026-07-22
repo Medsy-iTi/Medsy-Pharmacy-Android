@@ -24,7 +24,6 @@ import com.medsy.domain.common.MedsyError
 import com.medsy.domain.pharmacist.model.Pharmacist
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacist.usecase.SetPharmacistPresenceUseCase
-import com.medsy.domain.pharmacist.usecase.SendHeartbeatUseCase
 import com.medsy.domain.common.preferences.usecase.SetReceivingOrdersPreferenceUseCase
 import com.medsy.domain.pharmacy.model.MyPharmacy
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
@@ -41,12 +40,8 @@ class ProfileViewModel @Inject constructor(
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val setPharmacistPresence: SetPharmacistPresenceUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
-    private val sendHeartbeat: SendHeartbeatUseCase,
     private val setReceivingOrdersPreference: SetReceivingOrdersPreferenceUseCase,
 ) : ViewModel() {
-
-    private var heartbeatJob: kotlinx.coroutines.Job? = null
-
 
     private val isLoadingFlow = MutableStateFlow(false)
     private val isPresenceSwitchLoadingFlow = MutableStateFlow(false)
@@ -101,45 +96,6 @@ class ProfileViewModel @Inject constructor(
 
     init {
         loadProfileData()
-        observePresence()
-    }
-
-    private fun observePresence() {
-        viewModelScope.launch {
-            observePreferences().collect { prefs ->
-                if (prefs.isReceivingOrders) {
-                    startHeartbeat()
-                } else {
-                    stopHeartbeat()
-                }
-            }
-        }
-    }
-
-    private fun startHeartbeat() {
-        if (heartbeatJob?.isActive == true) return
-        heartbeatJob = viewModelScope.launch {
-            while (true) {
-                val result = sendHeartbeat()
-                result.fold(
-                    onSuccess = { status ->
-                        Log.d("PharmacistPresence", "Heartbeat sent: onDuty=${status.onDuty}")
-                        if (!status.onDuty) {
-                            setReceivingOrdersPreference(false)
-                        }
-                    },
-                    onError = { error ->
-                        Log.e("PharmacistPresence", "Heartbeat failed: $error")
-                    }
-                )
-                delay(60_000.milliseconds)
-            }
-        }
-    }
-
-    private fun stopHeartbeat() {
-        heartbeatJob?.cancel()
-        heartbeatJob = null
     }
 
     private fun loadProfileData(forceRefresh: Boolean = false) {

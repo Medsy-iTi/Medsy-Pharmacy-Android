@@ -11,7 +11,9 @@ import com.medsy.domain.common.map
 import com.medsy.domain.pharmacist.model.Pharmacist
 import com.medsy.domain.pharmacist.repository.PharmacistRepository
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class PharmacistRepositoryImpl @Inject constructor(
     private val api: PharmacistApi
 ) : PharmacistRepository {
