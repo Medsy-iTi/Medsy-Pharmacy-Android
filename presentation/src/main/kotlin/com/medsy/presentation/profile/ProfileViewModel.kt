@@ -149,7 +149,6 @@ class ProfileViewModel @Inject constructor(
                     },
                     onError = { error ->
                         Log.e("PharmacistPresence", "Failed to update presence: $error")
-                        // Revert is not necessary if we don't optimistically update it, it will just bounce back when recomposed
                     }
                 )
                 isPresenceSwitchLoadingFlow.value = false
