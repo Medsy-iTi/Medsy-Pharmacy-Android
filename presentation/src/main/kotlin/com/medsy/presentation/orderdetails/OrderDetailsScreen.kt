@@ -17,13 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.medsy.designsystem.components.MedsySnackbarHost
 import com.medsy.designsystem.components.showSuccess
-import com.medsy.designsystem.ui.theme.MedsyTheme
 import com.medsy.presentation.orderdetails.components.CustomerNotesSection
 import com.medsy.presentation.orderdetails.components.OrderActionButtons
 import com.medsy.presentation.orderdetails.components.OrderDetailsTopBar
@@ -138,12 +136,10 @@ fun OrderDetailsScreen(
                     modifier = Modifier.padding(top = 24.dp),
                 )
 
-                if (!order.customerNotes.isNullOrBlank()) {
                     CustomerNotesSection(
                         notes = order.customerNotes,
                         modifier = Modifier.padding(top = 24.dp),
                     )
-                }
 
                 PharmacistNotesSection(
                     notes = state.pharmacistNotes,

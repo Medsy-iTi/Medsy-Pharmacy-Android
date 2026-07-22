@@ -18,7 +18,7 @@ import com.medsy.presentation.R
 
 @Composable
 fun CustomerNotesSection(
-    notes: String,
+    notes: String?,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -39,12 +39,14 @@ fun CustomerNotesSection(
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
             ),
         ) {
-            Text(
-                text = notes,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(16.dp),
-            )
+            if (notes != null) {
+                Text(
+                    text = notes,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(16.dp),
+                )
+            }
         }
     }
 }

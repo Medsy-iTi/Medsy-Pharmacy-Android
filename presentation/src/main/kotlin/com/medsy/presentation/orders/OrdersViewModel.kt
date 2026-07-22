@@ -2,31 +2,30 @@ package com.medsy.presentation.orders
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.medsy.domain.orders.usecase.GetOrdersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.medsy.domain.orders.model.OrderStatus as DomainOrderStatus
+import com.medsy.domain.orders.model.PaymentMethod as DomainPaymentMethod
+import com.medsy.domain.orders.model.OrderSummary as DomainOrderSummary
 
 @HiltViewModel
-class OrdersViewModel @Inject constructor() : ViewModel() {
-
-    private var hasLoadedInitialData = false
+class OrdersViewModel @Inject constructor(
+    private val getOrdersUseCase: GetOrdersUseCase
+) : ViewModel() {
 
     private val _state = MutableStateFlow(OrdersUIState())
     val state = _state
-        .onStart {
-            if (!hasLoadedInitialData) {
-                loadOrders()
-                hasLoadedInitialData = true
-            }
-        }
+        .onStart { loadOrders() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000L),
@@ -51,8 +50,6 @@ class OrdersViewModel @Inject constructor() : ViewModel() {
             is OrdersUIIntent.OrderClicked ->
                 sendEffect(OrdersUIEffect.NavigateToOrderDetails(intent.orderId))
 
-            // Accept/Prepare open the order for now — the full action lives on
-            // Order Details, which already has Accept/Reject wired to the backend.
             is OrdersUIIntent.AcceptOrderClicked ->
                 sendEffect(OrdersUIEffect.NavigateToOrderDetails(intent.orderId))
 
@@ -64,33 +61,23 @@ class OrdersViewModel @Inject constructor() : ViewModel() {
     private fun loadOrders() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            delay(300) // simulated repository call
 
-            val orders = listOf(
-                OrderSummary(
-                    id = "1258",
-                    minutesAgo = 5,
-                    status = OrderStatus.New,
-                    customerName = "Omar Ramadan",
-                    customerPhone = "011 522 671 25",
-                    customerAddress = "Nile St, Maadi, Cairo",
-                    total = 165,
-                    paymentMethod = PaymentMethod.Cash,
-                ),
-                OrderSummary(
-                    id = "1257",
-                    minutesAgo = 15,
-                    status = OrderStatus.InProgress,
-                    customerName = "Mennatallah Mahmoud",
-                    customerPhone = "010 9876 5432",
-                    customerAddress = "Nile St, Maadi",
-                    total = 230,
-                    paymentMethod = PaymentMethod.Visa,
-                    paymentCardLastDigits = "3456",
-                ),
-            )
+            getOrdersUseCase()
+                .catch { _ ->
+                    _state.update {
+                        it.copy(isLoading = false)
+                    }
+                }
+                .collect { domainOrders ->
+                    val uiOrders = domainOrders.map { it.toPresentation() }
 
-            _state.update { it.copy(isLoading = false, orders = orders) }
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            orders = uiOrders
+                        )
+                    }
+                }
         }
     }
 
@@ -99,4 +86,27 @@ class OrdersViewModel @Inject constructor() : ViewModel() {
             mutableEffect.send(effect)
         }
     }
+}
+
+fun DomainOrderSummary.toPresentation(): OrderSummary {
+    return OrderSummary(
+        id = id,
+        minutesAgo = minutesAgo,
+        status = when (status) {
+            DomainOrderStatus.New -> OrderStatus.New
+            DomainOrderStatus.InProgress -> OrderStatus.InProgress
+            DomainOrderStatus.Delivered -> OrderStatus.Delivered
+            else -> OrderStatus.New
+        },
+        customerName = customerName,
+        customerPhone = customerPhone,
+        customerAddress = customerAddress,
+        total = total.toInt(),
+        paymentMethod = when (paymentMethod) {
+            DomainPaymentMethod.Cash -> PaymentMethod.Cash
+            DomainPaymentMethod.Visa -> PaymentMethod.Visa
+            else -> PaymentMethod.Cash
+        },
+        paymentCardLastDigits = paymentCardLastDigits,
+    )
 }
