@@ -68,4 +68,13 @@ class PharmacistRepositoryImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun sendHeartbeat(): MedsyResult<com.medsy.domain.pharmacist.model.PresenceStatus, MedsyError> {
+        return safeApiCall { api.heartbeat() }.map { dto ->
+            com.medsy.domain.pharmacist.model.PresenceStatus(
+                onDuty = dto.onDuty ?: false,
+                lastHeartbeatAt = dto.lastHeartbeatAt.orEmpty()
+            )
+        }
+    }
 }

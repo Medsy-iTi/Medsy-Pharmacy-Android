@@ -8,6 +8,7 @@ interface UserPreferencesRepository {
     val preferences: Flow<UserPreferences>
 
     suspend fun setThemeMode(themeMode: ThemeMode)
+    suspend fun setReceivingOrders(isReceivingOrders: Boolean)
     suspend fun setOnboardingCompleted()
     suspend fun setAvatarFemale(isFemale: Boolean)
 }

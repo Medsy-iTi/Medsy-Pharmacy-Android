@@ -24,23 +24,30 @@ import com.medsy.domain.common.MedsyError
 import com.medsy.domain.pharmacist.model.Pharmacist
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacist.usecase.SetPharmacistPresenceUseCase
+import com.medsy.domain.pharmacist.usecase.SendHeartbeatUseCase
+import com.medsy.domain.common.preferences.usecase.SetReceivingOrdersPreferenceUseCase
 import com.medsy.domain.pharmacy.model.MyPharmacy
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
 import android.util.Log
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    observePreferences: ObserveUserPreferencesUseCase,
+    private val observePreferences: ObserveUserPreferencesUseCase,
     private val setThemeMode: SetThemeModeUseCase,
     private val setAvatarGender: SetAvatarGenderUseCase,
     private val logoutUseCase: LogoutUseCase,
-    private val clearSession: ClearSessionUseCase,
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val setPharmacistPresence: SetPharmacistPresenceUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
+    private val sendHeartbeat: SendHeartbeatUseCase,
+    private val setReceivingOrdersPreference: SetReceivingOrdersPreferenceUseCase,
 ) : ViewModel() {
 
-    private val isReceivingOrdersFlow = MutableStateFlow(true)
+    private var heartbeatJob: kotlinx.coroutines.Job? = null
+
+
     private val isLoadingFlow = MutableStateFlow(false)
     private val isPresenceSwitchLoadingFlow = MutableStateFlow(false)
     private val pharmacistFlow = MutableStateFlow<Pharmacist?>(null)
@@ -70,13 +77,12 @@ class ProfileViewModel @Inject constructor(
 
     val state = combine(
         observePreferences(),
-        isReceivingOrdersFlow,
         uiFlagsFlow,
         dataFlow
-    ) { prefs, isReceiving, uiFlags, data ->
+    ) { prefs, uiFlags, data ->
         ProfileState(
             themeMode = prefs.themeMode,
-            isReceivingOrders = isReceiving,
+            isReceivingOrders = prefs.isReceivingOrders,
             isLoading = data.isLoading,
             pharmacist = data.pharmacist,
             pharmacy = data.pharmacy,
@@ -95,12 +101,51 @@ class ProfileViewModel @Inject constructor(
 
     init {
         loadProfileData()
+        observePresence()
+    }
+
+    private fun observePresence() {
+        viewModelScope.launch {
+            observePreferences().collect { prefs ->
+                if (prefs.isReceivingOrders) {
+                    startHeartbeat()
+                } else {
+                    stopHeartbeat()
+                }
+            }
+        }
+    }
+
+    private fun startHeartbeat() {
+        if (heartbeatJob?.isActive == true) return
+        heartbeatJob = viewModelScope.launch {
+            while (true) {
+                val result = sendHeartbeat()
+                result.fold(
+                    onSuccess = { status ->
+                        Log.d("PharmacistPresence", "Heartbeat sent: onDuty=${status.onDuty}")
+                        if (!status.onDuty) {
+                            setReceivingOrdersPreference(false)
+                        }
+                    },
+                    onError = { error ->
+                        Log.e("PharmacistPresence", "Heartbeat failed: $error")
+                    }
+                )
+                delay(60_000.milliseconds)
+            }
+        }
+    }
+
+    private fun stopHeartbeat() {
+        heartbeatJob?.cancel()
+        heartbeatJob = null
     }
 
     private fun loadProfileData(forceRefresh: Boolean = false) {
         viewModelScope.launch {
             val loadingJob = launch {
-                kotlinx.coroutines.delay(100)
+                delay(100.milliseconds)
                 isLoadingFlow.value = true
                 errorFlow.value = null
             }
@@ -145,7 +190,7 @@ class ProfileViewModel @Inject constructor(
                 result.fold(
                     onSuccess = { status ->
                         Log.d("PharmacistPresence", "Presence updated successfully: onDuty=${status.onDuty}, lastHeartbeatAt=${status.lastHeartbeatAt}")
-                        isReceivingOrdersFlow.value = status.onDuty
+                        setReceivingOrdersPreference(status.onDuty)
                     },
                     onError = { error ->
                         Log.e("PharmacistPresence", "Failed to update presence: $error")
