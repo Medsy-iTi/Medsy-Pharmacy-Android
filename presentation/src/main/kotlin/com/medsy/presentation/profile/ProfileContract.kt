@@ -16,7 +16,8 @@ data class ProfileState(
     val isAvatarFemale: Boolean = false,
     val isLoggingOut: Boolean = false,
     val isAvatarSheetOpen: Boolean = false,
-    val showLogoutDialog: Boolean = false
+    val showLogoutDialog: Boolean = false,
+    val isPresenceSwitchLoading: Boolean = false
 )
 
 sealed interface ProfileUIIntent {
