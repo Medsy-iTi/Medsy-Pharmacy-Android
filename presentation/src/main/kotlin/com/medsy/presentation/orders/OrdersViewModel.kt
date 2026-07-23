@@ -2,6 +2,8 @@ package com.medsy.presentation.orders
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.medsy.domain.common.onError
+import com.medsy.domain.common.onSuccess
 import com.medsy.domain.orders.model.OrderDetailsDomain
 import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -59,7 +61,6 @@ class OrdersViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            // كمثال بنطلب الصفحة الأولى بـ size 10، وتقدر تربطها بالـ Pagination لاحقاً
             val result = getCurrentPharmacyRequestsUseCase(page = 0, size = 10)
 
             result.onSuccess { orderPage ->
@@ -70,7 +71,7 @@ class OrdersViewModel @Inject constructor(
                         orders = uiOrders
                     )
                 }
-            }.onFailure { exception ->
+            }.onError {
                 _state.update {
                     it.copy(
                         isLoading = false,

@@ -2,6 +2,8 @@ package com.medsy.presentation.orderdetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.medsy.domain.common.onError
+import com.medsy.domain.common.onSuccess
 import com.medsy.domain.orders.usecase.GetOrderDetailsUseCase
 import com.medsy.presentation.R
 import com.medsy.presentation.orderdetails.model.Order
@@ -94,7 +96,7 @@ class OrderDetailsViewModel@Inject constructor(
                         }
                     }
                 }
-                .onFailure { throwable ->
+                .onError {
                     _state.update {
                         it.copy(
                             isLoading = false,

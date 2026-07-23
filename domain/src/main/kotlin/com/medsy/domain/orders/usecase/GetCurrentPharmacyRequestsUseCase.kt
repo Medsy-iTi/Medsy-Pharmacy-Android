@@ -1,5 +1,7 @@
 package com.medsy.domain.orders.usecase
 
+import com.medsy.domain.common.MedsyError
+import com.medsy.domain.common.MedsyResult
 import com.medsy.domain.orders.model.OrderPageDomain
 import com.medsy.domain.orders.repository.OrdersRepository
 import javax.inject.Inject
@@ -11,7 +13,6 @@ class GetCurrentPharmacyRequestsUseCase @Inject constructor(
         page: Int,
         size: Int,
         sort: List<String>? = null
-    ): Result<OrderPageDomain> {
-        return ordersRepository.getCurrentPharmacyRequests(page, size, sort)
-    }
+    ): MedsyResult<OrderPageDomain, MedsyError.Remote> =
+        ordersRepository.getCurrentPharmacyRequests(page, size, sort)
 }
