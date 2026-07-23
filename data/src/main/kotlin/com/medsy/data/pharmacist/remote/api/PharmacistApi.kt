@@ -39,4 +39,14 @@ interface PharmacistApi {
 
     @POST("api/v1/pharmacists/me/presence/heartbeat")
     suspend fun heartbeat(): Response<ApiResponse<PresenceDto>>
+
+    @POST("api/v1/pharmacists/me/devices/token")
+    suspend fun registerDeviceToken(
+        @Body request: com.medsy.data.pharmacist.remote.dto.TokenRequestDto
+    ): Response<ApiResponse<String>>
+
+    @DELETE("api/v1/pharmacists/me/devices/token")
+    suspend fun unregisterDeviceToken(
+        @retrofit2.http.Query("fcmToken") fcmToken: String
+    ): Response<ApiResponse<String>>
 }

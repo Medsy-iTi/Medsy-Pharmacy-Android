@@ -9,13 +9,20 @@ import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
 import com.medsy.domain.common.flatMap
 import com.medsy.domain.common.fold
+import com.medsy.domain.common.device.DeviceRepository
+import com.medsy.domain.pharmacist.repository.PharmacistRepository
 import com.medsy.domain.pharmacy.repository.PharmacyRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class LoginPharmacistUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val pharmacyRepository: PharmacyRepository,
     private val sessionRepository: SessionRepository,
+    private val pharmacistRepository: PharmacistRepository,
+    private val deviceRepository: DeviceRepository,
 ) {
     suspend operator fun invoke(
         email: String,
@@ -33,6 +40,8 @@ class LoginPharmacistUseCase @Inject constructor(
                     authSession,
                     PharmacyApprovalStatus.NoPharmacy,
                 )
+
+                registerDeviceTokenAsync()
 
                 return@flatMap resolvePharmacy(authSession)
             }
@@ -72,6 +81,15 @@ class LoginPharmacistUseCase @Inject constructor(
             )
     }
 
+    private fun registerDeviceTokenAsync() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val fcmToken = deviceRepository.getFcmToken()
+            if (fcmToken != null) {
+                val deviceId = deviceRepository.getDeviceId()
+                pharmacistRepository.registerDeviceToken(fcmToken, deviceId)
+            }
+        }
+    }
 }
 
 sealed interface PharmacistLoginOutcome {

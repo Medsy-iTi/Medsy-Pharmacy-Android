@@ -17,4 +17,6 @@ interface PharmacistRepository {
     suspend fun leavePharmacy(pharmacyId: Long): EmptyMedsyResult<MedsyError>
     suspend fun setPresence(onDuty: Boolean): MedsyResult<com.medsy.domain.pharmacist.model.PresenceStatus, MedsyError>
     suspend fun sendHeartbeat(): MedsyResult<com.medsy.domain.pharmacist.model.PresenceStatus, MedsyError>
+    suspend fun registerDeviceToken(fcmToken: String, deviceId: String): EmptyMedsyResult<MedsyError>
+    suspend fun unregisterDeviceToken(fcmToken: String): EmptyMedsyResult<MedsyError>
 }

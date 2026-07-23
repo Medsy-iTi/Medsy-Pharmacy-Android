@@ -79,4 +79,19 @@ class PharmacistRepositoryImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun registerDeviceToken(fcmToken: String, deviceId: String): EmptyMedsyResult<MedsyError> {
+        return safeEmptyRestCall { 
+            api.registerDeviceToken(
+                com.medsy.data.pharmacist.remote.dto.TokenRequestDto(
+                    fcmToken = fcmToken,
+                    deviceId = deviceId
+                )
+            ) 
+        }
+    }
+
+    override suspend fun unregisterDeviceToken(fcmToken: String): EmptyMedsyResult<MedsyError> {
+        return safeEmptyRestCall { api.unregisterDeviceToken(fcmToken) }
+    }
 }
