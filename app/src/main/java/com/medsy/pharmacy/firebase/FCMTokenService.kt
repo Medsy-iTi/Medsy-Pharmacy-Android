@@ -38,9 +38,44 @@ class FCMTokenService : FirebaseMessagingService() {
         super.onMessageReceived(message)
         Log.d("FCMTokenService", "Message received from: ${message.from}")
 
-        // Handle the incoming message here if needed.
-        // For standard notification messages, Firebase SDK handles showing the notification automatically
-        // when the app is in the background. When the app is in the foreground, we would handle it here.
+        val title = message.notification?.title ?: message.data["title"] ?: "طلب جديد!"
+        val body = message.notification?.body ?: message.data["body"] ?: "لديك طلب جديد ينتظر الموافقة"
+
+        showNotification(title, body)
+    }
+
+    private fun showNotification(title: String, body: String) {
+        val intent = android.content.Intent(this, Class.forName("com.medsy.pharmacy.MainActivity")).apply {
+            flags = android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP or android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        val pendingIntent = android.app.PendingIntent.getActivity(
+            this, 0, intent, android.app.PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val channelId = "orders_channel"
+        val manager = getSystemService(android.content.Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            val channel = android.app.NotificationChannel(
+                channelId,
+                "الطلبات الجديدة",
+                android.app.NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "إشعارات الطلبات الجديدة"
+            }
+            manager.createNotificationChannel(channel)
+        }
+
+        val notification = androidx.core.app.NotificationCompat.Builder(this, channelId)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setSmallIcon(com.medsy.designsystem.R.drawable.ic_pharmacy_snake)
+            .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        manager.notify(System.currentTimeMillis().toInt(), notification)
     }
 
     override fun onDestroy() {

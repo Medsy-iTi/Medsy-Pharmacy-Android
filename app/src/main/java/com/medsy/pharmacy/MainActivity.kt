@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             val state by viewModel.state.collectAsStateWithLifecycle()
+            
             MedsyTheme(darkTheme = isDarkTheme(state.themeMode)) {
                 RootNavDisplay()
             }

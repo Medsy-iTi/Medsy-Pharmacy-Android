@@ -59,6 +59,13 @@ fun ProfileSettingsSection(
         border = cardBorder
     ) {
         Column {
+            val context = androidx.compose.ui.platform.LocalContext.current
+            val launcher = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                androidx.activity.compose.rememberLauncherForActivityResult(
+                    androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+                ) {}
+            } else null
+
             // Order status switch
             ProfileItemRow(
                 icon = Icons.Outlined.Storefront,
@@ -97,7 +104,14 @@ fun ProfileSettingsSection(
                         Spacer(modifier = Modifier.width(8.dp))
                         Switch(
                             checked = state.isReceivingOrders,
-                            onCheckedChange = { onIntent(ProfileUIIntent.ReceivingStatusChanged(it)) },
+                            onCheckedChange = { isChecked ->
+                                if (isChecked && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                                    if (androidx.core.content.ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                                        launcher?.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                                    }
+                                }
+                                onIntent(ProfileUIIntent.ReceivingStatusChanged(isChecked))
+                            },
                             enabled = !state.isPresenceSwitchLoading,
                             colors = SwitchDefaults.colors(
                                 checkedThumbColor = Color.White,

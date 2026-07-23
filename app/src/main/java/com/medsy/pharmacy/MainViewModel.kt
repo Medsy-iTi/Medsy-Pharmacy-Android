@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 import android.content.Context
 import com.medsy.pharmacy.presence.PresenceForegroundService
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 
 data class MainState(
     val themeMode: ThemeMode? = null,
@@ -36,14 +38,23 @@ class MainViewModel @Inject constructor(
         observePresence()
     }
 
+    private var lastKnownPresenceState: Boolean? = null
+
     private fun observePresence() {
         viewModelScope.launch {
             observePreferences().collect { prefs ->
-                if (prefs.isReceivingOrders) {
+                val isReceiving = prefs.isReceivingOrders
+                if (lastKnownPresenceState == isReceiving) return@collect
+                
+                android.util.Log.d("MainViewModel", "observePresence state changed: $lastKnownPresenceState -> $isReceiving")
+                
+                if (isReceiving) {
                     PresenceForegroundService.start(context)
-                } else {
+                } else if (lastKnownPresenceState != null) {
                     PresenceForegroundService.stop(context)
                 }
+                
+                lastKnownPresenceState = isReceiving
             }
         }
     }

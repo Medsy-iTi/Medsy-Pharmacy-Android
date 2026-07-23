@@ -37,24 +37,40 @@ class PresenceForegroundService : Service() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(NOTIFICATION_ID, createNotification(), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+            } else {
+                startForeground(NOTIFICATION_ID, createNotification())
+            }
+        } catch (e: Exception) {
+            Log.e("PresenceService", "Failed to start foreground in onCreate", e)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            ACTION_START -> {
-                startForeground(NOTIFICATION_ID, createNotification())
-                startHeartbeatLoop()
-            }
-            ACTION_STOP -> {
-                stopHeartbeatLoop()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    stopForeground(STOP_FOREGROUND_REMOVE)
+        val action = intent?.action
+        if (action == null || action == ACTION_START) {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    startForeground(NOTIFICATION_ID, createNotification(), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
                 } else {
-                    @Suppress("DEPRECATION")
-                    stopForeground(true)
+                    startForeground(NOTIFICATION_ID, createNotification())
                 }
-                stopSelf()
+            } catch (e: Exception) {
+                Log.e("PresenceService", "Failed to start foreground in onStartCommand: ${e.message}", e)
             }
+            startHeartbeatLoop()
+        } else if (action == ACTION_STOP) {
+            Log.d("PresenceService", "ACTION_STOP received, stopping heartbeat loop")
+            stopHeartbeatLoop()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                stopForeground(STOP_FOREGROUND_REMOVE)
+            } else {
+                @Suppress("DEPRECATION")
+                stopForeground(true)
+            }
+            stopSelf()
         }
         return START_STICKY
     }
@@ -62,6 +78,7 @@ class PresenceForegroundService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onDestroy() {
+        Log.d("PresenceService", "onDestroy called")
         super.onDestroy()
         serviceScope.cancel()
     }
@@ -69,7 +86,9 @@ class PresenceForegroundService : Service() {
     private fun startHeartbeatLoop() {
         if (heartbeatJob?.isActive == true) return
         heartbeatJob = serviceScope.launch {
-            while (true) {
+            val startTime = System.currentTimeMillis()
+            val duration = 15 * 60 * 1000L
+            while (System.currentTimeMillis() - startTime < duration) {
                 val result = sendHeartbeat()
                 result.fold(
                     onSuccess = { status ->
@@ -84,6 +103,9 @@ class PresenceForegroundService : Service() {
                 )
                 delay(60_000)
             }
+            // 15 minutes are over, go offline
+            setReceivingOrdersPreference(false)
+            stopSelf()
         }
     }
 
@@ -112,13 +134,28 @@ class PresenceForegroundService : Service() {
             this, 0, intent, android.app.PendingIntent.FLAG_IMMUTABLE
         )
 
-        return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("أنت متاح الآن")
-            .setContentText("التطبيق يعمل في الخلفية لتلقي الطلبات")
+        val timeoutMillis = 15 * 60 * 1000L
+        val endTime = System.currentTimeMillis() + timeoutMillis
+
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("أنت متاح الآن لتلقي الطلبات")
+            .setContentText("التطبيق يعمل في الخلفية وسيغلق تلقائياً بعد 15 دقيقة")
             .setSmallIcon(com.medsy.designsystem.R.drawable.ic_pharmacy_snake)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
-            .build()
+            .setUsesChronometer(true)
+            .setWhen(endTime)
+            .setTimeoutAfter(timeoutMillis)
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText("أنت الآن متصل وتتلقى الطلبات من العملاء القريبين.\nهذه الحالة ستستمر لمدة 15 دقيقة وسيبدأ العداد العكسي بالأسفل.\nاضغط هنا لفتح التطبيق ومتابعة الطلبات.")
+            )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            builder.setChronometerCountDown(true)
+        }
+
+        return builder.build()
     }
 
     companion object {
