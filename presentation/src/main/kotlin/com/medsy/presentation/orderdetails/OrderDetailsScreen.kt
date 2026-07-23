@@ -17,23 +17,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.medsy.designsystem.components.MedsySnackbarHost
 import com.medsy.designsystem.components.showSuccess
-import com.medsy.designsystem.ui.theme.MedsyTheme
 import com.medsy.presentation.orderdetails.components.CustomerNotesSection
 import com.medsy.presentation.orderdetails.components.OrderActionButtons
 import com.medsy.presentation.orderdetails.components.OrderDetailsTopBar
 import com.medsy.presentation.orderdetails.components.OrderInfoCard
 import com.medsy.presentation.orderdetails.components.OrderTotalSummaryRow
+import com.medsy.presentation.orderdetails.components.PharmacistNotesSection
+import com.medsy.presentation.orderdetails.components.PrescriptionImageSection
 import com.medsy.presentation.orderdetails.components.RequestedMedicinesSection
 
 @Composable
 fun OrderDetailsRoot(
-    orderId: String,
+    orderId: Long,
     onNavigateBack: () -> Unit,
     onDialPhoneNumber: (String) -> Unit,
     onOpenLocationOnMap: () -> Unit,
@@ -130,12 +130,24 @@ fun OrderDetailsScreen(
                     modifier = Modifier.padding(top = 24.dp),
                 )
 
-                if (!order.customerNotes.isNullOrBlank()) {
+                PrescriptionImageSection(
+                    imageUrl = order.prescriptionUrl,
+                    onImageClick = {},
+                    modifier = Modifier.padding(top = 24.dp),
+                )
+
                     CustomerNotesSection(
                         notes = order.customerNotes,
                         modifier = Modifier.padding(top = 24.dp),
                     )
-                }
+
+                PharmacistNotesSection(
+                    notes = state.pharmacistNotes,
+                    onNotesChanged = { newNotes ->
+                        onIntent(OrderDetailsUIIntent.PharmacistNotesChanged(newNotes))
+                    },
+                    modifier = Modifier.padding(top = 24.dp),
+                )
 
                 OrderTotalSummaryRow(
                     total = order.total,

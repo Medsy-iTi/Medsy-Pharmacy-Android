@@ -64,7 +64,7 @@ fun OrderCard(
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = stringResource(R.string.order_details_minutes_ago, order.minutesAgo),
+                        text = order.minutesAgo,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -77,7 +77,6 @@ fun OrderCard(
                 }
             }
 
-            // Row الجديد الذي يجمع الاسم والـ Badge
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -149,6 +148,8 @@ fun OrderCard(
                 )
 
                 OrderStatus.Delivered -> Unit
+                OrderStatus.Cancelled -> Unit
+                OrderStatus.Completed -> Unit
             }
         }
     }

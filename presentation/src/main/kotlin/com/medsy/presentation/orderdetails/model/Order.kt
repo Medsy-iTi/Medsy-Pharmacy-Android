@@ -1,4 +1,5 @@
-package com.medsy.presentation.orderdetails
+package com.medsy.presentation.orderdetails.model
+
 
 data class OrderMedicineItem(
     val id: String,
@@ -19,4 +20,5 @@ data class Order(
     val items: List<OrderMedicineItem>,
     val customerNotes: String?,
     val total: Int,
+    val prescriptionUrl: String? = "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=1000&auto=format&fit=crop"
 )

@@ -217,6 +217,7 @@
     <string name="orders_history">السجل</string>
     <string name="orders_active_empty">لم يتم ربط طلبات نشطة بعد.</string>
     <string name="orders_history_empty">لم يتم ربط طلبات مكتملة بعد.</string>
+    <string name="no_customer_notes">لا توجد ملاحظات من العميل</string>
 
     <string name="profile_title">الملف الشخصي</string>
     <string name="profile_supporting">إدارة إعدادات وبيانات الصيدلية.</string>
@@ -334,9 +335,15 @@
     <string name="profile_date_of_birth">تاريخ الميلاد</string>
     <string name="profile_not_provided">غير متوفر</string>
     <string name="profile_save_changes">حفظ التغييرات</string>
+    <string name="orders_filter_cancelled">الملغاة</string>
+    <string name="orders_filter_completed">المكتملة</string>
 
     <string name="dialog_ok">موافق</string>
     <string name="dialog_cancel">إلغاء</string>
     <string name="profile_logout_confirm_title">تسجيل الخروج</string>
     <string name="profile_logout_confirm_desc">هل أنت متأكد من تسجيل الخروج؟</string>
+    <string name="pharmacist_notes_title">ملاحظات للعميل</string>
+    <string name="pharmacist_notes_placeholder">أضف أي ملاحظات بخصوص البدائل، الأسعار، أو غيرها...</string>
+    <string name="prescription_section_title">روشتة العميل</string>
+    <string name="prescription_image_content_description">صورة روشتة العميل</string>
 </resources>

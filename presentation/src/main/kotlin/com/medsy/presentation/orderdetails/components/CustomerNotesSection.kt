@@ -18,10 +18,11 @@ import com.medsy.presentation.R
 
 @Composable
 fun CustomerNotesSection(
-    notes: String,
+    notes: String?,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
+
         Text(
             text = stringResource(R.string.order_details_customer_notes),
             style = MaterialTheme.typography.titleMedium,
@@ -39,8 +40,14 @@ fun CustomerNotesSection(
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
             ),
         ) {
+            val displayText = if (notes.isNullOrBlank()) {
+                stringResource(R.string.no_customer_notes)
+            } else {
+                notes
+            }
+
             Text(
-                text = notes,
+                text = displayText,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(16.dp),

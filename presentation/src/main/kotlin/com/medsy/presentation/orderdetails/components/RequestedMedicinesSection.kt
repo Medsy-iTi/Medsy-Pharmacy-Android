@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.medsy.presentation.R
-import com.medsy.presentation.orderdetails.OrderMedicineItem
+import com.medsy.presentation.orderdetails.model.OrderMedicineItem
 
 @Composable
 fun RequestedMedicinesSection(

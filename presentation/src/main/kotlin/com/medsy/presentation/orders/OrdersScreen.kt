@@ -39,7 +39,7 @@ import com.medsy.presentation.orders.components.OrdersSearchBar
 
 @Composable
 fun OrdersRoot(
-    onOrderClick: (String) -> Unit,
+    onOrderClick: (Long) -> Unit,
     viewModel: OrdersViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
