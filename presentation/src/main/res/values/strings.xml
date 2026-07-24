@@ -86,6 +86,19 @@
     <string name="no_pharmacy_invite_body">Ask the pharmacy owner or admin to invite this pharmacist account using your email address.</string>
     <string name="no_pharmacy_review_title">Access starts after review</string>
     <string name="no_pharmacy_review_body">Medsy will keep requests hidden until the pharmacy assignment and approval state are ready.</string>
+    <string name="no_pharmacy_checking_invitations">Checking for pharmacy invitations…</string>
+    <string name="no_pharmacy_retry_invitations">Try again</string>
+    <string name="no_pharmacy_pending_invitations_title">You have pharmacy invitations</string>
+    <plurals name="no_pharmacy_pending_invitations_count">
+        <item quantity="one">%1$d pending invitation waiting for you</item>
+        <item quantity="other">%1$d pending invitations waiting for you</item>
+    </plurals>
+    <string name="no_pharmacy_open_invitations">Open pending invitations</string>
+    <string name="no_pharmacy_invitations_title">Pharmacy invitations</string>
+    <string name="no_pharmacy_invitations_supporting">Choose a pharmacy invitation to join its team.</string>
+    <string name="no_pharmacy_invitations_empty">You have no pending pharmacy invitations.</string>
+    <string name="no_pharmacy_invitation_card_supporting">You have been invited to join this pharmacy.</string>
+    <string name="no_pharmacy_accept_invitation">Accept invitation</string>
 
     <string name="error_no_internet">No internet connection</string>
     <string name="error_request_timeout">The request timed out. Please try again.</string>
