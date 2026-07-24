@@ -9,6 +9,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import com.medsy.pharmacy.R
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,6 +25,10 @@ class FCMTokenService : FirebaseMessagingService() {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
+    companion object {
+        const val ORDERS_CHANNEL_ID = "orders_channel"
+    }
+
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         Log.d("FCMTokenService", "New FCM Token received: $token")
@@ -38,8 +43,10 @@ class FCMTokenService : FirebaseMessagingService() {
         super.onMessageReceived(message)
         Log.d("FCMTokenService", "Message received from: ${message.from}")
 
-        val title = message.notification?.title ?: message.data["title"] ?: "طلب جديد!"
-        val body = message.notification?.body ?: message.data["body"] ?: "لديك طلب جديد ينتظر الموافقة"
+        val title = message.notification?.title
+            ?: message.data["title"]
+            ?: getString(R.string.notification_default_title)
+        val body = message.notification?.body ?: message.data["body"] ?: getString(R.string.notification_default_body)
 
         showNotification(title, body)
     }
@@ -52,21 +59,20 @@ class FCMTokenService : FirebaseMessagingService() {
             this, 0, intent, android.app.PendingIntent.FLAG_IMMUTABLE
         )
 
-        val channelId = "orders_channel"
         val manager = getSystemService(android.content.Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             val channel = android.app.NotificationChannel(
-                channelId,
-                "الطلبات الجديدة",
+                ORDERS_CHANNEL_ID,
+                getString(R.string.notification_channel_orders_name),
                 android.app.NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "إشعارات الطلبات الجديدة"
+                description = getString(R.string.notification_channel_orders_description)
             }
             manager.createNotificationChannel(channel)
         }
 
-        val notification = androidx.core.app.NotificationCompat.Builder(this, channelId)
+        val notification = androidx.core.app.NotificationCompat.Builder(this, ORDERS_CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(body)
             .setSmallIcon(com.medsy.designsystem.R.drawable.ic_pharmacy_snake)

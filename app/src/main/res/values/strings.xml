@@ -3,4 +3,12 @@
     <string name="nav_home">Home</string>
     <string name="nav_orders">Orders</string>
     <string name="nav_profile">Profile</string>
+
+    <!-- Notification Channel Strings -->
+    <string name="notification_channel_orders_name">New Orders</string>
+    <string name="notification_channel_orders_description">Notifications for receiving new order requests</string>
+
+    <!-- Default Notification Fallbacks -->
+    <string name="notification_default_title">New Order!</string>
+    <string name="notification_default_body">You have a new order waiting for approval.</string>
 </resources>

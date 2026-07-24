@@ -4,4 +4,12 @@
     <string name="nav_home">الرئيسية</string>
     <string name="nav_orders">الطلبات</string>
     <string name="nav_profile">الملف الشخصي</string>
+
+    <!-- Notification Channel Strings -->
+    <string name="notification_channel_orders_name">الطلبات الجديدة</string>
+    <string name="notification_channel_orders_description">إشعارات استقبال طلبات جديدة</string>
+
+    <!-- Default Notification Fallbacks -->
+    <string name="notification_default_title">طلب جديد!</string>
+    <string name="notification_default_body">لديك طلب جديد ينتظر الموافقة.</string>
 </resources>
