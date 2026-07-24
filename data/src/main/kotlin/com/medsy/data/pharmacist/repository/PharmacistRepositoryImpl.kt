@@ -11,7 +11,9 @@ import com.medsy.domain.common.map
 import com.medsy.domain.pharmacist.model.Pharmacist
 import com.medsy.domain.pharmacist.repository.PharmacistRepository
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class PharmacistRepositoryImpl @Inject constructor(
     private val api: PharmacistApi
 ) : PharmacistRepository {
@@ -56,5 +58,25 @@ class PharmacistRepositoryImpl @Inject constructor(
 
     override suspend fun leavePharmacy(pharmacyId: Long): EmptyMedsyResult<MedsyError> {
         return safeEmptyRestCall { api.leavePharmacy(pharmacyId) }
+    }
+
+    override suspend fun setPresence(onDuty: Boolean): MedsyResult<com.medsy.domain.pharmacist.model.PresenceStatus, MedsyError> {
+        return safeApiCall {
+            if (onDuty) api.onDuty() else api.offDuty()
+        }.map { dto ->
+            com.medsy.domain.pharmacist.model.PresenceStatus(
+                onDuty = dto.onDuty ?: false,
+                lastHeartbeatAt = dto.lastHeartbeatAt.orEmpty()
+            )
+        }
+    }
+
+    override suspend fun sendHeartbeat(): MedsyResult<com.medsy.domain.pharmacist.model.PresenceStatus, MedsyError> {
+        return safeApiCall { api.heartbeat() }.map { dto ->
+            com.medsy.domain.pharmacist.model.PresenceStatus(
+                onDuty = dto.onDuty ?: false,
+                lastHeartbeatAt = dto.lastHeartbeatAt.orEmpty()
+            )
+        }
     }
 }

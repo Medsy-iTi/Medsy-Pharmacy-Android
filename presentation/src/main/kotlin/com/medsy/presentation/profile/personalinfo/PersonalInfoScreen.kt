@@ -212,7 +212,7 @@ fun PersonalInfoScreen(
             )
 
             OutlinedTextField(
-                value = state.dob ?: "",
+                value = state.dob,
                 onValueChange = { },
                 label = { Text(stringResource(R.string.profile_date_of_birth)) },
                 leadingIcon = {

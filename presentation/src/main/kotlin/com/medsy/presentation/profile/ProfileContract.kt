@@ -8,7 +8,7 @@ import com.medsy.domain.pharmacy.model.MyPharmacy
 
 data class ProfileState(
     val themeMode: ThemeMode = ThemeMode.System,
-    val isReceivingOrders: Boolean = true,
+    val isReceivingOrders: Boolean = false,
     val isLoading: Boolean = false,
     val pharmacist: Pharmacist? = null,
     val pharmacy: MyPharmacy? = null,
@@ -16,7 +16,8 @@ data class ProfileState(
     val isAvatarFemale: Boolean = false,
     val isLoggingOut: Boolean = false,
     val isAvatarSheetOpen: Boolean = false,
-    val showLogoutDialog: Boolean = false
+    val showLogoutDialog: Boolean = false,
+    val isPresenceSwitchLoading: Boolean = false
 )
 
 sealed interface ProfileUIIntent {
