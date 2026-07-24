@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.medsy.domain.common.fold
+import com.medsy.domain.orders.model.OrderStatusConstants
+import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
 import javax.inject.Inject
@@ -17,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
-    private val getMyPharmacy: GetMyPharmacyUseCase
+    private val getMyPharmacy: GetMyPharmacyUseCase,
+    private val getCurrentPharmacyRequests: GetCurrentPharmacyRequestsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeUIState())
@@ -66,13 +69,11 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            val result = getMyPharmacy()
-
-            result.fold(
+            val pharmacyResult = getMyPharmacy()
+            pharmacyResult.fold(
                 onSuccess = { pharmacy ->
                     _state.update {
                         it.copy(
-                            isLoading = false,
                             pharmacyInfo = it.pharmacyInfo.copy(
                                 name = pharmacy.name,
                                 address = pharmacy.address ?: "",
@@ -81,36 +82,41 @@ class HomeViewModel @Inject constructor(
                                 closingTime = "11:00 مساءً",
                                 rating = 4.8,
                                 reviewsCount = 256
-                            ),
-                            notificationsCount = 3,
-                            stats = HomeStatsUI(
-                                newOrders = 23,
-                                inProgress = 18,
-                                deliveredToday = 45,
-                                totalSales = "3,240"
-                            ),
-                            latestOrders = listOf(
-                                HomeOrderUI(
-                                    "#1258",
-                                    "Ahlam Gomaa",
-                                    "المعادي، القاهرة",
-                                    " 10 Seconds",
-                                    HomeOrderStatus.NEW
-                                ),
-                                HomeOrderUI(
-                                    "#1257",
-                                    "Eman Gomaa",
-                                    "شارع النيل، المعادي",
-                                    " 15 Minutes",
-                                    HomeOrderStatus.PREPARING
-                                ),
-                                HomeOrderUI(
-                                    "#1256",
-                                    "Menna Mohamed",
-                                    "دار السلام، القاهرة",
-                                    "35 Minutes",
-                                    HomeOrderStatus.DELIVERED
-                                )
+                            )
+                        )
+                    }
+                },
+                onError = { /* Handle error */ }
+            )
+
+
+            val ordersResult = getCurrentPharmacyRequests(page = 0, size = 10)
+            ordersResult.fold(
+                onSuccess = { page ->
+                    val latestThree = page.content.take(3).map { order ->
+                        HomeOrderUI(
+                            id = "#${order.id}",
+                            customerName = "Customer #${order.customerId}",
+                            location = order.deliveryAddress ?: "No address",
+                            timeAgo = order.createdAt,
+                            status = when (order.status) {
+                                OrderStatusConstants.PENDING, OrderStatusConstants.NEW -> HomeOrderStatus.NEW
+                                OrderStatusConstants.IN_PROGRESS -> HomeOrderStatus.PREPARING
+                                OrderStatusConstants.DELIVERED -> HomeOrderStatus.DELIVERED
+                                else -> HomeOrderStatus.NEW
+                            }
+                        )
+                    }
+
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            latestOrders = latestThree,
+                            stats = it.stats.copy(
+                                newOrders = page.content.count {
+                                    it.status == OrderStatusConstants.PENDING || it.status == OrderStatusConstants.NEW
+                                },
+                                inProgress = page.content.count { it.status == OrderStatusConstants.IN_PROGRESS }
                             )
                         )
                     }

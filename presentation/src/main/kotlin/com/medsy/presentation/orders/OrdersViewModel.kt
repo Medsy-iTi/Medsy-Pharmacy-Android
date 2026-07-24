@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.medsy.domain.common.onError
 import com.medsy.domain.common.onSuccess
 import com.medsy.domain.orders.model.OrderDetailsDomain
+import com.medsy.domain.orders.model.OrderStatusConstants
 import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -91,8 +92,8 @@ fun OrderDetailsDomain.toPresentation(): OrderSummary {
         id = id,
         minutesAgo = createdAt,
         status = when (status) {
-            "PENDING", "NEW" -> OrderStatus.New
-            "IN_PROGRESS" -> OrderStatus.InProgress
+            OrderStatusConstants.PENDING, OrderStatusConstants.NEW -> OrderStatus.New
+            OrderStatusConstants.IN_PROGRESS -> OrderStatus.InProgress
             else -> OrderStatus.New
         },
         customerName = "Customer #$customerId",
