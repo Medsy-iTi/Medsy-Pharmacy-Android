@@ -4,71 +4,71 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medsy.domain.common.onError
 import com.medsy.domain.common.onSuccess
-import com.medsy.domain.orders.model.OrderDetailsDomain
+import com.medsy.domain.orders.model.PharmacyRequestDomain
 import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
 @HiltViewModel
-class OrdersViewModel @Inject constructor(
+class RequestsViewModel @Inject constructor(
     private val getCurrentPharmacyRequestsUseCase: GetCurrentPharmacyRequestsUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(OrdersUIState())
+    private val _state = MutableStateFlow(RequestsUIState())
     val state = _state
-        .onStart { loadOrders() }
+        .onStart { loadRequests() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = OrdersUIState(),
+            initialValue = RequestsUIState(),
         )
 
-    private val mutableEffect = Channel<OrdersUIEffect>(Channel.BUFFERED)
+    private val mutableEffect = Channel<RequestsUIEffect>(Channel.BUFFERED)
     val effect = mutableEffect.receiveAsFlow()
 
-    fun onIntent(intent: OrdersUIIntent) {
+    fun onIntent(intent: RequestsUIIntent) {
         when (intent) {
-            is OrdersUIIntent.SearchQueryChanged -> _state.update {
+            is RequestsUIIntent.SearchQueryChanged -> _state.update {
                 it.copy(searchQuery = intent.query)
             }
 
-            is OrdersUIIntent.FilterSelected -> _state.update {
+            is RequestsUIIntent.FilterSelected -> _state.update {
                 it.copy(selectedFilter = intent.filter)
             }
 
-            OrdersUIIntent.FilterIconClicked -> sendEffect(OrdersUIEffect.OpenFilters)
+            RequestsUIIntent.FilterIconClicked -> sendEffect(RequestsUIEffect.OpenFilters)
 
-            is OrdersUIIntent.OrderClicked ->
-                sendEffect(OrdersUIEffect.NavigateToOrderDetails(intent.orderId))
+            is RequestsUIIntent.RequestClicked ->
+                sendEffect(RequestsUIEffect.NavigateToRequestDetails(intent.requestId))
 
-            is OrdersUIIntent.AcceptOrderClicked ->
-                sendEffect(OrdersUIEffect.NavigateToOrderDetails(intent.orderId))
+            is RequestsUIIntent.AcceptRequestClicked ->
+                sendEffect(RequestsUIEffect.NavigateToRequestDetails(intent.requestId))
 
-            is OrdersUIIntent.PrepareOrderClicked ->
-                sendEffect(OrdersUIEffect.NavigateToOrderDetails(intent.orderId))
+            is RequestsUIIntent.PrepareRequestClicked ->
+                sendEffect(RequestsUIEffect.NavigateToRequestDetails(intent.requestId))
         }
     }
 
-    private fun loadOrders() {
+    private fun loadRequests() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
             val result = getCurrentPharmacyRequestsUseCase(page = 0, size = 10)
 
-            result.onSuccess { orderPage ->
-                val uiOrders = orderPage.content.map { it.toPresentation() }
+            result.onSuccess { requestPage ->
+                val uiRequests = requestPage.content.map { it.toPresentation() }
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        orders = uiOrders
+                        orders = uiRequests
                     )
                 }
             }.onError {
@@ -80,20 +80,26 @@ class OrdersViewModel @Inject constructor(
             }
         }
     }
-    private fun sendEffect(effect: OrdersUIEffect) {
+
+    private fun sendEffect(effect: RequestsUIEffect) {
         viewModelScope.launch {
             mutableEffect.send(effect)
         }
     }
 }
-fun OrderDetailsDomain.toPresentation(): OrderSummary {
-    return OrderSummary(
+
+fun PharmacyRequestDomain.toPresentation(): RequestSummary {
+    return RequestSummary(
         id = id,
         minutesAgo = createdAt,
         status = when (status) {
-            "PENDING", "NEW" -> OrderStatus.New
-            "IN_PROGRESS" -> OrderStatus.InProgress
-            else -> OrderStatus.New
+            "SEARCHING" -> RequestStatus.Searching
+            "PENDING", "NEW" -> RequestStatus.New
+            "IN_PROGRESS" -> RequestStatus.InProgress
+            "DELIVERED" -> RequestStatus.Delivered
+            "CANCELLED" -> RequestStatus.Cancelled
+            "COMPLETED" -> RequestStatus.Completed
+            else -> RequestStatus.Searching
         },
         customerName = "Customer #$customerId",
         customerPhone = "",

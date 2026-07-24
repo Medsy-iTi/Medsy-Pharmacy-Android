@@ -1,10 +1,10 @@
 package com.medsy.presentation.orderdetails
 
-import com.medsy.presentation.orderdetails.model.Order
+import com.medsy.presentation.orderdetails.model.Request
 
-data class OrderDetailsUIState(
+data class RequestDetailsUIState(
     val isLoading: Boolean = true,
-    val order: Order? = null,
+    val request: Request? = null,
     val isSubmitting: Boolean = false,
     val pharmacistNotes: String = "",
 )

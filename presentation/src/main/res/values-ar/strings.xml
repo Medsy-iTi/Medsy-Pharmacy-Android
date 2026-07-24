@@ -211,12 +211,12 @@
     <string name="home_notifications">الإشعارات التشغيلية</string>
     <string name="home_notifications_value">لم يتم ربط الإشعارات بعد</string>
 
-    <string name="orders_title">الطلبات</string>
-    <string name="orders_supporting">أدر فقط الطلبات المسندة إلى هذه الصيدلية.</string>
-    <string name="orders_active">النشطة</string>
-    <string name="orders_history">السجل</string>
-    <string name="orders_active_empty">لم يتم ربط طلبات نشطة بعد.</string>
-    <string name="orders_history_empty">لم يتم ربط طلبات مكتملة بعد.</string>
+    <string name="requests_title">الطلبات</string>
+    <string name="requests_supporting">أدر فقط الطلبات المسندة إلى هذه الصيدلية.</string>
+    <string name="requests_active">النشطة</string>
+    <string name="requests_history">السجل</string>
+    <string name="requests_active_empty">لم يتم ربط طلبات نشطة بعد.</string>
+    <string name="requests_history_empty">لم يتم ربط طلبات مكتملة بعد.</string>
     <string name="no_customer_notes">لا توجد ملاحظات من العميل</string>
 
     <string name="profile_title">الملف الشخصي</string>
@@ -245,43 +245,43 @@
     <string name="medsy_logo_content_desc">Medsy Logo\n</string>
     <string name="auth_error_no_pharmacy">يجب أن يكون حسابك مرتبطًا بصيدلية</string>
 
-    <!--  Orders — filters & search  -->
-    <string name="orders_filter_all">جميع الطلبات</string>
-    <string name="orders_filter_new_format">جديدة %1$d</string>
-    <string name="orders_filter_in_progress_format">قيد التجهيز %1$d</string>
-    <string name="orders_filter_delivered">تم التوصيل</string>
-    <string name="orders_search_placeholder">ابحث برقم الطلب</string>
-    <string name="orders_filter_icon_desc">فلترة</string>
-    <string name="orders_search_icon_desc">بحث</string>
-    <!--  Orders — card  -->
-    <string name="orders_status_in_progress">قيد التجهيز</string>
-    <string name="orders_action_prepare">تجهيز الطلب</string>
-    <string name="orders_payment_prefix">الدفع: %1$s</string>
-    <string name="orders_payment_cash">كاش</string>
-    <string name="orders_payment_card_format">%1$s •••• %2$s</string>
-    <string name="orders_payment_visa">فيزا</string>
-    <string name="orders_payment_mastercard">ماستركارد</string>
+    <!--  Requests — filters & search  -->
+    <string name="requests_filter_all">جميع الطلبات</string>
+    <string name="requests_filter_new_format">جديدة %1$d</string>
+    <string name="requests_filter_in_progress_format">قيد التجهيز %1$d</string>
+    <string name="requests_filter_delivered">تم التوصيل</string>
+    <string name="requests_search_placeholder">ابحث برقم الطلب</string>
+    <string name="requests_filter_icon_desc">فلترة</string>
+    <string name="requests_search_icon_desc">بحث</string>
+    <!--  Requests — card  -->
+    <string name="requests_status_in_progress">قيد التجهيز</string>
+    <string name="requests_action_prepare">تجهيز الطلب</string>
+    <string name="requests_payment_prefix">الدفع: %1$s</string>
+    <string name="requests_payment_cash">كاش</string>
+    <string name="requests_payment_card_format">%1$s •••• %2$s</string>
+    <string name="requests_payment_visa">فيزا</string>
+    <string name="requests_payment_mastercard">ماستركارد</string>
 
 
-    <!--  Order Details  -->
-    <string name="order_details_title">تفاصيل الطلب</string>
-    <string name="order_details_new_badge">جديد</string>
-    <string name="order_details_back_desc">رجوع</string>
-    <string name="order_details_call_desc">اتصال بالعميل</string>
-    <string name="order_details_location_desc">فتح الموقع</string>
-    <string name="order_details_order_number_format">#%1$s</string>
-    <string name="order_details_minutes_ago">منذ %1$d دقائق</string>
-    <string name="order_details_price_egp">%1$d جنيه</string>
-    <string name="order_details_requested_medicines">الأدوية المطلوبة</string>
-    <string name="order_details_customer_notes">ملاحظات العميل</string>
-    <string name="order_details_total">إجمالي الطلب</string>
-    <string name="order_details_view_payment_summary">عرض ملخص الدفع</string>
-    <string name="order_details_reject">رفض الطلب</string>
-    <string name="order_details_contact_customer">تواصل مع العميل</string>
-    <string name="order_details_accept">قبول الطلب</string>
-    <string name="order_details_accepted_message">تم قبول الطلب</string>
-    <string name="order_details_rejected_message">تم رفض الطلب</string>
-    <string name="orders_view_sample_order">طلب تجريبي</string>
+    <!--  Request Details  -->
+    <string name="request_details_title">تفاصيل الطلب</string>
+    <string name="request_details_new_badge">جديد</string>
+    <string name="request_details_back_desc">رجوع</string>
+    <string name="request_details_call_desc">اتصال بالعميل</string>
+    <string name="request_details_location_desc">فتح الموقع</string>
+    <string name="request_details_request_number_format">#%1$s</string>
+    <string name="request_details_minutes_ago">منذ %1$d دقائق</string>
+    <string name="request_details_price_egp">%1$.2f جنيه</string>
+    <string name="request_details_requested_medicines">الأدوية المطلوبة</string>
+    <string name="request_details_customer_notes">ملاحظات العميل</string>
+    <string name="request_details_total">إجمالي الطلب</string>
+    <string name="request_details_view_payment_summary">عرض ملخص الدفع</string>
+    <string name="request_details_reject">رفض الطلب</string>
+    <string name="request_details_contact_customer">تواصل مع العميل</string>
+    <string name="request_details_accept">قبول الطلب</string>
+    <string name="request_details_accepted_message">تم قبول الطلب</string>
+    <string name="request_details_rejected_message">تم رفض الطلب</string>
+    <string name="requests_view_sample_order">طلب تجريبي</string>
     <!-- New Profile Strings -->
     <string name="profile_header_title">الملف الشخصي</string>
     <string name="profile_verified_pharmacist">صيدلي مرخص</string>
@@ -294,6 +294,8 @@
     <string name="profile_dummy_name">د. أحمد محمد</string>
     <string name="profile_dummy_experience">7</string>
     <string name="profile_dummy_pharmacist_count">2</string>
+    <string name="order_details_back_desc">رجوع</string>
+
 
     <!-- Invite Pharmacist -->
     <string name="invite_pharmacist_title">دعوة صيدلي للانضمام</string>
@@ -335,8 +337,8 @@
     <string name="profile_date_of_birth">تاريخ الميلاد</string>
     <string name="profile_not_provided">غير متوفر</string>
     <string name="profile_save_changes">حفظ التغييرات</string>
-    <string name="orders_filter_cancelled">الملغاة</string>
-    <string name="orders_filter_completed">المكتملة</string>
+    <string name="requests_filter_cancelled">الملغاة</string>
+    <string name="requests_filter_completed">المكتملة</string>
 
     <string name="dialog_ok">موافق</string>
     <string name="dialog_cancel">إلغاء</string>

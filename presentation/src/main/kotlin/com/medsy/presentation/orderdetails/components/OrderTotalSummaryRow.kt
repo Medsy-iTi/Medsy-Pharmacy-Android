@@ -44,7 +44,7 @@ fun OrderTotalSummaryRow(
         ) {
             Column {
                 Text(
-                    text = stringResource(R.string.order_details_total),
+                    text = stringResource(R.string.request_details_total),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -53,15 +53,14 @@ fun OrderTotalSummaryRow(
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
                 ) {
                     Text(
-                        text = stringResource(R.string.order_details_view_payment_summary),
+                        text = stringResource(R.string.request_details_view_payment_summary),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary,
                     )
                 }
             }
             Text(
-                text = stringResource(R.string.order_details_price_egp, total),
-                style = MaterialTheme.typography.titleLarge,
+                text = stringResource(R.string.request_details_price_egp, total.toDouble()),                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
             )

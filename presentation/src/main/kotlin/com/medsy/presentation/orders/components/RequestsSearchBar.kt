@@ -14,7 +14,7 @@ import com.medsy.designsystem.components.MedsyTextField
 import com.medsy.presentation.R
 
 @Composable
-fun OrdersSearchBar(
+fun RequestsSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     onFilterClick: () -> Unit,
@@ -26,7 +26,7 @@ fun OrdersSearchBar(
         modifier = modifier,
         placeholder = {
             Text(
-                text = stringResource(R.string.orders_search_placeholder),
+                text = stringResource(R.string.requests_search_placeholder),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         },
@@ -34,7 +34,7 @@ fun OrdersSearchBar(
             IconButton(onClick = onFilterClick) {
                 Icon(
                     imageVector = Icons.Filled.Tune,
-                    contentDescription = stringResource(R.string.orders_filter_icon_desc),
+                    contentDescription = stringResource(R.string.requests_filter_icon_desc),
                     tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
@@ -42,7 +42,7 @@ fun OrdersSearchBar(
         trailingIcon = {
             Icon(
                 imageVector = Icons.Filled.Search,
-                contentDescription = stringResource(R.string.orders_search_icon_desc),
+                contentDescription = stringResource(R.string.requests_search_icon_desc),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         },

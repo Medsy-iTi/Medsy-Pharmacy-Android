@@ -1,6 +1,6 @@
 package com.medsy.domain.orders.model
 
-data class OrderDetailsDomain(
+data class PharmacyRequestDomain(
     val id: Long,
     val customerId: Long,
     val deliveryLatitude: Double?,
@@ -8,17 +8,21 @@ data class OrderDetailsDomain(
     val deliveryAddress: String?,
     val status: String,
     val createdAt: String,
-    val items: List<OrderItemDomain>
+    val items: List<RequestItemDomain>,
+    val prescriptionUrl: String?
 )
 
-data class OrderItemDomain(
+data class RequestItemDomain(
     val id: Long,
     val productId: Long,
-    val quantity: Int
+    val imageUrl: String?,
+    val productName: String,
+    val quantity: Int,
+    val unitPrice: Double
 )
 
-data class OrderPageDomain(
-    val content: List<OrderDetailsDomain>,
+data class PharmacyRequestPageDomain(
+    val content: List<PharmacyRequestDomain>,
     val pageNumber: Int,
     val pageSize: Int,
     val totalElements: Long,

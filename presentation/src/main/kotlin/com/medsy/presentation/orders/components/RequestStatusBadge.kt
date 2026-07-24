@@ -15,42 +15,42 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.medsy.designsystem.ui.theme.extendedColors
 import com.medsy.presentation.R
-import com.medsy.presentation.orders.OrderStatus
+import com.medsy.presentation.orders.RequestStatus
 
 @Composable
-fun OrderStatusBadge(
-    status: OrderStatus,
+fun RequestStatusBadge(
+    status: RequestStatus,
     modifier: Modifier = Modifier,
 ) {
     val (container: Color, content: Color, labelRes: Int) = when (status) {
-        OrderStatus.New -> Triple(
+        RequestStatus.Searching,
+        RequestStatus.New -> Triple(
             MaterialTheme.extendedColors.blueContainer,
             MaterialTheme.extendedColors.blueContent,
-            R.string.order_details_new_badge,
+            R.string.request_details_new_badge,
         )
 
-        OrderStatus.InProgress -> Triple(
+        RequestStatus.InProgress -> Triple(
             MaterialTheme.extendedColors.orangeContainer,
             MaterialTheme.extendedColors.orangeContent,
-            R.string.orders_status_in_progress,
+            R.string.requests_status_in_progress,
         )
 
-        OrderStatus.Delivered -> Triple(
+        RequestStatus.Delivered -> Triple(
             MaterialTheme.extendedColors.neutralContainer,
             MaterialTheme.extendedColors.neutralContent,
-            R.string.orders_filter_delivered,
+            R.string.requests_filter_delivered,
         )
-        OrderStatus.Cancelled -> Triple(
+        RequestStatus.Cancelled -> Triple(
             MaterialTheme.extendedColors.redContainer,
             MaterialTheme.extendedColors.redContent,
-            R.string.orders_filter_cancelled,
+            R.string.requests_filter_cancelled,
         )
-        OrderStatus.Completed -> Triple(
+        RequestStatus.Completed -> Triple(
             MaterialTheme.extendedColors.greenContainer,
             MaterialTheme.extendedColors.greenContent,
-            R.string.orders_filter_completed,
+            R.string.requests_filter_completed,
         )
-
     }
 
     Box(

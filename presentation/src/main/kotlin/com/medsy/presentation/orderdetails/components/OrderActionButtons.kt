@@ -64,7 +64,7 @@ fun OrderActionButtons(
                     modifier = Modifier.size(18.dp),
                 )
                 Text(
-                    text = stringResource(R.string.order_details_reject),
+                    text = stringResource(R.string.request_details_reject),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(start = 6.dp),
@@ -83,7 +83,7 @@ fun OrderActionButtons(
                     .height(52.dp),
             ) {
                 Text(
-                    text = stringResource(R.string.order_details_contact_customer),
+                    text = stringResource(R.string.request_details_contact_customer),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -111,7 +111,7 @@ fun OrderActionButtons(
             } else {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = stringResource(R.string.order_details_accept),
+                        text = stringResource(R.string.request_details_accept),
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Icon(

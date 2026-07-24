@@ -19,7 +19,7 @@ enum class BottomBarDestination(
         title = PresentationR.string.home_nav_orders,
         icon = PresentationR.drawable.orderlist,
         selectedIcon = PresentationR.drawable.orderlist,
-        route = Route.NestedNav.Orders,
+        route = Route.NestedNav.Requests,
     ),
     Profile(
         title = PresentationR.string.profile_title,

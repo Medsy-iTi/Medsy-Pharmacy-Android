@@ -24,23 +24,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.medsy.designsystem.components.MedsySnackbarHost
 import com.medsy.designsystem.components.showSuccess
-import com.medsy.designsystem.ui.theme.MedsyTheme
 import com.medsy.designsystem.ui.theme.extendedColors
 import com.medsy.presentation.R
-import com.medsy.presentation.orders.components.OrderCard
-import com.medsy.presentation.orders.components.OrdersFilterChipsRow
-import com.medsy.presentation.orders.components.OrdersSearchBar
+import com.medsy.presentation.orders.components.RequestCard
+import com.medsy.presentation.orders.components.RequestsFilterChipsRow
+import com.medsy.presentation.orders.components.RequestsSearchBar
 
 @Composable
-fun OrdersRoot(
-    onOrderClick: (Long) -> Unit,
-    viewModel: OrdersViewModel = hiltViewModel(),
+fun RequestsRoot(
+    onRequestClick: (Long) -> Unit,
+    viewModel: RequestsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -49,24 +47,25 @@ fun OrdersRoot(
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is OrdersUIEffect.NavigateToOrderDetails -> onOrderClick(effect.orderId)
-                OrdersUIEffect.OpenFilters -> { /* TODO: open a filters bottom sheet once designed */ }
-                is OrdersUIEffect.ShowMessage ->
+                is RequestsUIEffect.NavigateToRequestDetails -> onRequestClick(effect.requestId)
+                RequestsUIEffect.OpenFilters -> { /* TODO: open a filters bottom sheet once designed */ }
+                is RequestsUIEffect.ShowMessage ->
                     snackbarHostState.showSuccess(context.getString(effect.messageRes))
             }
         }
     }
 
-    OrdersScreen(
+    RequestsScreen(
         state = state,
         onIntent = viewModel::onIntent,
         snackbarHostState = snackbarHostState,
     )
 }
+
 @Composable
-fun OrdersScreen(
-    state: OrdersUIState,
-    onIntent: (OrdersUIIntent) -> Unit,
+fun RequestsScreen(
+    state: RequestsUIState,
+    onIntent: (RequestsUIIntent) -> Unit,
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
@@ -76,7 +75,7 @@ fun OrdersScreen(
         snackbarHost = { MedsySnackbarHost(hostState = snackbarHostState) },
         topBar = {
             Text(
-                text = stringResource(R.string.orders_title),
+                text = stringResource(R.string.requests_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.extendedColors.darkBlueColor,
@@ -93,17 +92,17 @@ fun OrdersScreen(
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp),
         ) {
-            OrdersFilterChipsRow(
+            RequestsFilterChipsRow(
                 selectedFilter = state.selectedFilter,
                 newCount = state.newCount,
                 inProgressCount = state.inProgressCount,
-                onFilterSelected = { onIntent(OrdersUIIntent.FilterSelected(it)) },
+                onFilterSelected = { onIntent(RequestsUIIntent.FilterSelected(it)) },
             )
 
-            OrdersSearchBar(
+            RequestsSearchBar(
                 query = state.searchQuery,
-                onQueryChange = { onIntent(OrdersUIIntent.SearchQueryChanged(it)) },
-                onFilterClick = { onIntent(OrdersUIIntent.FilterIconClicked) },
+                onQueryChange = { onIntent(RequestsUIIntent.SearchQueryChanged(it)) },
+                onFilterClick = { onIntent(RequestsUIIntent.FilterIconClicked) },
                 modifier = Modifier.padding(top = 12.dp),
             )
 
@@ -120,7 +119,7 @@ fun OrdersScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = stringResource(R.string.orders_active_empty),
+                        text = stringResource(R.string.requests_active_empty),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -131,12 +130,12 @@ fun OrdersScreen(
                     contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    items(state.filteredOrders, key = { it.id }) { order ->
-                        OrderCard(
-                            order = order,
-                            onCardClick = { onIntent(OrdersUIIntent.OrderClicked(order.id)) },
-                            onAcceptClick = { onIntent(OrdersUIIntent.AcceptOrderClicked(order.id)) },
-                            onPrepareClick = { onIntent(OrdersUIIntent.PrepareOrderClicked(order.id)) },
+                    items(state.filteredOrders, key = { it.id }) { request ->
+                        RequestCard(
+                            request = request,
+                            onCardClick = { onIntent(RequestsUIIntent.RequestClicked(request.id)) },
+                            onAcceptClick = { onIntent(RequestsUIIntent.AcceptRequestClicked(request.id)) },
+                            onPrepareClick = { onIntent(RequestsUIIntent.PrepareRequestClicked(request.id)) },
                         )
                     }
                 }

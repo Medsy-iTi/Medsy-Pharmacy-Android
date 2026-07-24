@@ -21,11 +21,11 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.medsy.designsystem.ui.theme.extendedColors
 import com.medsy.presentation.R
-import com.medsy.presentation.orderdetails.model.OrderMedicineItem
+import com.medsy.presentation.orderdetails.model.RequestMedicineItem
 
 @Composable
 fun MedicineOrderItemRow(
-    item: OrderMedicineItem,
+    item: RequestMedicineItem,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -67,7 +67,7 @@ fun MedicineOrderItemRow(
                 modifier = Modifier.padding(top = 2.dp),
             )
             Text(
-                text = stringResource(R.string.order_details_price_egp, item.price),
+                text = stringResource(R.string.request_details_price_egp, item.price),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,

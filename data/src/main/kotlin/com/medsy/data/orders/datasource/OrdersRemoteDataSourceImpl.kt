@@ -1,20 +1,20 @@
 package com.medsy.data.orders.datasource
 
-import com.medsy.data.orders.model.OrderPageResponseDto
+import com.medsy.data.orders.model.PharmacyRequestPageDto
 import com.medsy.data.remote.api.ApiService
 import com.medsy.data.remote.network.safeApiCall
 import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
 import javax.inject.Inject
 
-class OrdersRemoteDataSourceImpl @Inject constructor(
+class RequestsRemoteDataSourceImpl @Inject constructor(
     private val apiService: ApiService
-) : OrdersRemoteDataSource {
+) : RequestsRemoteDataSource {
 
     override suspend fun getCurrentPharmacyRequests(
         page: Int,
         size: Int,
         sort: List<String>?
-    ): MedsyResult<OrderPageResponseDto, MedsyError.Remote> =
+    ): MedsyResult<PharmacyRequestPageDto, MedsyError.Remote> =
         safeApiCall { apiService.getCurrentPharmacyRequests(page, size, sort) }
 }

@@ -3,8 +3,8 @@ package com.medsy.data.orders.model
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class OrderPageResponseDto(
-    val content: List<OrderDetailsDto>,
+data class PharmacyRequestPageDto(
+    val content: List<PharmacyRequestDto>,
     val pageNumber: Int,
     val pageSize: Int,
     val totalElements: Long,
@@ -13,7 +13,7 @@ data class OrderPageResponseDto(
 )
 
 @JsonClass(generateAdapter = true)
-data class OrderDetailsDto(
+data class PharmacyRequestDto(
     val id: Long,
     val customerId: Long,
     val deliveryLatitude: Double?,
@@ -21,12 +21,16 @@ data class OrderDetailsDto(
     val deliveryAddress: String?,
     val status: String,
     val createdAt: String,
-    val items: List<OrderItemDto>
+    val items: List<RequestItemDto>,
+    val prescriptionUrl: String?
 )
 
 @JsonClass(generateAdapter = true)
-data class OrderItemDto(
+data class RequestItemDto(
     val id: Long,
     val productId: Long,
-    val quantity: Int
+    val imageUrl: String?,
+    val productName: String,
+    val quantity: Int,
+    val unitPrice: Double
 )

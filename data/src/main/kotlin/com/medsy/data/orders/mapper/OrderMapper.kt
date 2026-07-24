@@ -1,14 +1,14 @@
 package com.medsy.data.orders.mapper
 
-import com.medsy.data.orders.model.OrderDetailsDto
-import com.medsy.data.orders.model.OrderItemDto
-import com.medsy.data.orders.model.OrderPageResponseDto
-import com.medsy.domain.orders.model.OrderDetailsDomain
-import com.medsy.domain.orders.model.OrderItemDomain
-import com.medsy.domain.orders.model.OrderPageDomain
+import com.medsy.data.orders.model.PharmacyRequestDto
+import com.medsy.data.orders.model.PharmacyRequestPageDto
+import com.medsy.data.orders.model.RequestItemDto
+import com.medsy.domain.orders.model.PharmacyRequestDomain
+import com.medsy.domain.orders.model.PharmacyRequestPageDomain
+import com.medsy.domain.orders.model.RequestItemDomain
 
-fun OrderPageResponseDto.toDomain(): OrderPageDomain {
-    return OrderPageDomain(
+fun PharmacyRequestPageDto.toDomain(): PharmacyRequestPageDomain {
+    return PharmacyRequestPageDomain(
         content = content.map { it.toDomain() },
         pageNumber = pageNumber,
         pageSize = pageSize,
@@ -18,8 +18,8 @@ fun OrderPageResponseDto.toDomain(): OrderPageDomain {
     )
 }
 
-fun OrderDetailsDto.toDomain(): OrderDetailsDomain {
-    return OrderDetailsDomain(
+fun PharmacyRequestDto.toDomain(): PharmacyRequestDomain {
+    return PharmacyRequestDomain(
         id = id,
         customerId = customerId,
         deliveryLatitude = deliveryLatitude,
@@ -27,14 +27,18 @@ fun OrderDetailsDto.toDomain(): OrderDetailsDomain {
         deliveryAddress = deliveryAddress,
         status = status,
         createdAt = createdAt,
-        items = items.map { it.toDomain() }
+        items = items.map { it.toDomain() },
+        prescriptionUrl = prescriptionUrl
     )
 }
 
-fun OrderItemDto.toDomain(): OrderItemDomain {
-    return OrderItemDomain(
+fun RequestItemDto.toDomain(): RequestItemDomain {
+    return RequestItemDomain(
         id = id,
         productId = productId,
-        quantity = quantity
+        imageUrl = imageUrl,
+        productName = productName,
+        quantity = quantity,
+        unitPrice = unitPrice
     )
 }

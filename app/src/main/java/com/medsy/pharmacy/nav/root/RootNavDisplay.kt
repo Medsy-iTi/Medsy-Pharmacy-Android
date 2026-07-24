@@ -24,7 +24,7 @@ import com.medsy.presentation.auth.otp.OtpRoot
 import com.medsy.presentation.auth.register.RegistrationRoot
 import com.medsy.presentation.auth.registerpharmacy.PharmacyRegistrationRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
-import com.medsy.presentation.orderdetails.OrderDetailsRoot
+import com.medsy.presentation.orderdetails.RequestDetailsRoot
 import com.medsy.presentation.splash.SplashRoot
 
 @Composable
@@ -135,18 +135,18 @@ fun RootNavDisplay() {
                 NestedNavDisplay(
                     navigateBack = { backStack.removeLastOrNull() },
                     openLogin = { replaceWith(Route.Login) },
-                    openOrderDetails = { orderId ->
-                        backStack.navigateSingleTop(Route.OrderDetails(orderId))
+                    openRequestDetails = { requestId ->
+                        backStack.navigateSingleTop(Route.RequestDetails(requestId))
                     },
                     openInvitePharmacist = { backStack.navigateSingleTop(Route.InvitePharmacist) },
                     openPharmacistsList = { backStack.navigateSingleTop(Route.PharmacistsList) },
                     openPersonalInfo = { backStack.navigateSingleTop(Route.PersonalInfo) }
                 )
             }
-            entry<Route.OrderDetails> { route ->
+            entry<Route.RequestDetails> { route ->
                 val context = LocalContext.current
-                OrderDetailsRoot(
-                    orderId = route.orderId,
+                RequestDetailsRoot(
+                    requestId = route.requestId,
                     onNavigateBack = { backStack.removeLastOrNull() },
                     onDialPhoneNumber = { phoneNumber ->
                         val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))

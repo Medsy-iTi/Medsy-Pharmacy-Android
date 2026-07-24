@@ -16,16 +16,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.medsy.presentation.R
-import com.medsy.presentation.orderdetails.model.OrderMedicineItem
+import com.medsy.presentation.orderdetails.model.RequestMedicineItem
 
 @Composable
 fun RequestedMedicinesSection(
-    items: List<OrderMedicineItem>,
+    items: List<RequestMedicineItem>,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = stringResource(R.string.order_details_requested_medicines),
+            text = stringResource(R.string.request_details_requested_medicines),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground,

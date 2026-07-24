@@ -57,13 +57,13 @@ fun OrderInfoCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = stringResource(R.string.order_details_order_number_format, orderId),
+                    text = stringResource(R.string.request_details_request_number_format, orderId),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
-                    text = stringResource(R.string.order_details_minutes_ago, minutesAgo),
+                    text = stringResource(R.string.request_details_minutes_ago, minutesAgo),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -94,7 +94,7 @@ fun OrderInfoCard(
                     )
                     OrderIconButton(
                         icon = Icons.Filled.Phone,
-                        contentDescription = stringResource(R.string.order_details_call_desc),
+                        contentDescription = stringResource(R.string.request_details_call_desc),
                         onClick = onCallClick,
                     )
                 }
@@ -111,7 +111,7 @@ fun OrderInfoCard(
                     )
                     OrderIconButton(
                         icon = Icons.Filled.Place,
-                        contentDescription = stringResource(R.string.order_details_location_desc),
+                        contentDescription = stringResource(R.string.request_details_location_desc),
                         onClick = onLocationClick,
                     )
                 }

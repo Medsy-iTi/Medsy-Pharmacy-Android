@@ -24,7 +24,7 @@ fun CustomerNotesSection(
     Column(modifier = modifier.fillMaxWidth()) {
 
         Text(
-            text = stringResource(R.string.order_details_customer_notes),
+            text = stringResource(R.string.request_details_customer_notes),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground,
