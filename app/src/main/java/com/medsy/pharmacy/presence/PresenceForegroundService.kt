@@ -7,6 +7,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.medsy.pharmacy.R
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -87,8 +88,7 @@ class PresenceForegroundService : Service() {
         if (heartbeatJob?.isActive == true) return
         heartbeatJob = serviceScope.launch {
             val startTime = System.currentTimeMillis()
-            val duration = 15 * 60 * 1000L
-            while (System.currentTimeMillis() - startTime < duration) {
+            while (System.currentTimeMillis() - startTime < SERVICE_DURATION_MILLIS) {
                 val result = sendHeartbeat()
                 result.fold(
                     onSuccess = { status ->
@@ -101,7 +101,7 @@ class PresenceForegroundService : Service() {
                         Log.e("PresenceService", "Heartbeat failed: $error")
                     }
                 )
-                delay(60_000)
+                delay(HEARTBEAT_INTERVAL_MILLIS)
             }
             // 15 minutes are over, go offline
             setReceivingOrdersPreference(false)
@@ -118,37 +118,35 @@ class PresenceForegroundService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "Presence Status",
+                getString(R.string.presence_notification_channel_name),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Keeps the app online to receive orders"
-            }
+                description = getString(R.string.presence_notification_channel_description)            }
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
         }
     }
 
     private fun createNotification(): Notification {
-        val intent = Intent(this, Class.forName("com.medsy.pharmacy.MainActivity"))
+        val intent = Intent(this, Class.forName(MAIN_ACTIVITY_CLASS_PATH))
         val pendingIntent = android.app.PendingIntent.getActivity(
             this, 0, intent, android.app.PendingIntent.FLAG_IMMUTABLE
         )
 
-        val timeoutMillis = 15 * 60 * 1000L
-        val endTime = System.currentTimeMillis() + timeoutMillis
+        val endTime = System.currentTimeMillis() + SERVICE_DURATION_MILLIS
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("أنت متاح الآن لتلقي الطلبات")
-            .setContentText("التطبيق يعمل في الخلفية وسيغلق تلقائياً بعد 15 دقيقة")
+            .setContentTitle(getString(R.string.presence_notification_title))
+            .setContentText(getString(R.string.presence_notification_text))
             .setSmallIcon(com.medsy.designsystem.R.drawable.ic_pharmacy_snake)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setUsesChronometer(true)
             .setWhen(endTime)
-            .setTimeoutAfter(timeoutMillis)
+            .setTimeoutAfter(SERVICE_DURATION_MILLIS)
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                    .bigText("أنت الآن متصل وتتلقى الطلبات من العملاء القريبين.\nهذه الحالة ستستمر لمدة 15 دقيقة وسيبدأ العداد العكسي بالأسفل.\nاضغط هنا لفتح التطبيق ومتابعة الطلبات.")
+                    .bigText(getString(R.string.presence_notification_big_text))
             )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -163,6 +161,10 @@ class PresenceForegroundService : Service() {
         const val ACTION_STOP = "ACTION_STOP"
         private const val CHANNEL_ID = "presence_channel"
         private const val NOTIFICATION_ID = 1
+        private const val MAIN_ACTIVITY_CLASS_PATH = "com.medsy.pharmacy.MainActivity"
+
+        private const val SERVICE_DURATION_MILLIS = 15 * 60 * 1000L // 15 Minutes
+        private const val HEARTBEAT_INTERVAL_MILLIS = 60_000L      // 1 Minute
 
         fun start(context: Context) {
             val intent = Intent(context, PresenceForegroundService::class.java).apply {

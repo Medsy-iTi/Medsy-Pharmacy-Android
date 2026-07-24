@@ -12,4 +12,12 @@
     <!-- Default Notification Fallbacks -->
     <string name="notification_default_title">طلب جديد!</string>
     <string name="notification_default_body">لديك طلب جديد ينتظر الموافقة.</string>
+
+    <!-- Presence Service Strings -->
+    <string name="presence_notification_channel_name">Presence Status</string>
+    <string name="presence_notification_channel_description">Keeps the app online to receive orders</string>
+    <string name="presence_notification_title">أنت متاح الآن لتلقي الطلبات</string>
+    <string name="presence_notification_text">التطبيق يعمل في الخلفية وسيغلق تلقائياً بعد 15 دقيقة</string>
+    <string name="presence_notification_big_text">أنت الآن متصل وتتلقى الطلبات من العملاء القريبين.\nهذه الحالة ستستمر لمدة 15 دقيقة وسيبدأ العداد العكسي بالأسفل.\nاضغط هنا لفتح التطبيق ومتابعة الطلبات.</string>
+
 </resources>

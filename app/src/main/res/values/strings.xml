@@ -11,4 +11,12 @@
     <!-- Default Notification Fallbacks -->
     <string name="notification_default_title">New Order!</string>
     <string name="notification_default_body">You have a new order waiting for approval.</string>
+
+    <!-- Presence Service Strings -->
+    <string name="presence_notification_channel_name">Presence Status</string>
+    <string name="presence_notification_channel_description">Keeps the app online to receive orders</string>
+    <string name="presence_notification_title">You are now available to receive orders</string>
+    <string name="presence_notification_text">The app is running in the background and will close automatically after 15 minutes</string>
+    <string name="presence_notification_big_text">You are now online and receiving orders from nearby customers.\nThis status will last for 15 minutes with a countdown timer below.\nTap here to open the app and manage orders.</string>
+
 </resources>
