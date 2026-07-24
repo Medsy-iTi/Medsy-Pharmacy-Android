@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.medsy.designsystem.components.MedsyLottie
 import com.medsy.presentation.R
 import com.medsy.presentation.home.HomeOrderUI
 import kotlin.collections.forEach
@@ -48,12 +49,29 @@ fun LatestOrdersSection(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            orders.forEach { order ->
-                OrderListItem(
-                    order = order,
-                    onClick = { onOrderClick(order.id) }
+        if (orders.isEmpty()) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                MedsyLottie(
+                    resId = com.medsy.designsystem.R.raw.no_data_found,
+                    modifier = Modifier.height(150.dp)
                 )
+                Text(
+                    text = stringResource(R.string.orders_active_empty),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        } else {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                orders.forEach { order ->
+                    OrderListItem(
+                        order = order,
+                        onClick = { onOrderClick(order.id) }
+                    )
+                }
             }
         }
 

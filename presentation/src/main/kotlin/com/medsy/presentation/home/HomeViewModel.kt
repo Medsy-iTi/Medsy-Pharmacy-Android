@@ -3,12 +3,16 @@ package com.medsy.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.medsy.domain.common.fold
+import com.medsy.domain.orders.model.OrderStatusConstants
+import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
 import javax.inject.Inject
@@ -16,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
-    private val getMyPharmacy: GetMyPharmacyUseCase
+    private val getMyPharmacy: GetMyPharmacyUseCase,
+    private val getCurrentPharmacyRequests: GetCurrentPharmacyRequestsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeUIState())
@@ -32,7 +37,6 @@ class HomeViewModel @Inject constructor(
 
     private fun prefetchProfileData() {
         viewModelScope.launch {
-            // Silently prefetch so they are cached when the user navigates to Profile
             getCurrentPharmacist(forceRefresh = false)
             getMyPharmacy(forceRefresh = false)
         }
@@ -63,49 +67,65 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun loadHomeData() {
-        _state.update {
-            it.copy(
-                isLoading = false,
-                notificationsCount = 3,
-                pharmacyInfo = PharmacyUIInfo(
-                    name = "صيدلية الأمل",
-                    address = "شارع النيل، المعادي، القاهرة",
-                    isOpen = true,
-                    closingTime = "11:00 مساءً",
-                    rating = 4.8,
-                    reviewsCount = 256,
-                    pharmacyId = "PH123456"
-                ),
-                stats = HomeStatsUI(
-                    newOrders = 23,
-                    inProgress = 18,
-                    deliveredToday = 45,
-                    totalSales = "3,240"
-                ),
-                latestOrders = listOf(
-                    HomeOrderUI(
-                        "#1258",
-                        "Ahlam Gomaa",
-                        "المعادي، القاهرة",
-                        " 10 Seconds",
-                        HomeOrderStatus.NEW
-                    ),
-                    HomeOrderUI(
-                        "#1257",
-                        "Eman Gomaa",
-                        "شارع النيل، المعادي",
-                        " 15 Minutes",
-                        HomeOrderStatus.PREPARING
-                    ),
-                    HomeOrderUI(
-                        "#1256",
-                        "Menna Mohamed",
-                        "دار السلام، القاهرة",
-                        "35 Minutes",
-                        HomeOrderStatus.DELIVERED
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+
+            val pharmacyDeferred = async { getMyPharmacy() }
+            val ordersDeferred = async { getCurrentPharmacyRequests(page = 0, size = 10) }
+
+            val pharmacyResult = pharmacyDeferred.await()
+            val ordersResult = ordersDeferred.await()
+
+            var newState = _state.value.copy(isLoading = false)
+
+            pharmacyResult.fold(
+                onSuccess = { pharmacy ->
+                    newState = newState.copy(
+                        pharmacyInfo = newState.pharmacyInfo.copy(
+                            name = pharmacy.name,
+                            address = pharmacy.address ?: "",
+                            pharmacyId = "PH${pharmacy.id}",
+                            isOpen = true,
+                            closingTime = "11:00 مساءً",
+                            rating = 4.8,
+                            reviewsCount = 256
+                        )
                     )
-                )
+                },
+                onError = { }
             )
+
+            ordersResult.fold(
+                onSuccess = { page ->
+                    val latestThree = page.content.take(3).map { order ->
+                        HomeOrderUI(
+                            id = "#${order.id}",
+                            customerName = "Customer #${order.customerId}",
+                            location = order.deliveryAddress ?: "No address",
+                            timeAgo = order.createdAt,
+                            status = when (order.status) {
+                                OrderStatusConstants.PENDING, OrderStatusConstants.NEW -> HomeOrderStatus.NEW
+                                OrderStatusConstants.IN_PROGRESS -> HomeOrderStatus.PREPARING
+                                OrderStatusConstants.DELIVERED -> HomeOrderStatus.DELIVERED
+                                else -> HomeOrderStatus.NEW
+                            }
+                        )
+                    }
+
+                    newState = newState.copy(
+                        latestOrders = latestThree,
+                        stats = newState.stats.copy(
+                            newOrders = page.content.count {
+                                it.status == OrderStatusConstants.PENDING || it.status == OrderStatusConstants.NEW
+                            },
+                            inProgress = page.content.count { it.status == OrderStatusConstants.IN_PROGRESS }
+                        )
+                    )
+                },
+                onError = { }
+            )
+
+            _state.value = newState
         }
     }
 }
