@@ -3,6 +3,7 @@ package com.medsy.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -69,28 +70,31 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            val pharmacyResult = getMyPharmacy()
+            val pharmacyDeferred = async { getMyPharmacy() }
+            val ordersDeferred = async { getCurrentPharmacyRequests(page = 0, size = 10) }
+
+            val pharmacyResult = pharmacyDeferred.await()
+            val ordersResult = ordersDeferred.await()
+
+            var newState = _state.value.copy(isLoading = false)
+
             pharmacyResult.fold(
                 onSuccess = { pharmacy ->
-                    _state.update {
-                        it.copy(
-                            pharmacyInfo = it.pharmacyInfo.copy(
-                                name = pharmacy.name,
-                                address = pharmacy.address ?: "",
-                                pharmacyId = "PH${pharmacy.id}",
-                                isOpen = true,
-                                closingTime = "11:00 مساءً",
-                                rating = 4.8,
-                                reviewsCount = 256
-                            )
+                    newState = newState.copy(
+                        pharmacyInfo = newState.pharmacyInfo.copy(
+                            name = pharmacy.name,
+                            address = pharmacy.address ?: "",
+                            pharmacyId = "PH${pharmacy.id}",
+                            isOpen = true,
+                            closingTime = "11:00 مساءً",
+                            rating = 4.8,
+                            reviewsCount = 256
                         )
-                    }
+                    )
                 },
-                onError = { /* Handle error */ }
+                onError = { }
             )
 
-
-            val ordersResult = getCurrentPharmacyRequests(page = 0, size = 10)
             ordersResult.fold(
                 onSuccess = { page ->
                     val latestThree = page.content.take(3).map { order ->
@@ -108,23 +112,20 @@ class HomeViewModel @Inject constructor(
                         )
                     }
 
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            latestOrders = latestThree,
-                            stats = it.stats.copy(
-                                newOrders = page.content.count {
-                                    it.status == OrderStatusConstants.PENDING || it.status == OrderStatusConstants.NEW
-                                },
-                                inProgress = page.content.count { it.status == OrderStatusConstants.IN_PROGRESS }
-                            )
+                    newState = newState.copy(
+                        latestOrders = latestThree,
+                        stats = newState.stats.copy(
+                            newOrders = page.content.count {
+                                it.status == OrderStatusConstants.PENDING || it.status == OrderStatusConstants.NEW
+                            },
+                            inProgress = page.content.count { it.status == OrderStatusConstants.IN_PROGRESS }
                         )
-                    }
+                    )
                 },
-                onError = {
-                    _state.update { it.copy(isLoading = false) }
-                }
+                onError = { }
             )
+
+            _state.value = newState
         }
     }
 }
