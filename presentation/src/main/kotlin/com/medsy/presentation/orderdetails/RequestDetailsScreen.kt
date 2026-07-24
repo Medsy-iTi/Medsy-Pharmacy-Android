@@ -27,6 +27,7 @@ import com.medsy.presentation.orderdetails.components.OrderActionButtons
 import com.medsy.presentation.orderdetails.components.OrderDetailsTopBar
 import com.medsy.presentation.orderdetails.components.OrderInfoCard
 import com.medsy.presentation.orderdetails.components.OrderTotalSummaryRow
+import com.medsy.presentation.orderdetails.components.PaymentMethodSection
 import com.medsy.presentation.orderdetails.components.PharmacistNotesSection
 import com.medsy.presentation.orderdetails.components.PrescriptionImageSection
 import com.medsy.presentation.orderdetails.components.RequestedMedicinesSection
@@ -146,6 +147,11 @@ fun RequestDetailsScreen(
                     onNotesChanged = { newNotes ->
                         onIntent(RequestDetailsUIIntent.PharmacistNotesChanged(newNotes))
                     },
+                    modifier = Modifier.padding(top = 24.dp),
+                )
+
+                PaymentMethodSection(
+                    paymentMethod = request.paymentMethod,
                     modifier = Modifier.padding(top = 24.dp),
                 )
 

@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.Instant
 
 @HiltViewModel
 class RequestsViewModel @Inject constructor(
@@ -88,10 +90,23 @@ class RequestsViewModel @Inject constructor(
     }
 }
 
+fun calculateMinutesAgo(createdAt: String): Int {
+    return try {
+        val parseStr = if (createdAt.endsWith("Z")) createdAt else "${createdAt}Z"
+        val created = Instant.parse(parseStr)
+        val now = Instant.now()
+        Duration.between(created, now).toMinutes().coerceAtLeast(0).toInt()
+    } catch (e: Exception) {
+        0
+    }
+}
+
 fun PharmacyRequestDomain.toPresentation(): RequestSummary {
+    val calculatedTotal = items.sumOf { it.unitPrice * it.quantity }
+    val minutes = calculateMinutesAgo(createdAt)
     return RequestSummary(
         id = id,
-        minutesAgo = createdAt,
+        minutesAgo = minutes,
         status = when (status) {
             "SEARCHING" -> RequestStatus.Searching
             "PENDING", "NEW" -> RequestStatus.New
@@ -101,11 +116,16 @@ fun PharmacyRequestDomain.toPresentation(): RequestSummary {
             "COMPLETED" -> RequestStatus.Completed
             else -> RequestStatus.Searching
         },
-        customerName = "Customer #$customerId",
-        customerPhone = "",
+        customerName = customerName ?: "Customer #$customerId",
+        customerPhone = customerPhone ?: "",
         customerAddress = deliveryAddress ?: "",
-        total = 0,
-        paymentMethod = PaymentMethod.Cash,
+        productImages = items.map { it.imageUrl },
+        total = calculatedTotal,
+        paymentMethod = when (paymentMethod?.uppercase()) {
+            "VISA" -> PaymentMethod.Visa
+            "MASTERCARD" -> PaymentMethod.Mastercard
+            else -> PaymentMethod.Cash
+        },
         paymentCardLastDigits = null,
     )
 }

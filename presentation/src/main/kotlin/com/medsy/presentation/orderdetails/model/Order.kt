@@ -19,6 +19,7 @@ data class Request(
     val customerAddress: String,
     val items: List<RequestMedicineItem>,
     val customerNotes: String?,
-    val total: Int,
-    val prescriptionUrl: String?
+    val total: Double,
+    val prescriptionUrl: String?,
+    val paymentMethod: String
 )

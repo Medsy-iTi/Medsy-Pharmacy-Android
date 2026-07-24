@@ -269,8 +269,7 @@
     <string name="request_details_back_desc">رجوع</string>
     <string name="request_details_call_desc">اتصال بالعميل</string>
     <string name="request_details_location_desc">فتح الموقع</string>
-    <string name="request_details_request_number_format">#%1$s</string>
-    <string name="request_details_minutes_ago">منذ %1$d دقائق</string>
+    <string name="request_details_request_number_format">رقم الطلب: %1$s</string>    <string name="request_details_minutes_ago">منذ %1$d دقائق</string>
     <string name="request_details_price_egp">%1$.2f جنيه</string>
     <string name="request_details_requested_medicines">الأدوية المطلوبة</string>
     <string name="request_details_customer_notes">ملاحظات العميل</string>
@@ -281,6 +280,8 @@
     <string name="request_details_accept">قبول الطلب</string>
     <string name="request_details_accepted_message">تم قبول الطلب</string>
     <string name="request_details_rejected_message">تم رفض الطلب</string>
+    <string name="request_details_no_prescription">لم يتم إرسال روشتة</string>
+    <string name="request_details_payment_method">طريقة الدفع</string>
     <string name="requests_view_sample_order">طلب تجريبي</string>
     <!-- New Profile Strings -->
     <string name="profile_header_title">الملف الشخصي</string>

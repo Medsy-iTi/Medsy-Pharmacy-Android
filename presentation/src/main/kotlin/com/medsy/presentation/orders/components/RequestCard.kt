@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingBag
@@ -24,6 +26,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.layout.ContentScale
+import coil3.compose.AsyncImage
 import com.medsy.designsystem.components.MedsyButton
 import com.medsy.designsystem.ui.theme.extendedColors
 import com.medsy.presentation.R
@@ -64,7 +68,7 @@ fun RequestCard(
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = request.minutesAgo,
+                        text = stringResource(R.string.request_details_minutes_ago, request.minutesAgo),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -108,6 +112,27 @@ fun RequestCard(
                 modifier = Modifier.padding(top = 4.dp),
             )
 
+            if (request.productImages.isNotEmpty()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    request.productImages.take(5).forEach { imageUrl ->
+                        AsyncImage(
+                            model = imageUrl,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                        )
+                    }
+                }
+            }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -116,7 +141,7 @@ fun RequestCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = stringResource(R.string.request_details_price_egp, request.total.toDouble()),
+                    text = stringResource(R.string.request_details_price_egp, request.total),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,

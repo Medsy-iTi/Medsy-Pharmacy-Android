@@ -28,7 +28,10 @@ fun PharmacyRequestDto.toDomain(): PharmacyRequestDomain {
         status = status,
         createdAt = createdAt,
         items = items.map { it.toDomain() },
-        prescriptionUrl = prescriptionUrl
+        prescriptionUrl = prescriptionUrl,
+        customerName = customerName,
+        customerPhone = customerPhone,
+        paymentMethod = paymentMethod
     )
 }
 

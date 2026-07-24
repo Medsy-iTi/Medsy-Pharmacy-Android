@@ -270,7 +270,7 @@
     <string name="request_details_back_desc">Back</string>
     <string name="request_details_call_desc">Call customer</string>
     <string name="request_details_location_desc">Open location</string>
-    <string name="request_details_request_number_format">#%1$s</string>
+    <string name="request_details_request_number_format">Order Id: %1$s</string>
     <string name="request_details_minutes_ago">%1$d min ago</string>
     <string name="request_details_price_egp">%1$.2f EGP</string>
     <string name="request_details_requested_medicines">Requested medicines</string>
@@ -279,9 +279,11 @@
     <string name="request_details_view_payment_summary">View payment summary</string>
     <string name="request_details_reject">Reject order</string>
     <string name="request_details_contact_customer">Contact customer</string>
-    <string name="request_details_accept">Accept order</string>
+    <string name="request_details_accept">Accept Order</string>
     <string name="request_details_accepted_message">Order accepted</string>
     <string name="request_details_rejected_message">Order rejected</string>
+    <string name="request_details_no_prescription">No prescription sent</string>
+    <string name="request_details_payment_method">Payment method</string>
     <string name="requests_view_sample_order">Sample Order</string>
     <string name="pharmacist_notes_title">Notes for Customer</string>
     <string name="pharmacist_notes_placeholder">Add any notes regarding alternatives, pricing, etc...</string>

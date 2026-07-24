@@ -17,12 +17,13 @@ enum class PaymentMethod {
 
 data class RequestSummary(
     val id: Long,
-    val minutesAgo: String,
+    val minutesAgo: Int,
     val status: RequestStatus,
     val customerName: String,
     val customerPhone: String,
     val customerAddress: String,
-    val total: Int,
+    val productImages: List<String?>,
+    val total: Double,
     val paymentMethod: PaymentMethod,
     val paymentCardLastDigits: String? = null,
 )

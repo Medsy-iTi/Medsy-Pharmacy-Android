@@ -22,7 +22,10 @@ data class PharmacyRequestDto(
     val status: String,
     val createdAt: String,
     val items: List<RequestItemDto>,
-    val prescriptionUrl: String?
+    val prescriptionUrl: String?,
+    val customerName: String?,
+    val customerPhone: String?,
+    val paymentMethod: String?
 )
 
 @JsonClass(generateAdapter = true)

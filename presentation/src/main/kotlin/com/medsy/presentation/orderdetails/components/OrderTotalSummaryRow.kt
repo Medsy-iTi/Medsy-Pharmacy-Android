@@ -10,8 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +22,7 @@ import com.medsy.presentation.R
 
 @Composable
 fun OrderTotalSummaryRow(
-    total: Int,
+    total: Double,
     onViewSummaryClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -48,19 +48,17 @@ fun OrderTotalSummaryRow(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                TextButton(
-                    onClick = onViewSummaryClick,
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
-                ) {
-                    Text(
-                        text = stringResource(R.string.request_details_view_payment_summary),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                }
+                Text(
+                    text = stringResource(R.string.request_details_view_payment_summary),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .clickable(onClick = onViewSummaryClick)
+                )
             }
             Text(
-                text = stringResource(R.string.request_details_price_egp, total.toDouble()),                style = MaterialTheme.typography.titleLarge,
+                text = stringResource(R.string.request_details_price_egp, total),                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
             )

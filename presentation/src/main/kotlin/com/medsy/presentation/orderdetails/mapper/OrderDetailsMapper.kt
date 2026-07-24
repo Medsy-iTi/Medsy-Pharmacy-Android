@@ -4,20 +4,40 @@ import com.medsy.domain.orders.model.PharmacyRequestDomain
 import com.medsy.domain.orders.model.RequestItemDomain
 import com.medsy.presentation.orderdetails.model.Request
 import com.medsy.presentation.orderdetails.model.RequestMedicineItem
+import java.time.Duration
+import java.time.Instant
+
+fun calculateMinutesAgo(createdAt: String): Int {
+    return try {
+        val parseStr = if (createdAt.endsWith("Z")) createdAt else "${createdAt}Z"
+        val created = Instant.parse(parseStr)
+        val now = Instant.now()
+        Duration.between(created, now).toMinutes().coerceAtLeast(0).toInt()
+    } catch (e: Exception) {
+        0
+    }
+}
 
 fun PharmacyRequestDomain.toPresentation(): Request {
+    val calculatedTotal = items.sumOf { it.unitPrice * it.quantity }
+    val minutes = calculateMinutesAgo(createdAt)
     return Request(
         id = this.id.toString(),
         isNew = this.status.equals("SEARCHING", ignoreCase = true) ||
                 this.status.equals("NEW", ignoreCase = true),
-        minutesAgo = 0,
-        customerName = "Customer #${this.customerId}",
-        customerPhone = "",
+        minutesAgo = minutes,
+        customerName = this.customerName ?: "Customer #${this.customerId}",
+        customerPhone = this.customerPhone ?: "",
         customerAddress = this.deliveryAddress ?: "",
         items = this.items.map { it.toPresentation() },
         customerNotes = null,
-        total = 0,
-        prescriptionUrl = this.prescriptionUrl
+        total = calculatedTotal,
+        prescriptionUrl = this.prescriptionUrl,
+        paymentMethod = when (this.paymentMethod?.uppercase()) {
+            "VISA" -> "Visa"
+            "MASTERCARD" -> "Mastercard"
+            else -> "Cash"
+        }
     )
 }
 

@@ -9,7 +9,10 @@ data class PharmacyRequestDomain(
     val status: String,
     val createdAt: String,
     val items: List<RequestItemDomain>,
-    val prescriptionUrl: String?
+    val prescriptionUrl: String?,
+    val customerName: String?,
+    val customerPhone: String?,
+    val paymentMethod: String?
 )
 
 data class RequestItemDomain(
