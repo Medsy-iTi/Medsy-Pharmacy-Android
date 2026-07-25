@@ -11,8 +11,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.medsy.domain.common.fold
-import com.medsy.domain.orders.model.OrderStatusConstants
-import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
+import com.medsy.domain.offer.usecase.GetPharmacyOffersUseCase
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
 import javax.inject.Inject
@@ -21,7 +20,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
-    private val getCurrentPharmacyRequests: GetCurrentPharmacyRequestsUseCase
+    private val getPharmacyOffers: GetPharmacyOffersUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeUIState())
@@ -62,7 +61,6 @@ class HomeViewModel @Inject constructor(
                     mutableEffect.send(HomeUIEffect.OpenNotifications)
                 }
             }
-
         }
     }
 
@@ -70,22 +68,20 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            val pharmacyDeferred = async { getMyPharmacy() }
-            val ordersDeferred = async { getCurrentPharmacyRequests(page = 0, size = 10) }
-
-            val pharmacyResult = pharmacyDeferred.await()
-            val ordersResult = ordersDeferred.await()
-
+            val pharmacyResult = getMyPharmacy()
+            
             var newState = _state.value.copy(isLoading = false)
+            var currentPharmacyId: Long = 0L
 
             pharmacyResult.fold(
                 onSuccess = { pharmacy ->
+                    currentPharmacyId = pharmacy.id
                     newState = newState.copy(
                         pharmacyInfo = newState.pharmacyInfo.copy(
                             name = pharmacy.name,
                             address = pharmacy.address ?: "",
                             pharmacyId = "PH${pharmacy.id}",
-                            isOpen = true,
+                            isOpen = true, // Should ideally come from presence
                             closingTime = "11:00 مساءً",
                             rating = 4.8,
                             reviewsCount = 256
@@ -95,35 +91,36 @@ class HomeViewModel @Inject constructor(
                 onError = { }
             )
 
-            ordersResult.fold(
-                onSuccess = { page ->
-                    val latestThree = page.content.take(3).map { order ->
-                        HomeOrderUI(
-                            id = "#${order.id}",
-                            customerName = "Customer #${order.customerId}",
-                            location = order.deliveryAddress ?: "No address",
-                            timeAgo = order.createdAt,
-                            status = when (order.status) {
-                                OrderStatusConstants.PENDING, OrderStatusConstants.NEW -> HomeOrderStatus.NEW
-                                OrderStatusConstants.IN_PROGRESS -> HomeOrderStatus.PREPARING
-                                OrderStatusConstants.DELIVERED -> HomeOrderStatus.DELIVERED
-                                else -> HomeOrderStatus.NEW
-                            }
-                        )
-                    }
+            if (currentPharmacyId > 0) {
+                val offersResult = getPharmacyOffers(pharmacyId = currentPharmacyId, page = 0, size = 10)
+                offersResult.fold(
+                    onSuccess = { page ->
+                        val latestThree = page.content.take(3).map { offer ->
+                            HomeOrderUI(
+                                id = "#${offer.id}",
+                                customerName = "عرض لطلب #${offer.requestId}",
+                                location = "${offer.distanceKm} كم",
+                                timeAgo = "", // We can add createdAt to domain model later
+                                status = when (offer.status) {
+                                    "PENDING" -> HomeOrderStatus.NEW
+                                    "ACCEPTED" -> HomeOrderStatus.PREPARING
+                                    "COMPLETED" -> HomeOrderStatus.DELIVERED
+                                    else -> HomeOrderStatus.NEW
+                                }
+                            )
+                        }
 
-                    newState = newState.copy(
-                        latestOrders = latestThree,
-                        stats = newState.stats.copy(
-                            newOrders = page.content.count {
-                                it.status == OrderStatusConstants.PENDING || it.status == OrderStatusConstants.NEW
-                            },
-                            inProgress = page.content.count { it.status == OrderStatusConstants.IN_PROGRESS }
+                        newState = newState.copy(
+                            latestOrders = latestThree,
+                            stats = newState.stats.copy(
+                                newOrders = page.content.count { it.status == "PENDING" },
+                                inProgress = page.content.count { it.status == "ACCEPTED" }
+                            )
                         )
-                    )
-                },
-                onError = { }
-            )
+                    },
+                    onError = { }
+                )
+            }
 
             _state.value = newState
         }
