@@ -14,7 +14,9 @@ import com.medsy.domain.common.fold
 import com.medsy.domain.offer.usecase.GetPharmacyOffersUseCase
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
+import kotlinx.coroutines.delay
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -47,7 +49,7 @@ class HomeViewModel @Inject constructor(
     private fun startPolling() {
         pollingJob = viewModelScope.launch {
             while (true) {
-                kotlinx.coroutines.delay(15000)
+                delay(15000.milliseconds)
                 pollOffersSilently()
             }
         }
@@ -66,8 +68,8 @@ class HomeViewModel @Inject constructor(
                     val latestThree = page.content.take(3).map { offer ->
                         HomeOrderUI(
                             id = "#${offer.id}",
-                            customerName = "عرض لطلب #${offer.requestId}",
-                            location = "${offer.distanceKm} كم",
+                            requestId = offer.requestId.toString(),
+                            distanceKm = offer.distanceKm,
                             timeAgo = "",
                             status = when (offer.status) {
                                 "PENDING" -> HomeOrderStatus.NEW
@@ -132,11 +134,8 @@ class HomeViewModel @Inject constructor(
                         pharmacyInfo = newState.pharmacyInfo.copy(
                             name = pharmacy.name,
                             address = pharmacy.address ?: "",
-                            pharmacyId = "PH${pharmacy.id}",
-                            isOpen = true, // Should ideally come from presence
-                            closingTime = "11:00 مساءً",
-                            rating = 4.8,
-                            reviewsCount = 256
+                            pharmacyId = pharmacy.id.toString(),
+                            isOpen = true,
                         )
                     )
                 },
@@ -150,9 +149,9 @@ class HomeViewModel @Inject constructor(
                         val latestThree = page.content.take(3).map { offer ->
                             HomeOrderUI(
                                 id = "#${offer.id}",
-                                customerName = "عرض لطلب #${offer.requestId}",
-                                location = "${offer.distanceKm} كم",
-                                timeAgo = "", // We can add createdAt to domain model later
+                                requestId = offer.requestId.toString(),
+                                distanceKm = offer.distanceKm,
+                                timeAgo = "",
                                 status = when (offer.status) {
                                     "PENDING" -> HomeOrderStatus.NEW
                                     "ACCEPTED" -> HomeOrderStatus.PREPARING

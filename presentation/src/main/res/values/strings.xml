@@ -349,4 +349,7 @@
     <string name="dialog_cancel">Cancel</string>
     <string name="profile_logout_confirm_title">Log Out</string>
     <string name="profile_logout_confirm_desc">Are you sure you want to log out?</string>
+    <string name="home_offer_for_request">Offer for request #%1$s</string>
+    <string name="home_offer_distance">%1$s km</string>
+    <string name="home_pharmacy_id_format">PH%1$s</string>
 </resources>

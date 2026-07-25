@@ -64,14 +64,14 @@ fun OrderListItem(
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
-                        text = order.customerName,
+                        text = stringResource(R.string.home_offer_for_request, order.requestId),
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = order.location,
+                    text = stringResource(R.string.home_offer_distance, order.distanceKm.toString()),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
