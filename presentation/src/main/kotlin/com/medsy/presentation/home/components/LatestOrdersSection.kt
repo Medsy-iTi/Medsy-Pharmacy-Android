@@ -50,19 +50,30 @@ fun LatestOrdersSection(
         Spacer(modifier = Modifier.height(12.dp))
 
         if (orders.isEmpty()) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+            androidx.compose.foundation.layout.Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .androidx.compose.foundation.background(
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
+                        shape = RoundedCornerShape(16.dp)
+                    ),
+                contentAlignment = Alignment.Center
             ) {
-                MedsyLottie(
-                    resId = com.medsy.designsystem.R.raw.no_data_found,
-                    modifier = Modifier.height(150.dp)
-                )
-                Text(
-                    text = stringResource(R.string.orders_active_empty),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    androidx.compose.material3.Icon(
+                        imageVector = androidx.compose.material.icons.Icons.Outlined.Storefront,
+                        contentDescription = null,
+                        modifier = Modifier.androidx.compose.foundation.layout.size(48.dp),
+                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(R.string.orders_active_empty),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                    )
+                }
             }
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
