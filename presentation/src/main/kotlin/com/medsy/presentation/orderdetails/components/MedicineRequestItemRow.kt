@@ -24,7 +24,7 @@ import com.medsy.presentation.R
 import com.medsy.presentation.orderdetails.model.RequestMedicineItem
 
 @Composable
-fun MedicineOrderItemRow(
+fun MedicineRequestItemRow(
     item: RequestMedicineItem,
     modifier: Modifier = Modifier,
 ) {

@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -29,7 +28,7 @@ import com.medsy.designsystem.components.MedsyButton
 import com.medsy.presentation.R
 
 @Composable
-fun OrderActionButtons(
+fun RequestActionButtons(
     isSubmitting: Boolean,
     onRejectClick: () -> Unit,
     onContactClick: () -> Unit,

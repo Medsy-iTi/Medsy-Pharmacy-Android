@@ -22,7 +22,7 @@ import com.medsy.designsystem.ui.theme.extendedColors
 import com.medsy.presentation.R
 
 @Composable
-fun OrderDetailsTopBar(
+fun RequestDetailsTopBar(
     isNewOrder: Boolean,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,

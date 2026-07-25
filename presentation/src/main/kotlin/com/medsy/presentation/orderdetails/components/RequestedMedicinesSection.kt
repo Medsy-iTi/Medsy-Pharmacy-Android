@@ -43,7 +43,7 @@ fun RequestedMedicinesSection(
         ) {
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                 items.forEachIndexed { index, item ->
-                    MedicineOrderItemRow(item = item)
+                    MedicineRequestItemRow(item = item)
                     if (index != items.lastIndex) {
                         HorizontalDivider(
                             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),

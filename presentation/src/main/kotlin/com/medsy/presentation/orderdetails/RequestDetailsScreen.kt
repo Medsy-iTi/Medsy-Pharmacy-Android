@@ -23,10 +23,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.medsy.designsystem.components.MedsySnackbarHost
 import com.medsy.designsystem.components.showSuccess
 import com.medsy.presentation.orderdetails.components.CustomerNotesSection
-import com.medsy.presentation.orderdetails.components.OrderActionButtons
-import com.medsy.presentation.orderdetails.components.OrderDetailsTopBar
-import com.medsy.presentation.orderdetails.components.OrderInfoCard
-import com.medsy.presentation.orderdetails.components.OrderTotalSummaryRow
+import com.medsy.presentation.orderdetails.components.RequestActionButtons
+import com.medsy.presentation.orderdetails.components.RequestDetailsTopBar
+import com.medsy.presentation.orderdetails.components.RequestInfoCard
+import com.medsy.presentation.orderdetails.components.RequestTotalSummaryRow
 import com.medsy.presentation.orderdetails.components.PaymentMethodSection
 import com.medsy.presentation.orderdetails.components.PharmacistNotesSection
 import com.medsy.presentation.orderdetails.components.PrescriptionImageSection
@@ -103,7 +103,7 @@ fun RequestDetailsScreen(
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-            OrderDetailsTopBar(
+            RequestDetailsTopBar(
                 isNewOrder = request.isNew,
                 onBackClick = { onIntent(RequestDetailsUIIntent.BackClicked) },
                 modifier = Modifier.padding(horizontal = 12.dp),
@@ -115,7 +115,7 @@ fun RequestDetailsScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp),
             ) {
-                OrderInfoCard(
+                RequestInfoCard(
                     orderId = request.id,
                     minutesAgo = request.minutesAgo,
                     customerName = request.customerName,
@@ -155,13 +155,13 @@ fun RequestDetailsScreen(
                     modifier = Modifier.padding(top = 24.dp),
                 )
 
-                OrderTotalSummaryRow(
+                RequestTotalSummaryRow(
                     total = request.total,
                     modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
                 )
             }
 
-            OrderActionButtons(
+            RequestActionButtons(
                 isSubmitting = state.isSubmitting,
                 onRejectClick = { onIntent(RequestDetailsUIIntent.RejectRequestClicked) },
                 onContactClick = { onIntent(RequestDetailsUIIntent.ContactCustomerClicked) },
