@@ -1,13 +1,13 @@
 package com.medsy.data.orders.datasource
 
-import com.medsy.data.orders.model.OrderPageResponseDto
+import com.medsy.data.orders.model.PharmacyRequestPageDto
 import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
 
-interface OrdersRemoteDataSource {
+interface RequestsRemoteDataSource {
     suspend fun getCurrentPharmacyRequests(
         page: Int,
         size: Int,
         sort: List<String>?
-    ): MedsyResult<OrderPageResponseDto, MedsyError.Remote>
+    ): MedsyResult<PharmacyRequestPageDto, MedsyError.Remote>
 }

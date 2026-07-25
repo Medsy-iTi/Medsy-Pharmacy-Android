@@ -1,7 +1,7 @@
 package com.medsy.data.di
 
-import com.medsy.data.orders.repository.OrdersRepositoryImpl
-import com.medsy.domain.orders.repository.OrdersRepository
+import com.medsy.data.orders.repository.RequestsRepositoryImpl
+import com.medsy.domain.orders.repository.RequestsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -10,12 +10,12 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class OrdersDataModule {
+abstract class RequestsDataModule {
 
     @Binds
     @Singleton
-    abstract fun bindOrdersRepository(
-        ordersRepositoryImpl: OrdersRepositoryImpl
-    ): OrdersRepository
+    abstract fun bindRequestsRepository(
+        requestsRepositoryImpl: RequestsRepositoryImpl
+    ): RequestsRepository
 
 }

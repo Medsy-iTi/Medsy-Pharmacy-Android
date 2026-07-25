@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.medsy.domain.common.fold
-import com.medsy.domain.orders.model.OrderStatusConstants
+import com.medsy.domain.orders.model.RequestStatusConstants
 import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
@@ -104,9 +104,9 @@ class HomeViewModel @Inject constructor(
                             location = order.deliveryAddress ?: "No address",
                             timeAgo = order.createdAt,
                             status = when (order.status) {
-                                OrderStatusConstants.PENDING, OrderStatusConstants.NEW -> HomeOrderStatus.NEW
-                                OrderStatusConstants.IN_PROGRESS -> HomeOrderStatus.PREPARING
-                                OrderStatusConstants.DELIVERED -> HomeOrderStatus.DELIVERED
+                                RequestStatusConstants.PENDING, RequestStatusConstants.NEW -> HomeOrderStatus.NEW
+                                RequestStatusConstants.IN_PROGRESS -> HomeOrderStatus.PREPARING
+                                RequestStatusConstants.DELIVERED -> HomeOrderStatus.DELIVERED
                                 else -> HomeOrderStatus.NEW
                             }
                         )
@@ -116,9 +116,9 @@ class HomeViewModel @Inject constructor(
                         latestOrders = latestThree,
                         stats = newState.stats.copy(
                             newOrders = page.content.count {
-                                it.status == OrderStatusConstants.PENDING || it.status == OrderStatusConstants.NEW
+                                it.status == RequestStatusConstants.PENDING || it.status == RequestStatusConstants.NEW
                             },
-                            inProgress = page.content.count { it.status == OrderStatusConstants.IN_PROGRESS }
+                            inProgress = page.content.count { it.status == RequestStatusConstants.IN_PROGRESS }
                         )
                     )
                 },

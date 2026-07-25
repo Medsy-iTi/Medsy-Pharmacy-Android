@@ -35,7 +35,7 @@ sealed interface Route : NavKey {
     data object Suspended : Route
 
     @Serializable
-    data class OrderDetails(val orderId: Long) : Route
+    data class RequestDetails(val requestId: Long) : Route
 
     @Serializable
     data object InvitePharmacist : Route
@@ -55,7 +55,7 @@ sealed interface Route : NavKey {
         data object Home : Route
 
         @Serializable
-        data object Orders : Route
+        data object Requests : Route
 
         @Serializable
         data object Profile : Route

@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -29,7 +28,7 @@ import com.medsy.designsystem.components.MedsyButton
 import com.medsy.presentation.R
 
 @Composable
-fun OrderActionButtons(
+fun RequestActionButtons(
     isSubmitting: Boolean,
     onRejectClick: () -> Unit,
     onContactClick: () -> Unit,
@@ -64,7 +63,7 @@ fun OrderActionButtons(
                     modifier = Modifier.size(18.dp),
                 )
                 Text(
-                    text = stringResource(R.string.order_details_reject),
+                    text = stringResource(R.string.request_details_reject),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(start = 6.dp),
@@ -83,7 +82,7 @@ fun OrderActionButtons(
                     .height(52.dp),
             ) {
                 Text(
-                    text = stringResource(R.string.order_details_contact_customer),
+                    text = stringResource(R.string.request_details_contact_customer),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -111,7 +110,7 @@ fun OrderActionButtons(
             } else {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = stringResource(R.string.order_details_accept),
+                        text = stringResource(R.string.request_details_accept),
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Icon(

@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingBag
@@ -24,16 +26,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.layout.ContentScale
+import coil3.compose.AsyncImage
 import com.medsy.designsystem.components.MedsyButton
 import com.medsy.designsystem.ui.theme.extendedColors
 import com.medsy.presentation.R
-import com.medsy.presentation.orders.OrderStatus
-import com.medsy.presentation.orders.OrderSummary
 import com.medsy.presentation.orders.PaymentMethod
+import com.medsy.presentation.orders.RequestStatus
+import com.medsy.presentation.orders.RequestSummary
 
 @Composable
-fun OrderCard(
-    order: OrderSummary,
+fun RequestCard(
+    request: RequestSummary,
     onCardClick: () -> Unit,
     onAcceptClick: () -> Unit,
     onPrepareClick: () -> Unit,
@@ -57,14 +61,14 @@ fun OrderCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = stringResource(R.string.order_details_order_number_format, order.id),
+                    text = stringResource(R.string.request_details_request_number_format, request.id),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = order.minutesAgo,
+                        text = stringResource(R.string.request_details_minutes_ago, request.minutesAgo),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -85,28 +89,49 @@ fun OrderCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = order.customerName,
+                    text = request.customerName,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                OrderStatusBadge(
-                    status = order.status,
+                RequestStatusBadge(
+                    status = request.status,
                 )
             }
 
             Text(
-                text = order.customerPhone,
+                text = request.customerPhone,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp),
             )
             Text(
-                text = order.customerAddress,
+                text = request.customerAddress,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp),
             )
+
+            if (request.productImages.isNotEmpty()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    request.productImages.take(5).forEach { imageUrl ->
+                        AsyncImage(
+                            model = imageUrl,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                        )
+                    }
+                }
+            }
 
             Row(
                 modifier = Modifier
@@ -116,47 +141,48 @@ fun OrderCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = stringResource(R.string.order_details_price_egp, order.total),
+                    text = stringResource(R.string.request_details_price_egp, request.total),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
                     text = stringResource(
-                        R.string.orders_payment_prefix,
-                        order.paymentLabel(),
+                        R.string.requests_payment_prefix,
+                        request.paymentLabel(),
                     ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
 
-            when (order.status) {
-                OrderStatus.New -> MedsyButton(
+            when (request.status) {
+                RequestStatus.Searching,
+                RequestStatus.New -> MedsyButton(
                     onClick = onAcceptClick,
                     modifier = Modifier.padding(top = 14.dp),
                 ) {
                     Text(
-                        text = stringResource(R.string.order_details_accept),
+                        text = stringResource(R.string.request_details_accept),
                         style = MaterialTheme.typography.titleMedium,
                     )
                 }
 
-                OrderStatus.InProgress -> PrepareOrderButton(
+                RequestStatus.InProgress -> PrepareRequestButton(
                     onClick = onPrepareClick,
                     modifier = Modifier.padding(top = 14.dp),
                 )
 
-                OrderStatus.Delivered -> Unit
-                OrderStatus.Cancelled -> Unit
-                OrderStatus.Completed -> Unit
+                RequestStatus.Delivered -> Unit
+                RequestStatus.Cancelled -> Unit
+                RequestStatus.Completed -> Unit
             }
         }
     }
 }
 
 @Composable
-private fun PrepareOrderButton(
+private fun PrepareRequestButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -172,7 +198,7 @@ private fun PrepareOrderButton(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = stringResource(R.string.orders_action_prepare),
+            text = stringResource(R.string.requests_action_prepare),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.extendedColors.blueContent,
@@ -181,17 +207,17 @@ private fun PrepareOrderButton(
 }
 
 @Composable
-private fun OrderSummary.paymentLabel(): String = when (paymentMethod) {
-    PaymentMethod.Cash -> stringResource(R.string.orders_payment_cash)
+private fun RequestSummary.paymentLabel(): String = when (paymentMethod) {
+    PaymentMethod.Cash -> stringResource(R.string.requests_payment_cash)
     PaymentMethod.Visa -> stringResource(
-        R.string.orders_payment_card_format,
-        stringResource(R.string.orders_payment_visa),
+        R.string.requests_payment_card_format,
+        stringResource(R.string.requests_payment_visa),
         paymentCardLastDigits.orEmpty(),
     )
 
     PaymentMethod.Mastercard -> stringResource(
-        R.string.orders_payment_card_format,
-        stringResource(R.string.orders_payment_mastercard),
+        R.string.requests_payment_card_format,
+        stringResource(R.string.requests_payment_mastercard),
         paymentCardLastDigits.orEmpty(),
     )
 }

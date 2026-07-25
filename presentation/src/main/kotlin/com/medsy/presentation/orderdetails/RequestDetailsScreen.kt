@@ -23,47 +23,48 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.medsy.designsystem.components.MedsySnackbarHost
 import com.medsy.designsystem.components.showSuccess
 import com.medsy.presentation.orderdetails.components.CustomerNotesSection
-import com.medsy.presentation.orderdetails.components.OrderActionButtons
-import com.medsy.presentation.orderdetails.components.OrderDetailsTopBar
-import com.medsy.presentation.orderdetails.components.OrderInfoCard
-import com.medsy.presentation.orderdetails.components.OrderTotalSummaryRow
+import com.medsy.presentation.orderdetails.components.RequestActionButtons
+import com.medsy.presentation.orderdetails.components.RequestDetailsTopBar
+import com.medsy.presentation.orderdetails.components.RequestInfoCard
+import com.medsy.presentation.orderdetails.components.RequestTotalSummaryRow
+import com.medsy.presentation.orderdetails.components.PaymentMethodSection
 import com.medsy.presentation.orderdetails.components.PharmacistNotesSection
 import com.medsy.presentation.orderdetails.components.PrescriptionImageSection
 import com.medsy.presentation.orderdetails.components.RequestedMedicinesSection
 
 @Composable
-fun OrderDetailsRoot(
-    orderId: Long,
+fun RequestDetailsRoot(
+    requestId: Long,
     onNavigateBack: () -> Unit,
     onDialPhoneNumber: (String) -> Unit,
     onOpenLocationOnMap: () -> Unit,
     onOpenPaymentSummary: () -> Unit,
     onOpenCustomerChat: () -> Unit,
-    viewModel: OrderDetailsViewModel = hiltViewModel(),
+    viewModel: RequestDetailsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    LaunchedEffect(orderId) {
-        viewModel.onIntent(OrderDetailsUIIntent.LoadOrder(orderId))
+    LaunchedEffect(requestId) {
+        viewModel.onIntent(RequestDetailsUIIntent.LoadRequest(requestId))
     }
 
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                OrderDetailsUIEffect.NavigateBack -> onNavigateBack()
-                is OrderDetailsUIEffect.DialPhoneNumber -> onDialPhoneNumber(effect.phoneNumber)
-                OrderDetailsUIEffect.OpenLocationOnMap -> onOpenLocationOnMap()
-                OrderDetailsUIEffect.OpenPaymentSummary -> onOpenPaymentSummary()
-                OrderDetailsUIEffect.OpenCustomerChat -> onOpenCustomerChat()
-                is OrderDetailsUIEffect.ShowMessage ->
+                RequestDetailsUIEffect.NavigateBack -> onNavigateBack()
+                is RequestDetailsUIEffect.DialPhoneNumber -> onDialPhoneNumber(effect.phoneNumber)
+                RequestDetailsUIEffect.OpenLocationOnMap -> onOpenLocationOnMap()
+                RequestDetailsUIEffect.OpenPaymentSummary -> onOpenPaymentSummary()
+                RequestDetailsUIEffect.OpenCustomerChat -> onOpenCustomerChat()
+                is RequestDetailsUIEffect.ShowMessage ->
                     snackbarHostState.showSuccess(context.getString(effect.messageRes))
             }
         }
     }
 
-    OrderDetailsScreen(
+    RequestDetailsScreen(
         state = state,
         onIntent = viewModel::onIntent,
         snackbarHostState = snackbarHostState,
@@ -72,9 +73,9 @@ fun OrderDetailsRoot(
 
 
 @Composable
-fun OrderDetailsScreen(
-    state: OrderDetailsUIState,
-    onIntent: (OrderDetailsUIIntent) -> Unit,
+fun RequestDetailsScreen(
+    state: RequestDetailsUIState,
+    onIntent: (RequestDetailsUIIntent) -> Unit,
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
@@ -83,7 +84,7 @@ fun OrderDetailsScreen(
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { MedsySnackbarHost(hostState = snackbarHostState) },
     ) { paddingValues ->
-        if (state.isLoading || state.order == null) {
+        if (state.isLoading || state.request == null) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -95,16 +96,16 @@ fun OrderDetailsScreen(
             return@Scaffold
         }
 
-        val order = state.order
+        val request = state.request
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-            OrderDetailsTopBar(
-                isNewOrder = order.isNew,
-                onBackClick = { onIntent(OrderDetailsUIIntent.BackClicked) },
+            RequestDetailsTopBar(
+                isNewOrder = request.isNew,
+                onBackClick = { onIntent(RequestDetailsUIIntent.BackClicked) },
                 modifier = Modifier.padding(horizontal = 12.dp),
             )
 
@@ -114,55 +115,57 @@ fun OrderDetailsScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp),
             ) {
-                OrderInfoCard(
-                    orderId = order.id,
-                    minutesAgo = order.minutesAgo,
-                    customerName = order.customerName,
-                    customerPhone = order.customerPhone,
-                    customerAddress = order.customerAddress,
-                    onCallClick = { onIntent(OrderDetailsUIIntent.CallCustomerClicked) },
-                    onLocationClick = { onIntent(OrderDetailsUIIntent.OpenLocationClicked) },
+                RequestInfoCard(
+                    orderId = request.id,
+                    minutesAgo = request.minutesAgo,
+                    customerName = request.customerName,
+                    customerPhone = request.customerPhone,
+                    customerAddress = request.customerAddress,
+                    onCallClick = { onIntent(RequestDetailsUIIntent.CallCustomerClicked) },
+                    onLocationClick = { onIntent(RequestDetailsUIIntent.OpenLocationClicked) },
                     modifier = Modifier.padding(top = 16.dp),
                 )
 
                 RequestedMedicinesSection(
-                    items = order.items,
+                    items = request.items,
                     modifier = Modifier.padding(top = 24.dp),
                 )
 
                 PrescriptionImageSection(
-                    imageUrl = order.prescriptionUrl,
+                    imageUrl = request.prescriptionUrl,
                     onImageClick = {},
                     modifier = Modifier.padding(top = 24.dp),
                 )
 
-                    CustomerNotesSection(
-                        notes = order.customerNotes,
-                        modifier = Modifier.padding(top = 24.dp),
-                    )
+                CustomerNotesSection(
+                    notes = request.customerNotes,
+                    modifier = Modifier.padding(top = 24.dp),
+                )
 
                 PharmacistNotesSection(
                     notes = state.pharmacistNotes,
                     onNotesChanged = { newNotes ->
-                        onIntent(OrderDetailsUIIntent.PharmacistNotesChanged(newNotes))
+                        onIntent(RequestDetailsUIIntent.PharmacistNotesChanged(newNotes))
                     },
                     modifier = Modifier.padding(top = 24.dp),
                 )
 
-                OrderTotalSummaryRow(
-                    total = order.total,
-                    onViewSummaryClick = {
-                        onIntent(OrderDetailsUIIntent.ViewPaymentSummaryClicked)
-                    },
+                PaymentMethodSection(
+                    paymentMethod = request.paymentMethod,
+                    modifier = Modifier.padding(top = 24.dp),
+                )
+
+                RequestTotalSummaryRow(
+                    total = request.total,
                     modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
                 )
             }
 
-            OrderActionButtons(
+            RequestActionButtons(
                 isSubmitting = state.isSubmitting,
-                onRejectClick = { onIntent(OrderDetailsUIIntent.RejectOrderClicked) },
-                onContactClick = { onIntent(OrderDetailsUIIntent.ContactCustomerClicked) },
-                onAcceptClick = { onIntent(OrderDetailsUIIntent.AcceptOrderClicked) },
+                onRejectClick = { onIntent(RequestDetailsUIIntent.RejectRequestClicked) },
+                onContactClick = { onIntent(RequestDetailsUIIntent.ContactCustomerClicked) },
+                onAcceptClick = { onIntent(RequestDetailsUIIntent.AcceptRequestClicked) },
             )
         }
     }

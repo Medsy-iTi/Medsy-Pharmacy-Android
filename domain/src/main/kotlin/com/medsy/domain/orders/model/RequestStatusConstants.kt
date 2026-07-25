@@ -1,6 +1,6 @@
 package com.medsy.domain.orders.model
 
-object OrderStatusConstants {
+object RequestStatusConstants {
     const val PENDING = "PENDING"
     const val NEW = "NEW"
     const val IN_PROGRESS = "IN_PROGRESS"

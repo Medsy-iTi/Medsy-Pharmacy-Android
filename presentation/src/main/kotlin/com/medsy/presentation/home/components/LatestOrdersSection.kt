@@ -59,7 +59,7 @@ fun LatestOrdersSection(
                     modifier = Modifier.height(150.dp)
                 )
                 Text(
-                    text = stringResource(R.string.orders_active_empty),
+                    text = stringResource(R.string.requests_active_empty),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
