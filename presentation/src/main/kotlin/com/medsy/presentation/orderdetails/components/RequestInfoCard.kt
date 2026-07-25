@@ -32,7 +32,7 @@ import com.medsy.designsystem.ui.theme.extendedColors
 import com.medsy.presentation.R
 
 @Composable
-fun OrderInfoCard(
+fun RequestInfoCard(
     orderId: String,
     minutesAgo: Int,
     customerName: String,
