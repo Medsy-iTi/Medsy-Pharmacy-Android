@@ -25,4 +25,16 @@ class OrdersRepositoryImpl @Inject constructor(
     override suspend fun getOrderDetails(orderId: Long): MedsyResult<OrderDetailsDomain?, MedsyError.Remote> =
         remoteDataSource.getCurrentPharmacyRequests(page = 0, size = 50, sort = null)
             .map { page -> page.content.find { it.id == orderId }?.toDomain() }
+
+    override suspend fun createOffer(requestId: Long, items: List<Pair<Long, Long>>): MedsyResult<Unit, MedsyError.Remote> {
+        val requestDto = com.medsy.data.orders.remote.dto.CreateOfferRequestDto(
+            items = items.map {
+                com.medsy.data.orders.remote.dto.OfferItemDto(
+                    requestItemId = it.first,
+                    productId = it.second
+                )
+            }
+        )
+        return remoteDataSource.createOffer(requestId, requestDto)
+    }
 }

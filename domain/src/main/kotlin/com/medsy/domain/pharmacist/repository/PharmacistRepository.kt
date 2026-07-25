@@ -15,6 +15,8 @@ interface PharmacistRepository {
     ): MedsyResult<Pharmacist, MedsyError>
     suspend fun removePharmacistFromPharmacy(pharmacistId: Long, pharmacyId: Long): EmptyMedsyResult<MedsyError>
     suspend fun leavePharmacy(pharmacyId: Long): EmptyMedsyResult<MedsyError>
+    suspend fun removePharmacist(id: Long): MedsyResult<Unit, MedsyError>
+    fun clearCache()
     suspend fun setPresence(onDuty: Boolean): MedsyResult<com.medsy.domain.pharmacist.model.PresenceStatus, MedsyError>
     suspend fun sendHeartbeat(): MedsyResult<com.medsy.domain.pharmacist.model.PresenceStatus, MedsyError>
 }

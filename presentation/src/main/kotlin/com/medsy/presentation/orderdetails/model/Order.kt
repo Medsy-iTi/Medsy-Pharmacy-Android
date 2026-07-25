@@ -8,6 +8,7 @@ data class OrderMedicineItem(
     val quantity: Int,
     val price: Int,
     val imageUrl: String?,
+    val productId: Long? = null,
 )
 
 data class Order(

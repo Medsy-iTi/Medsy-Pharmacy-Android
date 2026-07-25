@@ -127,6 +127,10 @@ fun OrderDetailsScreen(
 
                 RequestedMedicinesSection(
                     items = order.items,
+                    selectedItems = state.selectedItems,
+                    onItemCheckedChange = { itemId ->
+                        onIntent(OrderDetailsUIIntent.ToggleItemSelection(itemId))
+                    },
                     modifier = Modifier.padding(top = 24.dp),
                 )
 

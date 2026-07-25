@@ -21,6 +21,8 @@ import com.medsy.presentation.orderdetails.model.OrderMedicineItem
 @Composable
 fun RequestedMedicinesSection(
     items: List<OrderMedicineItem>,
+    selectedItems: Set<Long>,
+    onItemCheckedChange: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -43,7 +45,12 @@ fun RequestedMedicinesSection(
         ) {
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                 items.forEachIndexed { index, item ->
-                    MedicineOrderItemRow(item = item)
+                    val itemIdLong = item.id.toLongOrNull() ?: -1L
+                    MedicineOrderItemRow(
+                        item = item,
+                        isChecked = selectedItems.contains(itemIdLong),
+                        onCheckedChange = { onItemCheckedChange(itemIdLong) }
+                    )
                     if (index != items.lastIndex) {
                         HorizontalDivider(
                             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),

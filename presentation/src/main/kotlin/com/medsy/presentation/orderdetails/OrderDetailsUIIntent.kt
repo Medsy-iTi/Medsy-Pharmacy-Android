@@ -10,5 +10,5 @@ sealed interface OrderDetailsUIIntent {
     data object RejectOrderClicked : OrderDetailsUIIntent
     data object ContactCustomerClicked : OrderDetailsUIIntent
     data object AcceptOrderClicked : OrderDetailsUIIntent
-
+    data class ToggleItemSelection(val itemId: Long) : OrderDetailsUIIntent
 }

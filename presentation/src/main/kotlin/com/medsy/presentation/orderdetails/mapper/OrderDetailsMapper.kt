@@ -26,6 +26,7 @@ fun OrderItemDomain.toPresentation(): OrderMedicineItem {
         packInfo = "",
         quantity = this.quantity,
         price = 0,
-        imageUrl = null
+        imageUrl = null,
+        productId = this.productId
     )
 }

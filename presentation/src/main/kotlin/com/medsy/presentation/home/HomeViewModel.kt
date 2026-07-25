@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.medsy.domain.common.fold
 import com.medsy.domain.offer.usecase.GetPharmacyOffersUseCase
+import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
 import kotlinx.coroutines.delay
@@ -22,7 +23,8 @@ import kotlin.time.Duration.Companion.milliseconds
 class HomeViewModel @Inject constructor(
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
-    private val getPharmacyOffers: GetPharmacyOffersUseCase
+    private val getPharmacyOffers: GetPharmacyOffersUseCase,
+    private val getCurrentPharmacyRequests: GetCurrentPharmacyRequestsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeUIState())
@@ -62,21 +64,16 @@ class HomeViewModel @Inject constructor(
         val currentPharmacyId = pharmacyIdStr.removePrefix("PH").toLongOrNull() ?: return
         
         if (currentPharmacyId > 0) {
-            val offersResult = getPharmacyOffers(pharmacyId = currentPharmacyId, page = 0, size = 10)
-            offersResult.fold(
+            val requestsResult = getCurrentPharmacyRequests(page = 0, size = 10)
+            requestsResult.fold(
                 onSuccess = { page ->
-                    val latestThree = page.content.take(3).map { offer ->
+                    val latestThree = page.content.take(3).map { req ->
                         HomeOrderUI(
-                            id = "#${offer.id}",
-                            requestId = offer.requestId.toString(),
-                            distanceKm = offer.distanceKm,
+                            id = "#${req.id}",
+                            requestId = req.id.toString(),
+                            distanceKm = 0.0, // Distance not available on request
                             timeAgo = "",
-                            status = when (offer.status) {
-                                "PENDING" -> HomeOrderStatus.NEW
-                                "ACCEPTED" -> HomeOrderStatus.PREPARING
-                                "COMPLETED" -> HomeOrderStatus.DELIVERED
-                                else -> HomeOrderStatus.NEW
-                            }
+                            status = HomeOrderStatus.NEW
                         )
                     }
 
@@ -84,8 +81,7 @@ class HomeViewModel @Inject constructor(
                         currentState.copy(
                             latestOrders = latestThree,
                             stats = currentState.stats.copy(
-                                newOrders = page.content.count { it.status == "PENDING" },
-                                inProgress = page.content.count { it.status == "ACCEPTED" }
+                                newOrders = page.content.size,
                             )
                         )
                     }
@@ -143,29 +139,23 @@ class HomeViewModel @Inject constructor(
             )
 
             if (currentPharmacyId > 0) {
-                val offersResult = getPharmacyOffers(pharmacyId = currentPharmacyId, page = 0, size = 10)
-                offersResult.fold(
+                val requestsResult = getCurrentPharmacyRequests(page = 0, size = 10)
+                requestsResult.fold(
                     onSuccess = { page ->
-                        val latestThree = page.content.take(3).map { offer ->
+                        val latestThree = page.content.take(3).map { req ->
                             HomeOrderUI(
-                                id = "#${offer.id}",
-                                requestId = offer.requestId.toString(),
-                                distanceKm = offer.distanceKm,
+                                id = "#${req.id}",
+                                requestId = req.id.toString(),
+                                distanceKm = 0.0,
                                 timeAgo = "",
-                                status = when (offer.status) {
-                                    "PENDING" -> HomeOrderStatus.NEW
-                                    "ACCEPTED" -> HomeOrderStatus.PREPARING
-                                    "COMPLETED" -> HomeOrderStatus.DELIVERED
-                                    else -> HomeOrderStatus.NEW
-                                }
+                                status = HomeOrderStatus.NEW
                             )
                         }
 
                         newState = newState.copy(
                             latestOrders = latestThree,
                             stats = newState.stats.copy(
-                                newOrders = page.content.count { it.status == "PENDING" },
-                                inProgress = page.content.count { it.status == "ACCEPTED" }
+                                newOrders = page.content.size,
                             )
                         )
                     },

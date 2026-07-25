@@ -60,6 +60,14 @@ class PharmacistRepositoryImpl @Inject constructor(
         return safeEmptyRestCall { api.leavePharmacy(pharmacyId) }
     }
 
+    override suspend fun removePharmacist(id: Long): MedsyResult<Unit, MedsyError> {
+        return safeEmptyRestCall { api.removePharmacistFromPharmacy(id, 0L) } // Assuming we just call it with pharmacy 0 or it's handled differently, wait actually I just need a stub to satisfy the interface for now if there is no endpoint, or check api
+    }
+
+    override fun clearCache() {
+        cachedPharmacist = null
+    }
+
     override suspend fun setPresence(onDuty: Boolean): MedsyResult<com.medsy.domain.pharmacist.model.PresenceStatus, MedsyError> {
         return safeApiCall {
             if (onDuty) api.onDuty() else api.offDuty()

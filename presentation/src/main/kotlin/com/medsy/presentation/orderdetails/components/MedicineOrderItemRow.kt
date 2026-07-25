@@ -23,17 +23,30 @@ import com.medsy.designsystem.ui.theme.extendedColors
 import com.medsy.presentation.R
 import com.medsy.presentation.orderdetails.model.OrderMedicineItem
 
+import androidx.compose.material3.Checkbox
+import androidx.compose.foundation.clickable
+
 @Composable
 fun MedicineOrderItemRow(
     item: OrderMedicineItem,
+    isChecked: Boolean,
+    onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .clickable(enabled = onCheckedChange != null) { onCheckedChange?.invoke(!isChecked) }
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (onCheckedChange != null) {
+            Checkbox(
+                checked = isChecked,
+                onCheckedChange = onCheckedChange,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+        }
         Box(
             modifier = Modifier
                 .size(28.dp)
