@@ -29,15 +29,67 @@ class HomeViewModel @Inject constructor(
     private val mutableEffect = Channel<HomeUIEffect>(Channel.BUFFERED)
     val effect = mutableEffect.receiveAsFlow()
 
+    private var pollingJob: kotlinx.coroutines.Job? = null
+
     init {
         loadHomeData()
         prefetchProfileData()
+        startPolling()
     }
 
     private fun prefetchProfileData() {
         viewModelScope.launch {
             getCurrentPharmacist(forceRefresh = false)
             getMyPharmacy(forceRefresh = false)
+        }
+    }
+
+    private fun startPolling() {
+        pollingJob = viewModelScope.launch {
+            while (true) {
+                kotlinx.coroutines.delay(15000)
+                pollOffersSilently()
+            }
+        }
+    }
+
+    private suspend fun pollOffersSilently() {
+        val pharmacyIdStr = _state.value.pharmacyInfo.pharmacyId
+        if (pharmacyIdStr.isBlank()) return
+        
+        val currentPharmacyId = pharmacyIdStr.removePrefix("PH").toLongOrNull() ?: return
+        
+        if (currentPharmacyId > 0) {
+            val offersResult = getPharmacyOffers(pharmacyId = currentPharmacyId, page = 0, size = 10)
+            offersResult.fold(
+                onSuccess = { page ->
+                    val latestThree = page.content.take(3).map { offer ->
+                        HomeOrderUI(
+                            id = "#${offer.id}",
+                            customerName = "عرض لطلب #${offer.requestId}",
+                            location = "${offer.distanceKm} كم",
+                            timeAgo = "",
+                            status = when (offer.status) {
+                                "PENDING" -> HomeOrderStatus.NEW
+                                "ACCEPTED" -> HomeOrderStatus.PREPARING
+                                "COMPLETED" -> HomeOrderStatus.DELIVERED
+                                else -> HomeOrderStatus.NEW
+                            }
+                        )
+                    }
+
+                    _state.update { currentState ->
+                        currentState.copy(
+                            latestOrders = latestThree,
+                            stats = currentState.stats.copy(
+                                newOrders = page.content.count { it.status == "PENDING" },
+                                inProgress = page.content.count { it.status == "ACCEPTED" }
+                            )
+                        )
+                    }
+                },
+                onError = { }
+            )
         }
     }
 
