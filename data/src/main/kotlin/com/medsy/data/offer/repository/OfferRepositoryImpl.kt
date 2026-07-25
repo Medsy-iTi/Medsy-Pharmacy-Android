@@ -6,6 +6,7 @@ import com.medsy.data.offer.remote.api.OfferApi
 import com.medsy.data.remote.network.safeApiCall
 import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
+import com.medsy.domain.common.map
 import com.medsy.domain.offer.model.CreateOfferRequest
 import com.medsy.domain.offer.model.Offer
 import com.medsy.domain.offer.model.PaginatedOffers
@@ -20,17 +21,11 @@ class OfferRepositoryImpl @Inject constructor(
         requestId: Long,
         request: CreateOfferRequest
     ): MedsyResult<Offer, MedsyError> {
-        return safeApiCall(
-            apiCall = { api.createPharmacyOffer(requestId, request.toDto()) },
-            map = { it.toDomain() }
-        )
+        return safeApiCall { api.createPharmacyOffer(requestId, request.toDto()) }.map { it.toDomain() }
     }
 
     override suspend fun getOfferById(id: Long): MedsyResult<Offer, MedsyError> {
-        return safeApiCall(
-            apiCall = { api.getOfferById(id) },
-            map = { it.toDomain() }
-        )
+        return safeApiCall { api.getOfferById(id) }.map { it.toDomain() }
     }
 
     override suspend fun getPharmacyOffers(
@@ -39,9 +34,6 @@ class OfferRepositoryImpl @Inject constructor(
         size: Int,
         sort: List<String>
     ): MedsyResult<PaginatedOffers, MedsyError> {
-        return safeApiCall(
-            apiCall = { api.getPharmacyOffers(pharmacyId, page, size, sort) },
-            map = { it.toDomain() }
-        )
+        return safeApiCall { api.getPharmacyOffers(pharmacyId, page, size, sort) }.map { it.toDomain() }
     }
 }

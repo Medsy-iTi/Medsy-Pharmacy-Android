@@ -1,5 +1,6 @@
 package com.medsy.data.offer.di
 
+import com.medsy.data.di.AuthenticatedRetrofit
 import com.medsy.data.offer.remote.api.OfferApi
 import com.medsy.data.offer.repository.OfferRepositoryImpl
 import com.medsy.domain.offer.repository.OfferRepository
@@ -24,7 +25,9 @@ abstract class OfferDataModule {
     companion object {
         @Provides
         @Singleton
-        fun provideOfferApi(retrofit: Retrofit): OfferApi {
+        fun provideOfferApi(
+            @AuthenticatedRetrofit retrofit: Retrofit
+        ): OfferApi {
             return retrofit.create(OfferApi::class.java)
         }
     }

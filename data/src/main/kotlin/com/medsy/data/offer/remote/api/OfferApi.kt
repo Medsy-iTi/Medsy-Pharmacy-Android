@@ -1,9 +1,9 @@
 package com.medsy.data.offer.remote.api
 
-import com.medsy.data.common.remote.ApiResponse
 import com.medsy.data.offer.remote.dto.CreateOfferRequestDto
 import com.medsy.data.offer.remote.dto.OfferDto
 import com.medsy.data.offer.remote.dto.PaginatedOffersDto
+import com.medsy.data.remote.network.ApiResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
