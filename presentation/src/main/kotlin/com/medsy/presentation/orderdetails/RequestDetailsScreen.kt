@@ -157,9 +157,6 @@ fun RequestDetailsScreen(
 
                 OrderTotalSummaryRow(
                     total = request.total,
-                    onViewSummaryClick = {
-                        onIntent(RequestDetailsUIIntent.ViewPaymentSummaryClicked)
-                    },
                     modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
                 )
             }

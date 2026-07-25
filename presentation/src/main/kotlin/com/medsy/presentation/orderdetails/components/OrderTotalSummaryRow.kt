@@ -23,7 +23,6 @@ import com.medsy.presentation.R
 @Composable
 fun OrderTotalSummaryRow(
     total: Double,
-    onViewSummaryClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -47,14 +46,6 @@ fun OrderTotalSummaryRow(
                     text = stringResource(R.string.request_details_total),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Text(
-                    text = stringResource(R.string.request_details_view_payment_summary),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .clickable(onClick = onViewSummaryClick)
                 )
             }
             Text(

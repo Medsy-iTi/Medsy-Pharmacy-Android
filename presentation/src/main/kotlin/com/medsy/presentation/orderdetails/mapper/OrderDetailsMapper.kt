@@ -30,7 +30,7 @@ fun PharmacyRequestDomain.toPresentation(): Request {
         customerPhone = this.customerPhone ?: "",
         customerAddress = this.deliveryAddress ?: "",
         items = this.items.map { it.toPresentation() },
-        customerNotes = null,
+        customerNotes = this.notes,
         total = calculatedTotal,
         prescriptionUrl = this.prescriptionUrl,
         paymentMethod = when (this.paymentMethod?.uppercase()) {
@@ -42,10 +42,27 @@ fun PharmacyRequestDomain.toPresentation(): Request {
 }
 
 fun RequestItemDomain.toPresentation(): RequestMedicineItem {
+    val localStrength = strength
+    val localPackSize = packSize
+    val localForm = form
+
+    val parts = mutableListOf<String>()
+    if (!localStrength.isNullOrBlank()) parts.add(localStrength)
+    if (!localPackSize.isNullOrBlank()) {
+        if (!localForm.isNullOrBlank()) {
+            parts.add("$localPackSize $localForm")
+        } else {
+            parts.add(localPackSize)
+        }
+    } else if (!localForm.isNullOrBlank()) {
+        parts.add(localForm)
+    }
+    val info = parts.joinToString(" • ")
+
     return RequestMedicineItem(
         id = this.id.toString(),
         name = this.productName,
-        packInfo = "",
+        packInfo = info,
         quantity = this.quantity,
         price = this.unitPrice,
         imageUrl = this.imageUrl

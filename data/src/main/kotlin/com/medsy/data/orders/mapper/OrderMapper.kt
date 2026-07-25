@@ -31,7 +31,8 @@ fun PharmacyRequestDto.toDomain(): PharmacyRequestDomain {
         prescriptionUrl = prescriptionUrl,
         customerName = customerName,
         customerPhone = customerPhone,
-        paymentMethod = paymentMethod
+        paymentMethod = paymentMethod,
+        notes = notes
     )
 }
 
@@ -41,6 +42,9 @@ fun RequestItemDto.toDomain(): RequestItemDomain {
         productId = productId,
         imageUrl = imageUrl,
         productName = productName,
+        strength = strength,
+        packSize = packSize,
+        form = form,
         quantity = quantity,
         unitPrice = unitPrice
     )

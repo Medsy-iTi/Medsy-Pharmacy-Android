@@ -12,7 +12,8 @@ data class PharmacyRequestDomain(
     val prescriptionUrl: String?,
     val customerName: String?,
     val customerPhone: String?,
-    val paymentMethod: String?
+    val paymentMethod: String?,
+    val notes: String?
 )
 
 data class RequestItemDomain(
@@ -20,6 +21,9 @@ data class RequestItemDomain(
     val productId: Long,
     val imageUrl: String?,
     val productName: String,
+    val strength: String?,
+    val packSize: String?,
+    val form: String?,
     val quantity: Int,
     val unitPrice: Double
 )
