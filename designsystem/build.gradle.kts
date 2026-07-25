@@ -35,4 +35,5 @@ dependencies {
     implementation(libs.compose.shimmer)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.material)
+    implementation(libs.lottie.compose)
 }

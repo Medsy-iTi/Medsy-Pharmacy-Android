@@ -7,7 +7,9 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.PUT
+import retrofit2.http.POST
 import retrofit2.http.Body
+import com.medsy.data.pharmacist.remote.dto.PresenceDto
 
 interface PharmacistApi {
     @GET("api/v1/pharmacists/me")
@@ -28,4 +30,13 @@ interface PharmacistApi {
     suspend fun updateCurrentPharmacist(
         @Body request: com.medsy.data.pharmacist.remote.dto.UpdatePharmacistRequestDto
     ): Response<ApiResponse<PharmacistDto>>
+
+    @POST("api/v1/pharmacists/me/presence/on-duty")
+    suspend fun onDuty(): Response<ApiResponse<PresenceDto>>
+
+    @POST("api/v1/pharmacists/me/presence/off-duty")
+    suspend fun offDuty(): Response<ApiResponse<PresenceDto>>
+
+    @POST("api/v1/pharmacists/me/presence/heartbeat")
+    suspend fun heartbeat(): Response<ApiResponse<PresenceDto>>
 }

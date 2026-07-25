@@ -21,6 +21,7 @@ class UserPreferencesLocalDataSource @Inject constructor(
         val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
         val IS_ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("is_onboarding_completed")
         val IS_AVATAR_FEMALE_KEY = booleanPreferencesKey("is_avatar_female")
+        val IS_RECEIVING_ORDERS_KEY = booleanPreferencesKey("is_receiving_orders")
     }
 
     val themeMode: Flow<String?> = dataStore.data
@@ -34,6 +35,10 @@ class UserPreferencesLocalDataSource @Inject constructor(
     val isAvatarFemale: Flow<Boolean> = dataStore.data
         .catch { emit(emptyPreferences()) }
         .map { preferences -> preferences[IS_AVATAR_FEMALE_KEY] ?: false }
+
+    val isReceivingOrders: Flow<Boolean> = dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { preferences -> preferences[IS_RECEIVING_ORDERS_KEY] ?: false }
 
     suspend fun setThemeMode(themeMode: String) {
         try {
@@ -59,6 +64,15 @@ class UserPreferencesLocalDataSource @Inject constructor(
         try {
             dataStore.edit { preferences ->
                 preferences[IS_AVATAR_FEMALE_KEY] = isFemale
+            }
+        } catch (_: IOException) {
+        }
+    }
+
+    suspend fun setReceivingOrders(isReceivingOrders: Boolean) {
+        try {
+            dataStore.edit { preferences ->
+                preferences[IS_RECEIVING_ORDERS_KEY] = isReceivingOrders
             }
         } catch (_: IOException) {
         }
