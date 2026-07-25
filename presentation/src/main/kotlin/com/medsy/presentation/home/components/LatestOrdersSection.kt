@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.medsy.designsystem.components.MedsyLottie
 import com.medsy.presentation.R
 import com.medsy.presentation.home.HomeOrderUI
-import kotlin.collections.forEach
 
 @Composable
 fun LatestOrdersSection(
@@ -54,7 +56,7 @@ fun LatestOrdersSection(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
-                    .androidx.compose.foundation.background(
+                    .background(
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
                         shape = RoundedCornerShape(16.dp)
                     ),
@@ -62,9 +64,9 @@ fun LatestOrdersSection(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     androidx.compose.material3.Icon(
-                        imageVector = androidx.compose.material.icons.Icons.Outlined.Storefront,
+                        imageVector = Icons.Outlined.Storefront,
                         contentDescription = null,
-                        modifier = Modifier.androidx.compose.foundation.layout.size(48.dp),
+                        modifier = Modifier.size(48.dp),
                         tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
