@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,18 +15,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.medsy.presentation.R
-import com.medsy.presentation.orderdetails.model.RequestMedicineItem
 
 @Composable
-fun RequestedMedicinesSection(
-    items: List<RequestMedicineItem>,
-    selectedItems: Set<Long>,
-    onItemCheckedChange: (Long) -> Unit,
+fun PaymentMethodSection(
+    paymentMethod: String,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = stringResource(R.string.request_details_requested_medicines),
+            text = stringResource(R.string.request_details_payment_method),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground,
@@ -43,21 +39,17 @@ fun RequestedMedicinesSection(
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
             ),
         ) {
-            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                items.forEachIndexed { index, item ->
-                    val itemIdLong = item.id.toLongOrNull() ?: -1L
-                    MedicineRequestItemRow(
-                        item = item,
-                        isChecked = selectedItems.contains(itemIdLong),
-                        onCheckedChange = { onItemCheckedChange(itemIdLong) }
-                    )
-                    if (index != items.lastIndex) {
-                        HorizontalDivider(
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
-                        )
-                    }
-                }
+            val paymentString = when (paymentMethod) {
+                "Visa" -> stringResource(R.string.requests_payment_visa)
+                "Mastercard" -> stringResource(R.string.requests_payment_mastercard)
+                else -> stringResource(R.string.requests_payment_cash)
             }
+            Text(
+                text = paymentString,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(16.dp),
+            )
         }
     }
 }

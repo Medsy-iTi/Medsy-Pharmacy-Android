@@ -25,7 +25,7 @@ import com.medsy.pharmacy.nav.NAVIGATION_DURATION_MILLIS
 import com.medsy.pharmacy.nav.root.Route
 import com.medsy.pharmacy.nav.root.navigateSingleTop
 import com.medsy.presentation.home.HomeRoot
-import com.medsy.presentation.orders.OrdersRoot
+import com.medsy.presentation.orders.RequestsRoot
 import com.medsy.presentation.profile.ProfileRoot
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -34,7 +34,7 @@ import kotlinx.serialization.modules.polymorphic
 fun NestedNavDisplay(
     navigateBack: () -> Unit,
     openLogin: () -> Unit,
-    openOrderDetails: (Long) -> Unit,
+    openRequestDetails: (Long) -> Unit,
     openInvitePharmacist: () -> Unit,
     openPharmacistsList: () -> Unit,
     openPersonalInfo: () -> Unit
@@ -44,7 +44,7 @@ fun NestedNavDisplay(
             serializersModule = SerializersModule {
                 polymorphic(NavKey::class) {
                     subclass(Route.NestedNav.Home::class, Route.NestedNav.Home.serializer())
-                    subclass(Route.NestedNav.Orders::class, Route.NestedNav.Orders.serializer())
+                    subclass(Route.NestedNav.Requests::class, Route.NestedNav.Requests.serializer())
                     subclass(Route.NestedNav.Profile::class, Route.NestedNav.Profile.serializer())
                 }
             }
@@ -104,8 +104,8 @@ fun NestedNavDisplay(
                     fadeOut(tween(NAVIGATION_DURATION_MILLIS))
             },
             entryProvider = entryProvider {
-                entry<Route.NestedNav.Home> { HomeRoot() }
-                entry<Route.NestedNav.Orders> { OrdersRoot(onOrderClick = openOrderDetails) }
+                entry<Route.NestedNav.Home> { HomeRoot(openRequestDetails = openRequestDetails) }
+                entry<Route.NestedNav.Requests> { RequestsRoot(onRequestClick = openRequestDetails) }
                 entry<Route.NestedNav.Profile> { 
                     ProfileRoot(
                         openLogin = openLogin,

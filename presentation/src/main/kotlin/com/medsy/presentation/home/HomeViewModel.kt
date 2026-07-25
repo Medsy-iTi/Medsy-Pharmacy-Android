@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.medsy.domain.common.fold
-import com.medsy.domain.offer.usecase.GetPharmacyOffersUseCase
+import com.medsy.domain.orders.model.RequestStatusConstants
 import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
@@ -23,7 +23,6 @@ import kotlin.time.Duration.Companion.milliseconds
 class HomeViewModel @Inject constructor(
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
-    private val getPharmacyOffers: GetPharmacyOffersUseCase,
     private val getCurrentPharmacyRequests: GetCurrentPharmacyRequestsUseCase
 ) : ViewModel() {
 
@@ -67,7 +66,12 @@ class HomeViewModel @Inject constructor(
             val requestsResult = getCurrentPharmacyRequests(page = 0, size = 10)
             requestsResult.fold(
                 onSuccess = { page ->
-                    val latestThree = page.content.take(3).map { req ->
+                    val newOrders = page.content.filter { req ->
+                        req.status == RequestStatusConstants.PENDING || 
+                        req.status == RequestStatusConstants.NEW || 
+                        req.status == RequestStatusConstants.SEARCHING 
+                    }
+                    val latestThree = newOrders.take(3).map { req ->
                         HomeOrderUI(
                             id = "#${req.id}",
                             requestId = req.id.toString(),
@@ -142,20 +146,33 @@ class HomeViewModel @Inject constructor(
                 val requestsResult = getCurrentPharmacyRequests(page = 0, size = 10)
                 requestsResult.fold(
                     onSuccess = { page ->
-                        val latestThree = page.content.take(3).map { req ->
+                        val newOrders = page.content.filter { req ->
+                            req.status == RequestStatusConstants.PENDING || 
+                            req.status == RequestStatusConstants.NEW || 
+                            req.status == RequestStatusConstants.SEARCHING 
+                        }
+                        val latestThree = newOrders.take(3).map { req ->
                             HomeOrderUI(
                                 id = "#${req.id}",
                                 requestId = req.id.toString(),
                                 distanceKm = 0.0,
-                                timeAgo = "",
-                                status = HomeOrderStatus.NEW
+                                timeAgo = req.createdAt,
+                                status = when (req.status) {
+                                    RequestStatusConstants.PENDING, RequestStatusConstants.NEW, RequestStatusConstants.SEARCHING -> HomeOrderStatus.NEW
+                                    RequestStatusConstants.IN_PROGRESS -> HomeOrderStatus.PREPARING
+                                    RequestStatusConstants.DELIVERED -> HomeOrderStatus.DELIVERED
+                                    else -> HomeOrderStatus.NEW
+                                }
                             )
                         }
 
                         newState = newState.copy(
                             latestOrders = latestThree,
                             stats = newState.stats.copy(
-                                newOrders = page.content.size,
+                                newOrders = page.content.count {
+                                    it.status == RequestStatusConstants.PENDING || it.status == RequestStatusConstants.NEW
+                                },
+                                inProgress = page.content.count { it.status == RequestStatusConstants.IN_PROGRESS }
                             )
                         )
                     },

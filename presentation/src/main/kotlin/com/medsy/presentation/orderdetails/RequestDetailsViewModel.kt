@@ -4,10 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medsy.domain.common.onError
 import com.medsy.domain.common.onSuccess
-import com.medsy.domain.orders.usecase.GetOrderDetailsUseCase
+import com.medsy.domain.orders.usecase.GetRequestDetailsUseCase
 import com.medsy.presentation.R
-import com.medsy.presentation.orderdetails.model.Order
-import com.medsy.presentation.orderdetails.model.OrderMedicineItem
 import com.medsy.presentation.orderdetails.mapper.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -23,59 +21,59 @@ import kotlinx.coroutines.launch
 import com.medsy.domain.orders.usecase.CreateOfferUseCase
 
 @HiltViewModel
-class OrderDetailsViewModel@Inject constructor(
-    private val getOrderDetailsUseCase: GetOrderDetailsUseCase,
+class RequestDetailsViewModel @Inject constructor(
+    private val getRequestDetailsUseCase: GetRequestDetailsUseCase,
     private val createOfferUseCase: CreateOfferUseCase
-    ) : ViewModel() {
+) : ViewModel() {
 
-    private var loadedOrderId: Long? = null
+    private var loadedRequestId: Long? = null
 
-    private val _state = MutableStateFlow(OrderDetailsUIState())
+    private val _state = MutableStateFlow(RequestDetailsUIState())
     val state = _state
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = OrderDetailsUIState(),
+            initialValue = RequestDetailsUIState(),
         )
 
-    private val mutableEffect = Channel<OrderDetailsUIEffect>(Channel.BUFFERED)
+    private val mutableEffect = Channel<RequestDetailsUIEffect>(Channel.BUFFERED)
     val effect = mutableEffect.receiveAsFlow()
 
-    fun onIntent(intent: OrderDetailsUIIntent) {
+    fun onIntent(intent: RequestDetailsUIIntent) {
         when (intent) {
-            is OrderDetailsUIIntent.LoadOrder -> {
-                val idLong = intent.orderId
-                if (loadedOrderId != idLong) {
-                    loadedOrderId = idLong
-                    loadOrder(idLong)
+            is RequestDetailsUIIntent.LoadRequest -> {
+                val idLong = intent.requestId
+                if (loadedRequestId != idLong) {
+                    loadedRequestId = idLong
+                    loadRequest(idLong)
                 }
             }
 
-            OrderDetailsUIIntent.BackClicked -> sendEffect(OrderDetailsUIEffect.NavigateBack)
+            RequestDetailsUIIntent.BackClicked -> sendEffect(RequestDetailsUIEffect.NavigateBack)
 
-            OrderDetailsUIIntent.CallCustomerClicked -> {
-                val phone = _state.value.order?.customerPhone ?: return
-                sendEffect(OrderDetailsUIEffect.DialPhoneNumber(phone))
+            RequestDetailsUIIntent.CallCustomerClicked -> {
+                val phone = _state.value.request?.customerPhone ?: return
+                sendEffect(RequestDetailsUIEffect.DialPhoneNumber(phone))
             }
 
-            OrderDetailsUIIntent.OpenLocationClicked ->
-                sendEffect(OrderDetailsUIEffect.OpenLocationOnMap)
+            RequestDetailsUIIntent.OpenLocationClicked ->
+                sendEffect(RequestDetailsUIEffect.OpenLocationOnMap)
 
-            OrderDetailsUIIntent.ViewPaymentSummaryClicked ->
-                sendEffect(OrderDetailsUIEffect.OpenPaymentSummary)
+            RequestDetailsUIIntent.ViewPaymentSummaryClicked ->
+                sendEffect(RequestDetailsUIEffect.OpenPaymentSummary)
 
-            OrderDetailsUIIntent.RejectOrderClicked -> rejectOrder()
+            RequestDetailsUIIntent.RejectRequestClicked -> rejectRequest()
 
-            OrderDetailsUIIntent.ContactCustomerClicked ->
-                sendEffect(OrderDetailsUIEffect.OpenCustomerChat)
+            RequestDetailsUIIntent.ContactCustomerClicked ->
+                sendEffect(RequestDetailsUIEffect.OpenCustomerChat)
 
-            OrderDetailsUIIntent.AcceptOrderClicked -> acceptOrder()
+            RequestDetailsUIIntent.AcceptRequestClicked -> acceptRequest()
 
-            is OrderDetailsUIIntent.PharmacistNotesChanged -> {
+            is RequestDetailsUIIntent.PharmacistNotesChanged -> {
                 _state.update { it.copy(pharmacistNotes = intent.notes) }
             }
 
-            is OrderDetailsUIIntent.ToggleItemSelection -> {
+            is RequestDetailsUIIntent.ToggleItemSelection -> {
                 _state.update { currentState ->
                     val newSelection = currentState.selectedItems.toMutableSet()
                     if (newSelection.contains(intent.itemId)) {
@@ -89,21 +87,19 @@ class OrderDetailsViewModel@Inject constructor(
         }
     }
 
-    private fun loadOrder(id: Long) {
+    private fun loadRequest(id: Long) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            getOrderDetailsUseCase(id)
-                .onSuccess { domainOrder ->
-                    if (domainOrder != null) {
-                        val presentationOrder = domainOrder.toPresentation()
-                        // By default select all items if available? Let's just select nothing by default or all?
-                        // Let's select all items initially
-                        val allItemsIds = presentationOrder.items.map { it.id.toLongOrNull() ?: -1L }.toSet()
+            getRequestDetailsUseCase(id)
+                .onSuccess { domainRequest ->
+                    if (domainRequest != null) {
+                        val presentationRequest = domainRequest.toPresentation()
+                        val allItemsIds = presentationRequest.items.map { it.id.toLongOrNull() ?: -1L }.toSet()
                         _state.update {
                             it.copy(
                                 isLoading = false,
-                                order = presentationOrder,
+                                request = presentationRequest,
                                 selectedItems = allItemsIds
                             )
                         }
@@ -125,19 +121,19 @@ class OrderDetailsViewModel@Inject constructor(
         }
     }
 
-    private fun rejectOrder() {
+    private fun rejectRequest() {
         viewModelScope.launch {
             _state.update { it.copy(isSubmitting = true) }
             delay(300) // simulated backend call
             _state.update { it.copy(isSubmitting = false) }
-            sendEffect(OrderDetailsUIEffect.ShowMessage(R.string.order_details_rejected_message))
-            sendEffect(OrderDetailsUIEffect.NavigateBack)
+            sendEffect(RequestDetailsUIEffect.ShowMessage(R.string.request_details_rejected_message))
+            sendEffect(RequestDetailsUIEffect.NavigateBack)
         }
     }
 
-    private fun acceptOrder() {
+    private fun acceptRequest() {
         val currentState = _state.value
-        val order = currentState.order ?: return
+        val order = currentState.request ?: return
         val requestId = order.id.removePrefix("#").toLongOrNull() ?: return
         val selectedIds = currentState.selectedItems
         
@@ -156,18 +152,16 @@ class OrderDetailsViewModel@Inject constructor(
             val result = createOfferUseCase(requestId, itemsToSubmit)
             
             _state.update { it.copy(isSubmitting = false) }
-            
             result.onSuccess {
-                sendEffect(OrderDetailsUIEffect.ShowMessage(R.string.order_details_accepted_message))
-                sendEffect(OrderDetailsUIEffect.NavigateBack)
+                sendEffect(RequestDetailsUIEffect.ShowMessage(R.string.request_details_accepted_message))
+                sendEffect(RequestDetailsUIEffect.NavigateBack)
             }.onError { error ->
-                // Maybe handle error
-                sendEffect(OrderDetailsUIEffect.ShowMessage(R.string.error_generic))
+                sendEffect(RequestDetailsUIEffect.ShowMessage(R.string.error_generic))
             }
         }
     }
 
-    private fun sendEffect(effect: OrderDetailsUIEffect) {
+    private fun sendEffect(effect: RequestDetailsUIEffect) {
         viewModelScope.launch {
             mutableEffect.send(effect)
         }

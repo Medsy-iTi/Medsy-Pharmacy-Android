@@ -37,18 +37,12 @@ fun LatestOrdersSection(
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(R.string.home_latest_orders_title),
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-            )
-            Text(
-                text = stringResource(R.string.home_action_view_all),
-                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.clickable { onViewAllClick() }
             )
         }
 
@@ -64,7 +58,7 @@ fun LatestOrdersSection(
                     modifier = Modifier.height(150.dp)
                 )
                 Text(
-                    text = stringResource(R.string.orders_active_empty),
+                    text = stringResource(R.string.requests_active_empty),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -74,26 +68,11 @@ fun LatestOrdersSection(
                 orders.forEach { order ->
                     OrderListItem(
                         order = order,
-                        onClick = { onOrderClick(order.id) }
+                        onClick = { onOrderClick(order.requestId) }
                     )
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = onViewAllClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-        ) {
-            Text(
-                text = stringResource(R.string.home_action_view_all_orders),
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-            )
-        }
     }
 }

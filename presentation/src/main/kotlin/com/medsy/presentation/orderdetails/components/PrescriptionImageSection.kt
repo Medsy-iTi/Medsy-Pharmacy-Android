@@ -1,5 +1,6 @@
 package com.medsy.presentation.orderdetails.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,15 +32,32 @@ fun PrescriptionImageSection(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = stringResource(R.string.prescription_image_content_description),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .clickable { onImageClick() }
-        )
+        if (imageUrl.isNullOrBlank()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                contentAlignment = androidx.compose.ui.Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.request_details_no_prescription),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        } else {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = stringResource(R.string.prescription_image_content_description),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable { onImageClick() }
+            )
+        }
     }
 }

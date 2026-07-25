@@ -22,7 +22,7 @@ import com.medsy.designsystem.ui.theme.extendedColors
 import com.medsy.presentation.R
 
 @Composable
-fun OrderDetailsTopBar(
+fun RequestDetailsTopBar(
     isNewOrder: Boolean,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -38,13 +38,13 @@ fun OrderDetailsTopBar(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.order_details_back_desc),
+                contentDescription = stringResource(R.string.request_details_back_desc),
                 tint = MaterialTheme.colorScheme.onSurface,
             )
         }
 
         Text(
-            text = stringResource(R.string.order_details_title),
+            text = stringResource(R.string.request_details_title),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.extendedColors.darkBlueColor,
@@ -60,7 +60,7 @@ fun OrderDetailsTopBar(
                     .padding(horizontal = 14.dp, vertical = 6.dp),
             ) {
                 Text(
-                    text = stringResource(R.string.order_details_new_badge),
+                    text = stringResource(R.string.request_details_new_badge),
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.extendedColors.blueContent,

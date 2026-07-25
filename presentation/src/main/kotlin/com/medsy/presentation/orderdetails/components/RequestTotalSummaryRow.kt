@@ -11,7 +11,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,9 +20,8 @@ import androidx.compose.ui.unit.dp
 import com.medsy.presentation.R
 
 @Composable
-fun OrderTotalSummaryRow(
-    total: Int,
-    onViewSummaryClick: () -> Unit,
+fun RequestTotalSummaryRow(
+    total: Double,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -44,24 +42,13 @@ fun OrderTotalSummaryRow(
         ) {
             Column {
                 Text(
-                    text = stringResource(R.string.order_details_total),
+                    text = stringResource(R.string.request_details_total),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                TextButton(
-                    onClick = onViewSummaryClick,
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
-                ) {
-                    Text(
-                        text = stringResource(R.string.order_details_view_payment_summary),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                }
             }
             Text(
-                text = stringResource(R.string.order_details_price_egp, total),
-                style = MaterialTheme.typography.titleLarge,
+                text = stringResource(R.string.request_details_price_egp, total),                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
             )

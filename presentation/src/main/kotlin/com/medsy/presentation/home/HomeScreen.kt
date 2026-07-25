@@ -42,6 +42,7 @@ import com.medsy.presentation.home.components.PharmacyMainCard
 
 @Composable
 fun HomeRoot(
+    openRequestDetails: (Long) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -50,7 +51,9 @@ fun HomeRoot(
         viewModel.effect.collect { effect ->
             when (effect) {
                 HomeUIEffect.NavigateToViewAllOrders -> {}
-                is HomeUIEffect.NavigateToOrderDetails -> {}
+                is HomeUIEffect.NavigateToOrderDetails -> {
+                    effect.orderId.toLongOrNull()?.let { openRequestDetails(it) }
+                }
                 HomeUIEffect.OpenNotifications -> {}
             }
         }

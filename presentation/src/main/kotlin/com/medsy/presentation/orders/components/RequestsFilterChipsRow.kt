@@ -19,24 +19,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.medsy.presentation.R
-import com.medsy.presentation.orders.OrderFilter
+import com.medsy.presentation.orders.RequestFilter
 
 @Composable
-fun OrdersFilterChipsRow(
-    selectedFilter: OrderFilter,
+fun RequestsFilterChipsRow(
+    selectedFilter: RequestFilter,
     newCount: Int,
     inProgressCount: Int,
-    onFilterSelected: (OrderFilter) -> Unit,
+    onFilterSelected: (RequestFilter) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val chips = listOf(
-        OrderFilter.All to stringResource(R.string.orders_filter_all),
-        OrderFilter.New to stringResource(R.string.orders_filter_new_format, newCount),
-        OrderFilter.InProgress to stringResource(
-            R.string.orders_filter_in_progress_format,
+        RequestFilter.All to stringResource(R.string.requests_filter_all),
+        RequestFilter.New to stringResource(R.string.requests_filter_new_format, newCount),
+        RequestFilter.InProgress to stringResource(
+            R.string.requests_filter_in_progress_format,
             inProgressCount,
         ),
-        OrderFilter.Delivered to stringResource(R.string.orders_filter_delivered),
+        RequestFilter.Delivered to stringResource(R.string.requests_filter_delivered),
     )
 
     LazyRow(
@@ -45,7 +45,7 @@ fun OrdersFilterChipsRow(
         contentPadding = PaddingValues(horizontal = 4.dp),
     ) {
         items(chips) { (filter, label) ->
-            OrderFilterChip(
+            RequestFilterChip(
                 label = label,
                 selected = filter == selectedFilter,
                 onClick = { onFilterSelected(filter) },
@@ -55,7 +55,7 @@ fun OrdersFilterChipsRow(
 }
 
 @Composable
-private fun OrderFilterChip(
+private fun RequestFilterChip(
     label: String,
     selected: Boolean,
     onClick: () -> Unit,

@@ -1,7 +1,6 @@
 package com.medsy.data.remote.api
 
-import com.medsy.data.orders.model.OrderDetailsDto
-import com.medsy.data.orders.model.OrderPageResponseDto
+import com.medsy.data.orders.model.PharmacyRequestPageDto
 import com.medsy.data.remote.network.ApiResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -16,7 +15,7 @@ interface ApiService{
         @Query("page") page: Int,
         @Query("size") size: Int,
         @Query("sort") sort: List<String>? = null
-    ): Response<ApiResponse<OrderPageResponseDto>>
+    ): Response<ApiResponse<PharmacyRequestPageDto>>
 
     @POST("api/v1/offers/requests/{requestId}")
     suspend fun createOffer(

@@ -2,13 +2,13 @@ package com.medsy.domain.orders.usecase
 
 import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
-import com.medsy.domain.orders.model.OrderDetailsDomain
-import com.medsy.domain.orders.repository.OrdersRepository
+import com.medsy.domain.orders.model.PharmacyRequestDomain
+import com.medsy.domain.orders.repository.RequestsRepository
 import javax.inject.Inject
 
-class GetOrderDetailsUseCase @Inject constructor(
-    private val ordersRepository: OrdersRepository
+class GetRequestDetailsUseCase @Inject constructor(
+    private val requestsRepository: RequestsRepository
 ) {
-    suspend operator fun invoke(orderId: Long): MedsyResult<OrderDetailsDomain?, MedsyError.Remote> =
-        ordersRepository.getOrderDetails(orderId)
+    suspend operator fun invoke(requestId: Long): MedsyResult<PharmacyRequestDomain?, MedsyError.Remote> =
+        requestsRepository.getRequestDetails(requestId)
 }
