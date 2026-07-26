@@ -26,14 +26,15 @@ class RegisterTokenWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return try {
-            // 1. جلب ה- FCM Token مباشرة من داخل الـ Worker
-            val fcmToken = FirebaseMessaging.getInstance().token.await()
+            val deviceId = inputData.getString(KEY_DEVICE_ID)
 
-            // 2. جلب Device ID بأمان
-            val deviceId = Settings.Secure.getString(
-                context.contentResolver,
-                Settings.Secure.ANDROID_ID
-            ) ?: "android_device"
+            if (deviceId.isNullOrEmpty()) {
+                Log.e(TAG, "Device ID is missing in inputData")
+                return Result.failure()
+            }
+
+            val fcmToken = FirebaseMessaging.getInstance().token.await()
+            Log.d(TAG, "Successfully got FCM Token: $fcmToken")
 
             val registration = DeviceTokenRegistrationDomain(
                 fcmToken = fcmToken,
@@ -41,13 +42,12 @@ class RegisterTokenWorker @AssistedInject constructor(
                 deviceId = deviceId
             )
 
-            // 3. إرسال الـ Token للـ Backend
             val response = registerDeviceTokenUseCase(registration)
 
             response.fold(
                 onSuccess = {
                     setRegisteredFcmTokenUseCase(fcmToken)
-                    Log.d(TAG, "FCM Token registered successfully")
+                    Log.d(TAG, "FCM Token registered successfully on backend")
                     Result.success()
                 },
                 onError = { error ->
@@ -56,7 +56,6 @@ class RegisterTokenWorker @AssistedInject constructor(
                 }
             )
         } catch (e: IOException) {
-            // يتعامل مع خطأ SERVICE_NOT_AVAILABLE وانقطاع الإنترنت عند الاتصال بشركة Google
             Log.w(TAG, "FCM Service or network unavailable. WorkManager will retry later.", e)
             Result.retry()
         } catch (e: Exception) {

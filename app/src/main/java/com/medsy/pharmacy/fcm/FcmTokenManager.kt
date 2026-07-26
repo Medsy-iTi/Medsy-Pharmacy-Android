@@ -26,11 +26,11 @@ class FcmTokenManager @Inject constructor(
 ) {
     suspend fun registerDeviceToken() {
         try {
-            val token = FirebaseMessaging.getInstance().token.await()
+
             val deviceId = deviceRepository.getDeviceId()
 
+            // هنبعت الـ deviceId بس للـ Worker
             val data = workDataOf(
-                RegisterTokenWorker.KEY_FCM_TOKEN to token,
                 RegisterTokenWorker.KEY_DEVICE_ID to deviceId
             )
 
