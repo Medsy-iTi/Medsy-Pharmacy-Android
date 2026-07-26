@@ -21,8 +21,11 @@ import java.time.Instant
 
 @HiltViewModel
 class RequestsViewModel @Inject constructor(
-    private val getCurrentPharmacyRequestsUseCase: GetCurrentPharmacyRequestsUseCase
+    private val getCurrentPharmacyRequestsUseCase: GetCurrentPharmacyRequestsUseCase,
+    private val submittedOffersManager: SubmittedOffersManager
 ) : ViewModel() {
+
+    private val submittedRequestIds = mutableSetOf<Long>()
 
     private val _state = MutableStateFlow(RequestsUIState())
     val state = _state
@@ -69,6 +72,10 @@ class RequestsViewModel @Inject constructor(
                     sendEffect(RequestsUIEffect.NavigateToRequestDetails(reqId))
                 }
             }
+            is RequestsUIIntent.OfferSubmitted -> {
+                // Now handled by SubmittedOffersManager, no op here
+            }
+            RequestsUIIntent.Refresh -> loadRequests()
         }
     }
 
@@ -79,7 +86,16 @@ class RequestsViewModel @Inject constructor(
             val result = getCurrentPharmacyRequestsUseCase(page = 0, size = 10, sort = listOf("id,desc"))
 
             result.onSuccess { requestPage ->
-                val uiRequests = requestPage.content.map { it.toPresentation() }.sortedByDescending { it.id }
+                val submitted = submittedOffersManager.submittedRequestIds.value
+                val uiRequests = requestPage.content
+                    .map { request ->
+                        var summary = request.toPresentation()
+                        if (submitted.contains(request.id) && (summary.status == RequestStatus.New || summary.status == RequestStatus.Searching)) {
+                            summary = summary.copy(status = RequestStatus.OfferSubmitted)
+                        }
+                        summary
+                    }
+                    .sortedByDescending { it.id }
                 _state.update {
                     it.copy(
                         isLoading = false,

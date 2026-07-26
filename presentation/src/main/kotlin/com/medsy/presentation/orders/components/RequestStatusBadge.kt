@@ -30,6 +30,12 @@ fun RequestStatusBadge(
             R.string.request_details_new_badge,
         )
 
+        RequestStatus.OfferSubmitted -> Triple(
+            MaterialTheme.extendedColors.blueContainer,
+            MaterialTheme.extendedColors.blueContent,
+            R.string.requests_status_offer_submitted,
+        )
+
         RequestStatus.InProgress -> Triple(
             MaterialTheme.extendedColors.orangeContainer,
             MaterialTheme.extendedColors.orangeContent,

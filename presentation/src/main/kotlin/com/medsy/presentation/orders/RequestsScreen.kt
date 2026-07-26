@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.medsy.designsystem.components.MedsyLottie
 import com.medsy.designsystem.components.MedsySnackbarHost
@@ -50,10 +52,23 @@ fun RequestsRoot(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is RequestsUIEffect.NavigateToRequestDetails -> onRequestClick(effect.requestId)
-                RequestsUIEffect.OpenFilters -> { /* TODO: open a filters bottom sheet once designed */ }
+                RequestsUIEffect.OpenFilters -> {  }
                 is RequestsUIEffect.ShowMessage ->
                     snackbarHostState.showSuccess(context.getString(effect.messageRes))
             }
+        }
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                viewModel.onIntent(RequestsUIIntent.Refresh)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 

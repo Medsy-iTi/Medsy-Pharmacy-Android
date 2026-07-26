@@ -186,6 +186,7 @@
     <string name="home_order_status_new">جديد</string>
     <string name="home_order_status_preparing">قيد التجهيز</string>
     <string name="home_order_status_delivered">تم التوصيل</string>
+    <string name="home_order_status_offer_submitted">في الانتظار</string>
     <string name="home_order_time_ago">منذ %1$d دقائق</string>
 
     <string name="home_nav_home">الرئيسية</string>
@@ -355,4 +356,9 @@
     <string name="home_offer_for_request">عرض لطلب #%1$s</string>
     <string name="home_offer_distance">%1$s كم</string>
     <string name="home_pharmacy_id_format"> %1$s</string>
+    <string name="request_details_add_alternative">إضافة بديل</string>
+    <string name="substitute_search_title">البحث عن بديل</string>
+    <string name="substitute_search_placeholder">ابحث باسم الدواء...</string>
+    <string name="substitute_price_egp">%1$s جنيه</string>
+    <string name="substitute_search_lottie_desc">ابحث لتظهر لك الأدوية</string>
 </resources>

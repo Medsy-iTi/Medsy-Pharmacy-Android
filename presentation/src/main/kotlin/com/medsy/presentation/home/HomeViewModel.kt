@@ -23,7 +23,8 @@ import kotlin.time.Duration.Companion.milliseconds
 class HomeViewModel @Inject constructor(
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
-    private val getCurrentPharmacyRequests: GetCurrentPharmacyRequestsUseCase
+    private val getCurrentPharmacyRequests: GetCurrentPharmacyRequestsUseCase,
+    private val submittedOffersManager: com.medsy.presentation.orders.SubmittedOffersManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeUIState())
@@ -71,13 +72,23 @@ class HomeViewModel @Inject constructor(
                         req.status == RequestStatusConstants.NEW || 
                         req.status == RequestStatusConstants.SEARCHING 
                     }
+                    val submitted = submittedOffersManager.submittedRequestIds.value
                     val latestThree = newOrders.take(3).map { req ->
+                        var mappedStatus = when (req.status) {
+                            RequestStatusConstants.PENDING, RequestStatusConstants.NEW, RequestStatusConstants.SEARCHING -> HomeOrderStatus.NEW
+                            RequestStatusConstants.IN_PROGRESS -> HomeOrderStatus.PREPARING
+                            RequestStatusConstants.DELIVERED -> HomeOrderStatus.DELIVERED
+                            else -> HomeOrderStatus.NEW
+                        }
+                        if (submitted.contains(req.id) && mappedStatus == HomeOrderStatus.NEW) {
+                            mappedStatus = HomeOrderStatus.OFFER_SUBMITTED
+                        }
                         HomeOrderUI(
                             id = "#${req.id}",
                             requestId = req.id.toString(),
                             distanceKm = 0.0, // Distance not available on request
                             timeAgo = "",
-                            status = HomeOrderStatus.NEW
+                            status = mappedStatus
                         )
                     }
 
@@ -151,18 +162,23 @@ class HomeViewModel @Inject constructor(
                             req.status == RequestStatusConstants.NEW || 
                             req.status == RequestStatusConstants.SEARCHING 
                         }
+                        val submitted = submittedOffersManager.submittedRequestIds.value
                         val latestThree = newOrders.take(3).map { req ->
+                            var mappedStatus = when (req.status) {
+                                RequestStatusConstants.PENDING, RequestStatusConstants.NEW, RequestStatusConstants.SEARCHING -> HomeOrderStatus.NEW
+                                RequestStatusConstants.IN_PROGRESS -> HomeOrderStatus.PREPARING
+                                RequestStatusConstants.DELIVERED -> HomeOrderStatus.DELIVERED
+                                else -> HomeOrderStatus.NEW
+                            }
+                            if (submitted.contains(req.id) && mappedStatus == HomeOrderStatus.NEW) {
+                                mappedStatus = HomeOrderStatus.OFFER_SUBMITTED
+                            }
                             HomeOrderUI(
                                 id = "#${req.id}",
                                 requestId = req.id.toString(),
                                 distanceKm = 0.0,
                                 timeAgo = req.createdAt,
-                                status = when (req.status) {
-                                    RequestStatusConstants.PENDING, RequestStatusConstants.NEW, RequestStatusConstants.SEARCHING -> HomeOrderStatus.NEW
-                                    RequestStatusConstants.IN_PROGRESS -> HomeOrderStatus.PREPARING
-                                    RequestStatusConstants.DELIVERED -> HomeOrderStatus.DELIVERED
-                                    else -> HomeOrderStatus.NEW
-                                }
+                                status = mappedStatus
                             )
                         }
 

@@ -11,4 +11,6 @@ sealed interface RequestDetailsUIIntent {
     data object ContactCustomerClicked : RequestDetailsUIIntent
     data object AcceptRequestClicked : RequestDetailsUIIntent
     data class ToggleItemSelection(val itemId: Long) : RequestDetailsUIIntent
+    data class AddSubstituteClicked(val itemId: Long) : RequestDetailsUIIntent
+    data class SubstituteSelected(val itemId: Long, val productId: Long, val productName: String, val productPrice: Double, val productImage: String?) : RequestDetailsUIIntent
 }

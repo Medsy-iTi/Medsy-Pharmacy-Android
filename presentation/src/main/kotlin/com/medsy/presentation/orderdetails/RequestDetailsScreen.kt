@@ -40,6 +40,7 @@ fun RequestDetailsRoot(
     onOpenLocationOnMap: () -> Unit,
     onOpenPaymentSummary: () -> Unit,
     onOpenCustomerChat: () -> Unit,
+    onNavigateToSubstituteSearch: (Long) -> Unit,
     viewModel: RequestDetailsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -58,6 +59,7 @@ fun RequestDetailsRoot(
                 RequestDetailsUIEffect.OpenLocationOnMap -> onOpenLocationOnMap()
                 RequestDetailsUIEffect.OpenPaymentSummary -> onOpenPaymentSummary()
                 RequestDetailsUIEffect.OpenCustomerChat -> onOpenCustomerChat()
+                is RequestDetailsUIEffect.NavigateToSubstituteSearch -> onNavigateToSubstituteSearch(effect.itemId)
                 is RequestDetailsUIEffect.ShowMessage ->
                     snackbarHostState.showSuccess(context.getString(effect.messageRes))
             }
@@ -131,6 +133,9 @@ fun RequestDetailsScreen(
                     selectedItems = state.selectedItems,
                     onItemCheckedChange = { itemId ->
                         onIntent(RequestDetailsUIIntent.ToggleItemSelection(itemId))
+                    },
+                    onAddSubstituteClick = { itemId ->
+                        onIntent(RequestDetailsUIIntent.AddSubstituteClicked(itemId))
                     },
                     modifier = Modifier.padding(top = 24.dp),
                 )

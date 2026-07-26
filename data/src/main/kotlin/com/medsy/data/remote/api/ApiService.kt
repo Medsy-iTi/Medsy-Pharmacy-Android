@@ -1,6 +1,7 @@
 package com.medsy.data.remote.api
 
 import com.medsy.data.orders.model.PharmacyRequestPageDto
+import com.medsy.data.products.remote.dto.ProductsPageDto
 import com.medsy.data.remote.network.ApiResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -22,4 +23,12 @@ interface ApiService{
         @Path("requestId") requestId: Long,
         @retrofit2.http.Body request: com.medsy.data.orders.remote.dto.CreateOfferRequestDto
     ): Response<ApiResponse<Any>>
+
+    @GET("api/v1/products/search")
+    suspend fun searchProducts(
+        @Query("keyword") keyword: String,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+        @Query("sort") sort: List<String>? = null
+    ): Response<ApiResponse<ProductsPageDto>>
 }

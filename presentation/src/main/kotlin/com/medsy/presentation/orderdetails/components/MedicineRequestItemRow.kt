@@ -25,12 +25,14 @@ import com.medsy.presentation.orderdetails.model.RequestMedicineItem
 
 import androidx.compose.material3.Checkbox
 import androidx.compose.foundation.clickable
+import androidx.compose.material3.TextButton
 
 @Composable
 fun MedicineRequestItemRow(
     item: RequestMedicineItem,
     isChecked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
+    onAddSubstituteClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -86,6 +88,11 @@ fun MedicineRequestItemRow(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 4.dp),
             )
+            if (!isChecked && onAddSubstituteClick != null) {
+                TextButton(onClick = onAddSubstituteClick, modifier = Modifier.padding(top = 4.dp)) {
+                    Text(stringResource(R.string.request_details_add_alternative))
+                }
+            }
         }
 
         Row(horizontalArrangement = Arrangement.End) {

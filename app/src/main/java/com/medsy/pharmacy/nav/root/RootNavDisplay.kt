@@ -155,6 +155,15 @@ fun RootNavDisplay() {
                     onOpenLocationOnMap = { },
                     onOpenPaymentSummary = { },
                     onOpenCustomerChat = { },
+                    onNavigateToSubstituteSearch = { itemId ->
+                        backStack.navigateSingleTop(Route.SubstituteSearch(itemId))
+                    },
+                )
+            }
+            entry<Route.SubstituteSearch> { route ->
+                com.medsy.presentation.orderdetails.SubstituteSearchRoot(
+                    requestItemId = route.requestItemId,
+                    onNavigateBack = { backStack.removeLastOrNull() }
                 )
             }
             entry<Route.InvitePharmacist> {

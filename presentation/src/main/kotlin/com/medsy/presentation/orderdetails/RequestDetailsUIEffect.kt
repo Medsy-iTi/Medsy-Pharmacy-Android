@@ -7,4 +7,5 @@ sealed interface RequestDetailsUIEffect {
     data object OpenPaymentSummary : RequestDetailsUIEffect
     data object OpenCustomerChat : RequestDetailsUIEffect
     data class ShowMessage(val messageRes: Int) : RequestDetailsUIEffect
+    data class NavigateToSubstituteSearch(val itemId: Long) : RequestDetailsUIEffect
 }

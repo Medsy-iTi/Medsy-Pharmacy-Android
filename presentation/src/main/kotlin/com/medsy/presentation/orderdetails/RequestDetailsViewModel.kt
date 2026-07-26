@@ -24,7 +24,9 @@ import kotlin.time.Duration.Companion.milliseconds
 @HiltViewModel
 class RequestDetailsViewModel @Inject constructor(
     private val getRequestDetailsUseCase: GetRequestDetailsUseCase,
-    private val createOfferUseCase: CreateOfferUseCase
+    private val createOfferUseCase: CreateOfferUseCase,
+    private val submittedOffersManager: com.medsy.presentation.orders.SubmittedOffersManager,
+    private val substituteResultManager: SubstituteResultManager
 ) : ViewModel() {
 
     private var loadedRequestId: Long? = null
@@ -39,6 +41,22 @@ class RequestDetailsViewModel @Inject constructor(
 
     private val mutableEffect = Channel<RequestDetailsUIEffect>(Channel.BUFFERED)
     val effect = mutableEffect.receiveAsFlow()
+
+    init {
+        viewModelScope.launch {
+            substituteResultManager.results.collect { result ->
+                onIntent(
+                    RequestDetailsUIIntent.SubstituteSelected(
+                        itemId = result.requestItemId,
+                        productId = result.productId,
+                        productName = result.productName,
+                        productPrice = result.productPrice,
+                        productImage = result.productImage
+                    )
+                )
+            }
+        }
+    }
 
     fun onIntent(intent: RequestDetailsUIIntent) {
         when (intent) {
@@ -83,6 +101,33 @@ class RequestDetailsViewModel @Inject constructor(
                         newSelection.add(intent.itemId)
                     }
                     currentState.copy(selectedItems = newSelection)
+                }
+            }
+            is RequestDetailsUIIntent.AddSubstituteClicked -> {
+                sendEffect(RequestDetailsUIEffect.NavigateToSubstituteSearch(intent.itemId))
+            }
+            is RequestDetailsUIIntent.SubstituteSelected -> {
+                _state.update { currentState ->
+                    val order = currentState.request ?: return@update currentState
+                    val updatedItems = order.items.map { item ->
+                        if (item.id == intent.itemId.toString()) {
+                            item.copy(
+                                productId = intent.productId,
+                                name = intent.productName,
+                                price = intent.productPrice,
+                                imageUrl = intent.productImage
+                            )
+                        } else {
+                            item
+                        }
+                    }
+                    val updatedOrder = order.copy(
+                        items = updatedItems,
+                        total = updatedItems.sumOf { it.price * it.quantity }
+                    )
+                    val newSelection = currentState.selectedItems.toMutableSet()
+                    newSelection.add(intent.itemId)
+                    currentState.copy(request = updatedOrder, selectedItems = newSelection)
                 }
             }
         }
@@ -153,6 +198,7 @@ class RequestDetailsViewModel @Inject constructor(
             
             _state.update { it.copy(isSubmitting = false) }
             result.onSuccess {
+                submittedOffersManager.addSubmittedRequestId(requestId)
                 sendEffect(RequestDetailsUIEffect.ShowMessage(R.string.request_details_accepted_message))
                 sendEffect(RequestDetailsUIEffect.NavigateBack)
             }.onError { _ ->

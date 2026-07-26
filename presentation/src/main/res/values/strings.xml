@@ -186,6 +186,7 @@
     <string name="home_order_status_new">New</string>
     <string name="home_order_status_preparing">In Preparation</string>
     <string name="home_order_status_delivered">Delivered</string>
+    <string name="home_order_status_offer_submitted">Pending</string>
     <string name="home_order_time_ago">%1$d mins ago</string>
 
     <string name="home_nav_home">Home</string>
@@ -253,6 +254,7 @@
     <string name="requests_search_placeholder">Search by order number</string>
     <string name="requests_filter_icon_desc">Filter</string>
     <string name="requests_search_icon_desc">Search</string>
+    <string name="requests_status_offer_submitted">Offer Submitted</string>
     <!--  Requests — card  -->
     <string name="requests_status_in_progress">In Progress</string>
     <string name="requests_action_prepare">Prepare order</string>
@@ -285,6 +287,11 @@
     <string name="request_details_rejected_message">Order rejected</string>
     <string name="request_details_no_prescription">No prescription sent</string>
     <string name="request_details_payment_method">Payment method</string>
+    <string name="request_details_add_alternative">Add alternative</string>
+    <string name="substitute_search_title">Search for alternative</string>
+    <string name="substitute_search_placeholder">Search medicine name...</string>
+    <string name="substitute_price_egp">%1$s EGP</string>
+    <string name="substitute_search_lottie_desc">Search to see medicines</string>
     <string name="requests_view_sample_order">Sample Order</string>
     <string name="pharmacist_notes_title">Notes for Customer</string>
     <string name="pharmacist_notes_placeholder">Add any notes regarding alternatives, pricing, etc...</string>

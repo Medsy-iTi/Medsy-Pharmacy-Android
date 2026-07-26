@@ -8,6 +8,7 @@ enum class RequestStatus {
     Cancelled,
     Completed,
     Expired,
+    OfferSubmitted,
 }
 
 enum class PaymentMethod {
@@ -38,21 +39,11 @@ enum class RequestFilter {
     Completed,
 }
 
-private fun RequestStatus.toFilter(): RequestFilter = when (this) {
-    RequestStatus.Searching -> RequestFilter.New
-    RequestStatus.New -> RequestFilter.New
-    RequestStatus.InProgress -> RequestFilter.InProgress
-    RequestStatus.Delivered -> RequestFilter.Delivered
-    RequestStatus.Cancelled -> RequestFilter.Cancelled
-    RequestStatus.Completed -> RequestFilter.Completed
-    RequestStatus.Expired -> RequestFilter.Cancelled
-}
-
 
 fun RequestSummary.matchesFilter(filter: RequestFilter): Boolean {
     return when (filter) {
         RequestFilter.All -> true
-        RequestFilter.New -> this.status == RequestStatus.New || this.status == RequestStatus.Searching
+        RequestFilter.New -> this.status == RequestStatus.New || this.status == RequestStatus.Searching || this.status == RequestStatus.OfferSubmitted
         RequestFilter.InProgress -> this.status == RequestStatus.InProgress
         RequestFilter.Completed -> this.status == RequestStatus.Completed
         RequestFilter.Cancelled -> this.status == RequestStatus.Cancelled || this.status == RequestStatus.Expired

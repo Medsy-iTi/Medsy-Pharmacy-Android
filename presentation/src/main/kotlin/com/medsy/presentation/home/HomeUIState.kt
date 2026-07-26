@@ -37,5 +37,6 @@ data class HomeOrderUI(
 enum class HomeOrderStatus {
     NEW,
     PREPARING,
-    DELIVERED
+    DELIVERED,
+    OFFER_SUBMITTED
 }

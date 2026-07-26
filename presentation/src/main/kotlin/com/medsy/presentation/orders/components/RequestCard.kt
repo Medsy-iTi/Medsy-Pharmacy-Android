@@ -185,6 +185,7 @@ fun RequestCard(
                 RequestStatus.Cancelled -> Unit
                 RequestStatus.Completed -> Unit
                 RequestStatus.Expired -> Unit
+                else -> {}
             }
         }
     }
