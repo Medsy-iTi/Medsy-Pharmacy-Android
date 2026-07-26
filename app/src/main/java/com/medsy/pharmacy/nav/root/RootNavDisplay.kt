@@ -20,6 +20,7 @@ import com.medsy.presentation.auth.approval.ApprovalRoot
 import com.medsy.presentation.auth.approval.ApprovalScreenStatus
 import com.medsy.presentation.auth.login.LoginRoot
 import com.medsy.presentation.auth.nopharmacy.NoPharmacyRoot
+import com.medsy.presentation.auth.nopharmacy.invitation.NoPharmacyInvitationsRoot
 import com.medsy.presentation.auth.otp.OtpRoot
 import com.medsy.presentation.auth.register.RegistrationRoot
 import com.medsy.presentation.auth.registerpharmacy.PharmacyRegistrationRoot
@@ -90,6 +91,13 @@ fun RootNavDisplay() {
                         backStack.navigateSingleTop(Route.PharmacyRegistration)
                     },
                     openLogin = { replaceWith(Route.Login) },
+                    openInvitations = { backStack.navigateSingleTop(Route.NoPharmacyInvitations) },
+                )
+            }
+            entry<Route.NoPharmacyInvitations> {
+                NoPharmacyInvitationsRoot(
+                    navigateBack = { backStack.removeLastOrNull() },
+                    navigateHome = { replaceWith(Route.NestedNav) },
                 )
             }
             entry<Route.Registration> {

@@ -86,6 +86,19 @@
     <string name="no_pharmacy_invite_body">اطلب من مالك الصيدلية أو المسؤول دعوتك باستخدام البريد الإلكتروني لهذا الحساب.</string>
     <string name="no_pharmacy_review_title">يبدأ الوصول بعد المراجعة</string>
     <string name="no_pharmacy_review_body">سيُبقي ميدزي الطلبات مخفية حتى تصبح حالة ربط الصيدلية والموافقة جاهزة.</string>
+    <string name="no_pharmacy_checking_invitations">جارٍ التحقق من دعوات الصيدليات…</string>
+    <string name="no_pharmacy_retry_invitations">حاول مرة أخرى</string>
+    <string name="no_pharmacy_pending_invitations_title">لديك دعوات صيدليات</string>
+    <plurals name="no_pharmacy_pending_invitations_count">
+        <item quantity="one">لديك دعوة صيدلية معلّقة بانتظارك</item>
+        <item quantity="other">لديك %1$d دعوة صيدلية معلّقة بانتظارك</item>
+    </plurals>
+    <string name="no_pharmacy_open_invitations">فتح الدعوات المعلّقة</string>
+    <string name="no_pharmacy_invitations_title">دعوات الصيدليات</string>
+    <string name="no_pharmacy_invitations_supporting">اختر دعوة صيدلية للانضمام إلى فريقها.</string>
+    <string name="no_pharmacy_invitations_empty">ليس لديك أي دعوات صيدليات معلّقة.</string>
+    <string name="no_pharmacy_invitation_card_supporting">تمت دعوتك للانضمام إلى هذه الصيدلية.</string>
+    <string name="no_pharmacy_accept_invitation">قبول الدعوة</string>
 
     <string name="error_no_internet">لا يوجد اتصال بالإنترنت</string>
     <string name="error_request_timeout">انتهت مهلة الطلب. حاول مرة أخرى.</string>
