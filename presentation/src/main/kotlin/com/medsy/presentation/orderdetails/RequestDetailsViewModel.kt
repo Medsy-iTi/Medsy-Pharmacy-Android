@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 import com.medsy.domain.orders.usecase.CreateOfferUseCase
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class RequestDetailsViewModel @Inject constructor(
@@ -124,7 +125,7 @@ class RequestDetailsViewModel @Inject constructor(
     private fun rejectRequest() {
         viewModelScope.launch {
             _state.update { it.copy(isSubmitting = true) }
-            delay(300) // simulated backend call
+            delay(300.milliseconds) // simulated backend call
             _state.update { it.copy(isSubmitting = false) }
             sendEffect(RequestDetailsUIEffect.ShowMessage(R.string.request_details_rejected_message))
             sendEffect(RequestDetailsUIEffect.NavigateBack)
@@ -138,7 +139,6 @@ class RequestDetailsViewModel @Inject constructor(
         val selectedIds = currentState.selectedItems
         
         if (selectedIds.isEmpty()) {
-            // maybe show error
             return
         }
 
@@ -147,7 +147,7 @@ class RequestDetailsViewModel @Inject constructor(
             
             val itemsToSubmit = order.items
                 .filter { (it.id.toLongOrNull() ?: -1L) in selectedIds }
-                .map { Pair(it.id.toLongOrNull() ?: -1L, it.productId ?: 0L) } // the second is productId
+                .map { Pair(it.id.toLongOrNull() ?: -1L, it.productId ?: 0L) }
                 
             val result = createOfferUseCase(requestId, itemsToSubmit)
             
@@ -155,7 +155,7 @@ class RequestDetailsViewModel @Inject constructor(
             result.onSuccess {
                 sendEffect(RequestDetailsUIEffect.ShowMessage(R.string.request_details_accepted_message))
                 sendEffect(RequestDetailsUIEffect.NavigateBack)
-            }.onError { error ->
+            }.onError { _ ->
                 sendEffect(RequestDetailsUIEffect.ShowMessage(R.string.error_generic))
             }
         }
