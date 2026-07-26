@@ -63,7 +63,7 @@ class HomeViewModel @Inject constructor(
         val currentPharmacyId = pharmacyIdStr.removePrefix("PH").toLongOrNull() ?: return
         
         if (currentPharmacyId > 0) {
-            val requestsResult = getCurrentPharmacyRequests(page = 0, size = 10)
+            val requestsResult = getCurrentPharmacyRequests(page = 0, size = 10, sort = listOf("id,desc"))
             requestsResult.fold(
                 onSuccess = { page ->
                     val newOrders = page.content.filter { req ->
@@ -143,7 +143,7 @@ class HomeViewModel @Inject constructor(
             )
 
             if (currentPharmacyId > 0) {
-                val requestsResult = getCurrentPharmacyRequests(page = 0, size = 10)
+                val requestsResult = getCurrentPharmacyRequests(page = 0, size = 10, sort = listOf("id,desc"))
                 requestsResult.fold(
                     onSuccess = { page ->
                         val newOrders = page.content.filter { req ->

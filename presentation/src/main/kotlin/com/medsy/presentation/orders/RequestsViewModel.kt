@@ -76,7 +76,7 @@ class RequestsViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            val result = getCurrentPharmacyRequestsUseCase(page = 0, size = 10)
+            val result = getCurrentPharmacyRequestsUseCase(page = 0, size = 10, sort = listOf("id,desc"))
 
             result.onSuccess { requestPage ->
                 val uiRequests = requestPage.content.map { it.toPresentation() }.sortedByDescending { it.id }
