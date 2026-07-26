@@ -11,4 +11,5 @@ interface UserPreferencesRepository {
     suspend fun setReceivingOrders(isReceivingOrders: Boolean)
     suspend fun setOnboardingCompleted()
     suspend fun setAvatarFemale(isFemale: Boolean)
+    suspend fun setRegisteredFcmToken(token: String?)
 }

@@ -349,4 +349,17 @@
     <string name="pharmacist_notes_placeholder">أضف أي ملاحظات بخصوص البدائل، الأسعار، أو غيرها...</string>
     <string name="prescription_section_title">روشتة العميل</string>
     <string name="prescription_image_content_description">صورة روشتة العميل</string>
+
+    <!-- Notifications -->
+    <string name="notifications_title">الإشعارات</string>
+    <string name="notifications_empty">ليس لديك أي إشعارات حالياً</string>
+    <string name="action_mark_all_read">تحديد الكل كمقروء</string>
+    <string name="default_notification_channel_id">pharmacy_notifications_channel</string>
+    <string name="default_notification_channel_name">إشعارات الصيدلية</string>
+    <string name="new_patient_request_title">طلب جديد من مريض</string>
+    <string name="new_patient_request_body">أرسل مريض طلب روشتة جديد بالقرب منك.</string>
+    <string name="notification_default_title">إشعار ميدسي</string>
+    <string name="notification_default_body">لديك تحديث جديد</string>
+    <string name="notification_channel_orders_name">قناة الطلبات</string>
+    <string name="notification_channel_orders_description">الإشعارات المتعلقة بالطلبات والطلبيات الجديدة</string>
 </resources>

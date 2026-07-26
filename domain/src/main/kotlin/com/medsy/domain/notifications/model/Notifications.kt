@@ -1,0 +1,30 @@
+package com.medsy.domain.notifications.model
+
+data class DeviceTokenRegistrationDomain(
+    val fcmToken: String,
+    val platform: String = "ANDROID",
+    val deviceId: String
+)
+
+data class NotificationDomain(
+    val recipientId: Long,
+    val category: String,
+    val title: String,
+    val body: String,
+    val dataPayload: Map<String, String>,
+    val status: String,
+    val sentAt: String,
+    val readAt: String?
+) {
+    val isRead: Boolean
+        get() = status.equals("READ", ignoreCase = true) || readAt != null
+}
+
+data class NotificationPageDomain(
+    val content: List<NotificationDomain>,
+    val pageNumber: Int,
+    val pageSize: Int,
+    val totalElements: Long,
+    val totalPages: Int,
+    val last: Boolean
+)

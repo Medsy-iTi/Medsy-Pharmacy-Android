@@ -16,6 +16,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import com.medsy.domain.auth.usecase.ObserveSessionUseCase
+import com.medsy.domain.auth.model.PharmacyApprovalStatus
+import com.medsy.pharmacy.fcm.FcmTokenManager
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -28,8 +33,24 @@ class MainViewModel @Inject constructor(
     private val observePreferences: ObserveUserPreferencesUseCase,
     private val sendHeartbeat: SendHeartbeatUseCase,
     private val setReceivingOrdersPreference: SetReceivingOrdersPreferenceUseCase,
+    private val observeSession: ObserveSessionUseCase,
+    private val fcmTokenManager: FcmTokenManager,
 ) : ViewModel() {
     private var heartbeatJob: Job? = null
+
+    private val _pendingRequestId = MutableStateFlow<Long?>(null)
+    val pendingRequestId = _pendingRequestId.asStateFlow()
+
+    fun consumePendingRequestId() {
+        _pendingRequestId.value = null
+    }
+
+    fun handleNotificationIntent(intent: android.content.Intent) {
+        val requestId = intent.getLongExtra(com.medsy.pharmacy.firebase.FCMTokenService.EXTRA_REQUEST_ID, -1L)
+        if (requestId != -1L) {
+            _pendingRequestId.value = requestId
+        }
+    }
 
     val state = observePreferences()
         .map { MainState(themeMode = it.themeMode) }
@@ -42,6 +63,17 @@ class MainViewModel @Inject constructor(
 
     init {
         observePresence()
+        observeSessionAndRegisterToken()
+    }
+
+    private fun observeSessionAndRegisterToken() {
+        viewModelScope.launch {
+            observeSession().collect { session ->
+                if (session != null && session.account.approvalStatus == PharmacyApprovalStatus.Approved) {
+                    fcmTokenManager.registerDeviceToken()
+                }
+            }
+        }
     }
 
     private fun observePresence() {

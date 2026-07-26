@@ -15,13 +15,15 @@ import com.medsy.domain.orders.model.RequestStatusConstants
 import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
+import com.medsy.domain.notifications.usecase.GetUnreadCountUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
-    private val getCurrentPharmacyRequests: GetCurrentPharmacyRequestsUseCase
+    private val getCurrentPharmacyRequests: GetCurrentPharmacyRequestsUseCase,
+    private val getUnreadCount: GetUnreadCountUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeUIState())
@@ -72,9 +74,11 @@ class HomeViewModel @Inject constructor(
 
             val pharmacyDeferred = async { getMyPharmacy() }
             val ordersDeferred = async { getCurrentPharmacyRequests(page = 0, size = 10) }
+            val unreadCountDeferred = async { getUnreadCount() }
 
             val pharmacyResult = pharmacyDeferred.await()
             val ordersResult = ordersDeferred.await()
+            val unreadCountResult = unreadCountDeferred.await()
 
             var newState = _state.value.copy(isLoading = false)
 
@@ -121,6 +125,13 @@ class HomeViewModel @Inject constructor(
                             inProgress = page.content.count { it.status == RequestStatusConstants.IN_PROGRESS }
                         )
                     )
+                },
+                onError = { }
+            )
+
+            unreadCountResult.fold(
+                onSuccess = { count ->
+                    newState = newState.copy(notificationsCount = count)
                 },
                 onError = { }
             )

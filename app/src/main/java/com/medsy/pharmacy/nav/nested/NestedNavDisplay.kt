@@ -37,8 +37,9 @@ fun NestedNavDisplay(
     openRequestDetails: (Long) -> Unit,
     openInvitePharmacist: () -> Unit,
     openPharmacistsList: () -> Unit,
-    openPersonalInfo: () -> Unit
-    ) {
+    openPersonalInfo: () -> Unit,
+    openNotifications: () -> Unit
+) {
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration {
             serializersModule = SerializersModule {
@@ -104,7 +105,9 @@ fun NestedNavDisplay(
                     fadeOut(tween(NAVIGATION_DURATION_MILLIS))
             },
             entryProvider = entryProvider {
-                entry<Route.NestedNav.Home> { HomeRoot() }
+                entry<Route.NestedNav.Home> {
+                    HomeRoot(onOpenNotifications = openNotifications)
+                }
                 entry<Route.NestedNav.Requests> { RequestsRoot(onRequestClick = openRequestDetails) }
                 entry<Route.NestedNav.Profile> { 
                     ProfileRoot(

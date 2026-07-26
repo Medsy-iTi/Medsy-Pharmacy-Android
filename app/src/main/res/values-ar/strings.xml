@@ -4,4 +4,13 @@
     <string name="nav_home">الرئيسية</string>
     <string name="nav_orders">الطلبات</string>
     <string name="nav_profile">الملف الشخصي</string>
+
+
+    <!-- الإشعارات -->
+    <string name="new_patient_request_title">طلب جديد من مريض</string>
+    <string name="new_patient_request_body">لقد تلقيت طلب روضات/وصفة طبية جديدة من أحد المرضى.</string>
+
+    <!-- قنوات الإشعارات -->
+    <string name="default_notification_channel_id">medsy_pharmacy_notifications</string>
+    <string name="default_notification_channel_name">الإشعارات العامة</string>
 </resources>

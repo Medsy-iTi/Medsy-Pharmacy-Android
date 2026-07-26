@@ -22,6 +22,7 @@ class UserPreferencesLocalDataSource @Inject constructor(
         val IS_ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("is_onboarding_completed")
         val IS_AVATAR_FEMALE_KEY = booleanPreferencesKey("is_avatar_female")
         val IS_RECEIVING_ORDERS_KEY = booleanPreferencesKey("is_receiving_orders")
+        val REGISTERED_FCM_TOKEN_KEY = stringPreferencesKey("registered_fcm_token")
     }
 
     val themeMode: Flow<String?> = dataStore.data
@@ -39,6 +40,10 @@ class UserPreferencesLocalDataSource @Inject constructor(
     val isReceivingOrders: Flow<Boolean> = dataStore.data
         .catch { emit(emptyPreferences()) }
         .map { preferences -> preferences[IS_RECEIVING_ORDERS_KEY] ?: false }
+
+    val registeredFcmToken: Flow<String?> = dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { preferences -> preferences[REGISTERED_FCM_TOKEN_KEY] }
 
     suspend fun setThemeMode(themeMode: String) {
         try {
@@ -73,6 +78,19 @@ class UserPreferencesLocalDataSource @Inject constructor(
         try {
             dataStore.edit { preferences ->
                 preferences[IS_RECEIVING_ORDERS_KEY] = isReceivingOrders
+            }
+        } catch (_: IOException) {
+        }
+    }
+
+    suspend fun setRegisteredFcmToken(token: String?) {
+        try {
+            dataStore.edit { preferences ->
+                if (token != null) {
+                    preferences[REGISTERED_FCM_TOKEN_KEY] = token
+                } else {
+                    preferences.remove(REGISTERED_FCM_TOKEN_KEY)
+                }
             }
         } catch (_: IOException) {
         }
