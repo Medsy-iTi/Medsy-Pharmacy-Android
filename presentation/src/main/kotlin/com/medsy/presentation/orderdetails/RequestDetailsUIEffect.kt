@@ -3,9 +3,9 @@ package com.medsy.presentation.orderdetails
 sealed interface RequestDetailsUIEffect {
     data object NavigateBack : RequestDetailsUIEffect
     data class DialPhoneNumber(val phoneNumber: String) : RequestDetailsUIEffect
-    data object OpenLocationOnMap : RequestDetailsUIEffect
+    data class OpenLocationOnMap(val latitude: Double, val longitude: Double) : RequestDetailsUIEffect
     data object OpenPaymentSummary : RequestDetailsUIEffect
-    data object OpenCustomerChat : RequestDetailsUIEffect
     data class ShowMessage(val messageRes: Int) : RequestDetailsUIEffect
     data class NavigateToSubstituteSearch(val itemId: Long) : RequestDetailsUIEffect
+    data class OpenPrescriptionImage(val imageUrl: String) : RequestDetailsUIEffect
 }

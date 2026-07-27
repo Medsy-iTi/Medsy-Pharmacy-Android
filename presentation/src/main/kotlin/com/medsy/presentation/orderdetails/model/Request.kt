@@ -18,6 +18,8 @@ data class Request(
     val customerName: String,
     val customerPhone: String,
     val customerAddress: String,
+    val deliveryLatitude: Double?,
+    val deliveryLongitude: Double?,
     val items: List<RequestMedicineItem>,
     val customerNotes: String?,
     val total: Double,

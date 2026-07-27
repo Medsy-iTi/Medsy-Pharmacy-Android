@@ -29,6 +29,8 @@ fun PharmacyRequestDomain.toPresentation(): Request {
         customerName = this.customerName ?: "Customer #${this.customerId}",
         customerPhone = this.customerPhone ?: "",
         customerAddress = this.deliveryAddress ?: "",
+        deliveryLatitude = this.deliveryLatitude,
+        deliveryLongitude = this.deliveryLongitude,
         items = this.items.map { it.toPresentation() },
         customerNotes = this.notes,
         total = calculatedTotal,

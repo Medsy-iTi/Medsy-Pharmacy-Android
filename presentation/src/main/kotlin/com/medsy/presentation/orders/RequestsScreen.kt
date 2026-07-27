@@ -124,12 +124,9 @@ fun RequestsScreen(
             )
 
             when {
-                state.isLoading -> Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
-                }
+                state.isLoading -> com.medsy.presentation.orders.components.RequestsShimmer(
+                    modifier = Modifier.fillMaxSize()
+                )
 
                 state.filteredOrders.isEmpty() -> Column(
                     modifier = Modifier.fillMaxSize(),

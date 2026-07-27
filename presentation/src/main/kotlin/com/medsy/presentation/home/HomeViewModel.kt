@@ -39,6 +39,25 @@ class HomeViewModel @Inject constructor(
         loadHomeData()
         prefetchProfileData()
         startPolling()
+        observeSubmittedOffers()
+    }
+
+    private fun observeSubmittedOffers() {
+        viewModelScope.launch {
+            submittedOffersManager.submittedRequestIds.collect { submittedIds ->
+                _state.update { currentState ->
+                    val updatedOrders = currentState.latestOrders.map { order ->
+                        val reqId = order.requestId.toLongOrNull() ?: -1L
+                        if (submittedIds.contains(reqId) && order.status == HomeOrderStatus.NEW) {
+                            order.copy(status = HomeOrderStatus.OFFER_SUBMITTED)
+                        } else {
+                            order
+                        }
+                    }
+                    currentState.copy(latestOrders = updatedOrders)
+                }
+            }
+        }
     }
 
     private fun prefetchProfileData() {

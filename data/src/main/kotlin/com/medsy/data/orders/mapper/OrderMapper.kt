@@ -28,7 +28,7 @@ fun PharmacyRequestDto.toDomain(): PharmacyRequestDomain {
         status = status,
         createdAt = createdAt,
         items = items.map { it.toDomain() },
-        prescriptionUrl = prescriptionUrl,
+        prescriptionUrl = prescriptionUrl?.let { if (it.startsWith("http")) it else "${com.medsy.data.BuildConfig.BASE_URL}$it" },
         customerName = customerName,
         customerPhone = customerPhone,
         paymentMethod = paymentMethod,

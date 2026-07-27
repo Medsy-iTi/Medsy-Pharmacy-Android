@@ -75,16 +75,16 @@ class RequestDetailsViewModel @Inject constructor(
                 sendEffect(RequestDetailsUIEffect.DialPhoneNumber(phone))
             }
 
-            RequestDetailsUIIntent.OpenLocationClicked ->
-                sendEffect(RequestDetailsUIEffect.OpenLocationOnMap)
+            RequestDetailsUIIntent.OpenLocationClicked -> {
+                val lat = _state.value.request?.deliveryLatitude ?: return
+                val lng = _state.value.request?.deliveryLongitude ?: return
+                sendEffect(RequestDetailsUIEffect.OpenLocationOnMap(lat, lng))
+            }
 
             RequestDetailsUIIntent.ViewPaymentSummaryClicked ->
                 sendEffect(RequestDetailsUIEffect.OpenPaymentSummary)
 
             RequestDetailsUIIntent.RejectRequestClicked -> rejectRequest()
-
-            RequestDetailsUIIntent.ContactCustomerClicked ->
-                sendEffect(RequestDetailsUIEffect.OpenCustomerChat)
 
             RequestDetailsUIIntent.AcceptRequestClicked -> acceptRequest()
 
@@ -130,6 +130,9 @@ class RequestDetailsViewModel @Inject constructor(
                     currentState.copy(request = updatedOrder, selectedItems = newSelection)
                 }
             }
+            is RequestDetailsUIIntent.OpenPrescriptionImageClicked -> {
+                sendEffect(RequestDetailsUIEffect.OpenPrescriptionImage(intent.imageUrl))
+            }
         }
     }
 
@@ -173,6 +176,7 @@ class RequestDetailsViewModel @Inject constructor(
             delay(300.milliseconds) // simulated backend call
             _state.update { it.copy(isSubmitting = false) }
             sendEffect(RequestDetailsUIEffect.ShowMessage(R.string.request_details_rejected_message))
+            kotlinx.coroutines.delay(1000)
             sendEffect(RequestDetailsUIEffect.NavigateBack)
         }
     }
@@ -200,6 +204,7 @@ class RequestDetailsViewModel @Inject constructor(
             result.onSuccess {
                 submittedOffersManager.addSubmittedRequestId(requestId)
                 sendEffect(RequestDetailsUIEffect.ShowMessage(R.string.request_details_accepted_message))
+                kotlinx.coroutines.delay(1000)
                 sendEffect(RequestDetailsUIEffect.NavigateBack)
             }.onError { _ ->
                 sendEffect(RequestDetailsUIEffect.ShowMessage(R.string.error_generic))

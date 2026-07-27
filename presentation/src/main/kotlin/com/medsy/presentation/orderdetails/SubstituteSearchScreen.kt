@@ -79,8 +79,18 @@ fun SubstituteSearchScreen(
             )
 
             if (state.isLoading) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+                com.medsy.designsystem.components.MedsyShimmer(modifier = Modifier.fillMaxSize()) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        repeat(5) {
+                            com.medsy.designsystem.components.MedsyShimmerPlaceholder(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(72.dp)
+                                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                            )
+                        }
+                    }
                 }
             } else if (state.products.isEmpty() && state.query.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

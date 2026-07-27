@@ -42,7 +42,7 @@ fun OrderListItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .then(if (order.status != HomeOrderStatus.OFFER_SUBMITTED) Modifier.clickable { onClick() } else Modifier),
+            .then(if (order.status == HomeOrderStatus.NEW) Modifier.clickable { onClick() } else Modifier),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
