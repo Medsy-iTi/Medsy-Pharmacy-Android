@@ -3,6 +3,7 @@ package com.medsy.presentation.notifications
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medsy.domain.common.fold
+import com.medsy.domain.notifications.model.NotificationDomain
 import com.medsy.domain.notifications.usecase.GetNotificationsUseCase
 import com.medsy.domain.notifications.usecase.MarkAllNotificationsAsReadUseCase
 import com.medsy.domain.notifications.usecase.MarkNotificationAsReadUseCase
@@ -31,6 +32,10 @@ class NotificationsViewModel @Inject constructor(
     init {
         loadNotifications()
     }
+    companion object{
+        const val KEY_REQUEST_ID = "requestId"
+        const val KEY_ID = "id"
+    }
 
     fun onIntent(intent: NotificationsUIIntent) {
         when (intent) {
@@ -40,6 +45,7 @@ class NotificationsViewModel @Inject constructor(
                     mutableEffect.send(NotificationsUIEffect.NavigateBack)
                 }
             }
+
             NotificationsUIIntent.MarkAllAsReadClicked -> markAllAsRead()
             is NotificationsUIIntent.NotificationClicked -> handleNotificationClicked(intent.recipientId)
         }
@@ -68,8 +74,13 @@ class NotificationsViewModel @Inject constructor(
                 onSuccess = {
                     loadNotifications()
                 },
-                onError = {
-                    _state.update { it.copy(isLoading = false) }
+                onError = { error ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMsg = error.toString()
+                        )
+                    }
                 }
             )
         }
@@ -81,9 +92,21 @@ class NotificationsViewModel @Inject constructor(
             if (notification != null) {
                 if (!notification.isRead) {
                     markAsReadUseCase(recipientId)
+                    _state.update { currentState ->
+                        currentState.copy(
+                            notifications = currentState.notifications.map { item ->
+                                if (item.recipientId == recipientId) {
+                                    item.copy(status = NotificationDomain.STATUS_READ)
+                                } else {
+                                    item
+                                }
+                            }
+                        )
+                    }
                 }
-                
-                val requestIdStr = notification.dataPayload["requestId"] ?: notification.dataPayload["id"]
+
+                val requestIdStr =
+                    notification.dataPayload[KEY_REQUEST_ID] ?: notification.dataPayload[KEY_ID]
                 val requestId = requestIdStr?.toLongOrNull()
                 if (requestId != null) {
                     mutableEffect.send(NotificationsUIEffect.NavigateToRequestDetails(requestId))

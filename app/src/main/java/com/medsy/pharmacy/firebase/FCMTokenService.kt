@@ -12,6 +12,8 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.medsy.pharmacy.MainActivity
 import com.medsy.pharmacy.fcm.FcmTokenManager
+import com.medsy.presentation.R
+import com.medsy.presentation.notifications.NotificationLocalizer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,14 +57,14 @@ class FCMTokenService : FirebaseMessagingService() {
 
         val rawTitle = message.notification?.title
             ?: message.data["title"]
-            ?: getString(com.medsy.presentation.R.string.notification_default_title)
+            ?: getString(R.string.notification_default_title)
         val rawBody = message.notification?.body 
-            ?: message.data["body"] 
-            ?: getString(com.medsy.presentation.R.string.notification_default_body)
+            ?: message.data["body"]
+            ?: getString(R.string.notification_default_body)
 
         val category = message.data["category"] ?: ""
-        val title = com.medsy.presentation.notifications.NotificationLocalizer.getLocalizedTitle(this, category, rawTitle)
-        val body = com.medsy.presentation.notifications.NotificationLocalizer.getLocalizedBody(this, category, rawBody)
+        val title = NotificationLocalizer.getLocalizedTitle(this, category, rawTitle)
+        val body = NotificationLocalizer.getLocalizedBody(this, category, rawBody)
 
         val requestIdStr = message.data["requestId"] ?: message.data["id"]
         val requestId = requestIdStr?.toLongOrNull()
@@ -98,7 +100,7 @@ class FCMTokenService : FirebaseMessagingService() {
                 getString(com.medsy.presentation.R.string.notification_channel_orders_name),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = getString(com.medsy.presentation.R.string.notification_channel_orders_description)
+                description = getString(R.string.notification_channel_orders_description)
             }
             manager.createNotificationChannel(channel)
         }
