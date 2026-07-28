@@ -59,6 +59,7 @@ class RegisterTokenWorker @AssistedInject constructor(
             Log.w(TAG, "FCM Service or network unavailable. WorkManager will retry later.", e)
             Result.retry()
         } catch (e: Exception) {
+            if (e is kotlinx.coroutines.CancellationException) throw e
             Log.e(TAG, "Unexpected error in RegisterTokenWorker", e)
             Result.retry()
         }

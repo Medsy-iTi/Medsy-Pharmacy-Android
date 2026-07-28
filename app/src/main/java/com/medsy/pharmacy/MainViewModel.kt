@@ -46,9 +46,16 @@ class MainViewModel @Inject constructor(
     }
 
     fun handleNotificationIntent(intent: android.content.Intent) {
-        val requestId = intent.getLongExtra(com.medsy.pharmacy.firebase.FCMTokenService.EXTRA_REQUEST_ID, -1L)
+        var requestId = intent.getLongExtra(com.medsy.pharmacy.firebase.FCMTokenService.EXTRA_REQUEST_ID, -1L)
+        
+        if (requestId == -1L) {
+            val requestIdStr = intent.getStringExtra("requestId") ?: intent.getStringExtra("id")
+            requestId = requestIdStr?.toLongOrNull() ?: -1L
+        }
+
         if (requestId != -1L) {
             _pendingRequestId.value = requestId
+            Log.d("MainViewModel", "Parsed pendingRequestId from notification: $requestId")
         }
     }
 
