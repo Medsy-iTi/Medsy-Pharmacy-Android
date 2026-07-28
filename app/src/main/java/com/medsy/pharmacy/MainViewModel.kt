@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import com.medsy.domain.auth.usecase.ObserveSessionUseCase
 import com.medsy.domain.auth.model.PharmacyApprovalStatus
+import com.medsy.domain.notifications.usecase.MarkNotificationAsReadUseCase
 import com.medsy.pharmacy.fcm.FcmTokenManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,6 +36,7 @@ class MainViewModel @Inject constructor(
     private val setReceivingOrdersPreference: SetReceivingOrdersPreferenceUseCase,
     private val observeSession: ObserveSessionUseCase,
     private val fcmTokenManager: FcmTokenManager,
+    private val markNotificationAsRead: MarkNotificationAsReadUseCase,
 ) : ViewModel() {
     private var heartbeatJob: Job? = null
 
@@ -47,15 +49,28 @@ class MainViewModel @Inject constructor(
 
     fun handleNotificationIntent(intent: android.content.Intent) {
         var requestId = intent.getLongExtra(com.medsy.pharmacy.firebase.FCMTokenService.EXTRA_REQUEST_ID, -1L)
+        var recipientId = intent.getLongExtra(com.medsy.pharmacy.firebase.FCMTokenService.EXTRA_RECIPIENT_ID, -1L)
         
         if (requestId == -1L) {
             val requestIdStr = intent.getStringExtra("requestId") ?: intent.getStringExtra("id")
             requestId = requestIdStr?.toLongOrNull() ?: -1L
         }
 
+        if (recipientId == -1L) {
+            val recipientIdStr = intent.getStringExtra("recipientId")
+            recipientId = recipientIdStr?.toLongOrNull() ?: -1L
+        }
+
         if (requestId != -1L) {
             _pendingRequestId.value = requestId
             Log.d("MainViewModel", "Parsed pendingRequestId from notification: $requestId")
+        }
+
+        if (recipientId != -1L) {
+            viewModelScope.launch {
+                markNotificationAsRead(recipientId)
+                Log.d("MainViewModel", "Marked notification as read: $recipientId")
+            }
         }
     }
 

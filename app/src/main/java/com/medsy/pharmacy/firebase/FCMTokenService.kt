@@ -31,6 +31,7 @@ class FCMTokenService : FirebaseMessagingService() {
     companion object {
         const val ORDERS_CHANNEL_ID = "orders_channel"
         const val EXTRA_REQUEST_ID = "extra_request_id"
+        const val EXTRA_RECIPIENT_ID = "extra_recipient_id"
     }
 
     override fun onNewToken(token: String) {
@@ -55,14 +56,20 @@ class FCMTokenService : FirebaseMessagingService() {
         val requestIdStr = message.data["requestId"] ?: message.data["id"]
         val requestId = requestIdStr?.toLongOrNull()
 
-        showNotification(title, body, requestId)
+        val recipientIdStr = message.data["recipientId"]
+        val recipientId = recipientIdStr?.toLongOrNull()
+
+        showNotification(title, body, requestId, recipientId)
     }
 
-    private fun showNotification(title: String, body: String, requestId: Long?) {
+    private fun showNotification(title: String, body: String, requestId: Long?, recipientId: Long?) {
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             if (requestId != null) {
                 putExtra(EXTRA_REQUEST_ID, requestId)
+            }
+            if (recipientId != null) {
+                putExtra(EXTRA_RECIPIENT_ID, recipientId)
             }
         }
         val pendingIntent = PendingIntent.getActivity(
