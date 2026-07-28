@@ -15,8 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.medsy.presentation.R
-import com.medsy.presentation.auth.login.LoginConstants
 
 @Composable
 fun LoginTip() {
@@ -27,18 +27,16 @@ fun LoginTip() {
     ) {
         Row(
             modifier = Modifier.padding(
-                horizontal = LoginConstants.BadgePaddingHorizontal,
-                vertical = LoginConstants.BadgePaddingVertical,
+                horizontal = 14.dp,
+                vertical = 8.dp,
             ),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(
-                LoginConstants.BadgeContentSpacing,
-            ),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Icon(
                 imageVector = Icons.Outlined.LocalPharmacy,
                 contentDescription = null,
-                modifier = Modifier.size(LoginConstants.BadgeIconSize),
+                modifier = Modifier.size(18.dp),
             )
             Text(
                 text = stringResource(R.string.login_account_type_hint),

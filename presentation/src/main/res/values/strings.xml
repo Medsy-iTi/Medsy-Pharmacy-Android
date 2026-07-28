@@ -12,7 +12,9 @@
     <string name="onboarding_desc_2">Verify item matching with the prescription, suggest alternatives when needed, and send the best offer to your patient.</string>
     <string name="onboarding_title_3">Follow every order until completion</string>
     <string name="onboarding_desc_3">Update order status with one click, and the patient receives the update automatically at every step.</string>
-    <string name="login_google">Google</string>
+    <string name="login_google">Continue with Google</string>
+    <string name="login_or">or</string>
+    <string name="login_welcome_back">Welcome back</string>
     <string name="action_get_started">Get started</string>
     <string name="auth_documents_description">Upload pharmacy license and professional documents to verify your account.</string>
     <string name="registration_pharmacy_license">Pharmacy License</string>
@@ -62,7 +64,7 @@
     <string name="auth_hide_password">Hide password</string>
     <string name="auth_login_action">Sign in</string>
     <string name="auth_register_action">Create Account</string>
-    <string name="login_motto">Welcome back to your pharmacy!</string>
+    <string name="login_motto">Sign in to manage your pharmacy.</string>
     <string name="login_account_type_hint">For approved pharmacy accounts</string>
     <string name="login_forgot_password">Forgot password?</string>
     <string name="login_no_account_full">Don\'t have a pharmacy account? %1$s</string>

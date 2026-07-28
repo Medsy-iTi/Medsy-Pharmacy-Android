@@ -12,7 +12,9 @@
     <string name="onboarding_desc_2">تحقق من مطابقة الأصناف للروشتة، اقترح بدائل عند الحاجة، وأرسل أفضل عرض لمريضك.</string>
     <string name="onboarding_title_3">تابع كل طلب حتى اكتماله</string>
     <string name="onboarding_desc_3">حدّث حالة الطلب بضغطة واحدة، ويصل التحديث للمريض تلقائيًا في كل خطوة.</string>
-    <string name="login_google">جوجل</string>
+    <string name="login_google">المتابعة باستخدام Google</string>
+    <string name="login_or">أو</string>
+    <string name="login_welcome_back">مرحبًا بعودتك</string>
     <string name="action_get_started">ابدأ الآن</string>
     <string name="auth_documents_description">ارفع تراخيص الصيدلية والمستندات المهنية للتحقق من حسابك.</string>
     <string name="registration_pharmacy_license">ترخيص الصيدلية</string>
@@ -62,7 +64,7 @@
     <string name="auth_hide_password">إخفاء كلمة المرور</string>
     <string name="auth_login_action">تسجيل الدخول</string>
     <string name="auth_register_action">انشاء حساب</string>
-    <string name="login_motto">مرحبا بعودتك الى ادارة صيدليتك.</string>
+    <string name="login_motto">سجل الدخول لإدارة صيدليتك.</string>
     <string name="login_account_type_hint">لحسابات الصيدليات المعتمدة</string>
     <string name="login_forgot_password">هل نسيت كلمة المرور؟</string>
     <string name="login_no_account_full">ليس لديك حساب صيدلية؟ %1$s</string>
