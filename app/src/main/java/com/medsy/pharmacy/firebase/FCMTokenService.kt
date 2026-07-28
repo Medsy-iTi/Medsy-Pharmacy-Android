@@ -41,6 +41,7 @@ class FCMTokenService : FirebaseMessagingService() {
         const val KEY_REQUEST_ID = "requestId"
         const val KEY_ID = "id"
         const val KEY_RECIPIENT_ID = "recipientId"
+
     }
 
     override fun onNewToken(token: String) {
@@ -56,20 +57,20 @@ class FCMTokenService : FirebaseMessagingService() {
         Log.d("FCMTokenService", "Message received from: ${message.from}")
 
         val rawTitle = message.notification?.title
-            ?: message.data["title"]
+            ?: message.data[KEY_TITLE]
             ?: getString(R.string.notification_default_title)
         val rawBody = message.notification?.body 
-            ?: message.data["body"]
+            ?: message.data[KEY_BODY]
             ?: getString(R.string.notification_default_body)
 
-        val category = message.data["category"] ?: ""
+        val category = message.data[KEY_CATEGORY] ?: ""
         val title = NotificationLocalizer.getLocalizedTitle(this, category, rawTitle)
         val body = NotificationLocalizer.getLocalizedBody(this, category, rawBody)
 
-        val requestIdStr = message.data["requestId"] ?: message.data["id"]
+        val requestIdStr = message.data[KEY_REQUEST_ID] ?: message.data[KEY_ID]
         val requestId = requestIdStr?.toLongOrNull()
 
-        val recipientIdStr = message.data["recipientId"]
+        val recipientIdStr = message.data[KEY_RECIPIENT_ID]
         val recipientId = recipientIdStr?.toLongOrNull()
 
         showNotification(title, body, requestId, recipientId)
