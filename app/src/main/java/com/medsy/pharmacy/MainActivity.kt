@@ -1,5 +1,9 @@
 package com.medsy.pharmacy
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -27,11 +31,33 @@ class MainActivity : AppCompatActivity() {
             viewModel.state.value.themeMode == null
         }
 
+        requestNotificationPermission()
+
+        intent?.let { viewModel.handleNotificationIntent(it) }
+
         enableEdgeToEdge()
         setContent {
             val state by viewModel.state.collectAsStateWithLifecycle()
+            val pendingRequestId by viewModel.pendingRequestId.collectAsStateWithLifecycle()
             MedsyTheme(darkTheme = isDarkTheme(state.themeMode)) {
-                RootNavDisplay()
+                RootNavDisplay(
+                    pendingRequestId = pendingRequestId,
+                    onPendingRequestConsumed = viewModel::consumePendingRequestId
+                )
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        viewModel.handleNotificationIntent(intent)
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 101)
             }
         }
     }

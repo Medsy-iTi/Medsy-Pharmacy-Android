@@ -5,4 +5,5 @@ data class UserPreferences(
     val isOnboardingCompleted: Boolean = false,
     val isAvatarFemale: Boolean = false,
     val isReceivingOrders: Boolean = false,
+    val registeredFcmToken: String? = null,
 )

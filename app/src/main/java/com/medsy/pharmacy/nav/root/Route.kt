@@ -38,6 +38,9 @@ sealed interface Route : NavKey {
     data object Suspended : Route
 
     @Serializable
+    data object Notifications : Route
+
+    @Serializable
     data class RequestDetails(val requestId: Long) : Route
 
     @Serializable

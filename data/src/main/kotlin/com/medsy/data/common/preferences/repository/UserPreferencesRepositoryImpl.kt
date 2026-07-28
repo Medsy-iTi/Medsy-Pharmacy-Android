@@ -22,13 +22,15 @@ class UserPreferencesRepositoryImpl @Inject constructor(
         localDataSource.themeMode,
         localDataSource.isOnboardingCompleted,
         localDataSource.isAvatarFemale,
-        localDataSource.isReceivingOrders
-    ) { storedMode, isOnboardingCompleted, isAvatarFemale, isReceivingOrders ->
+        localDataSource.isReceivingOrders,
+        localDataSource.registeredFcmToken
+    ) { storedMode, isOnboardingCompleted, isAvatarFemale, isReceivingOrders, registeredFcmToken ->
         UserPreferences(
             themeMode = storedMode.toThemeMode(),
             isOnboardingCompleted = isOnboardingCompleted,
             isAvatarFemale = isAvatarFemale,
-            isReceivingOrders = isReceivingOrders
+            isReceivingOrders = isReceivingOrders,
+            registeredFcmToken = registeredFcmToken
         )
     }
 
@@ -46,6 +48,10 @@ class UserPreferencesRepositoryImpl @Inject constructor(
 
     override suspend fun setAvatarFemale(isFemale: Boolean) {
         localDataSource.setAvatarFemale(isFemale)
+    }
+
+    override suspend fun setRegisteredFcmToken(token: String?) {
+        localDataSource.setRegisteredFcmToken(token)
     }
 
     private fun String?.toThemeMode(): ThemeMode = when (this) {
