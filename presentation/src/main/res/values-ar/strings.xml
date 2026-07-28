@@ -12,6 +12,7 @@
     <string name="onboarding_desc_2">تحقق من مطابقة الأصناف للروشتة، اقترح بدائل عند الحاجة، وأرسل أفضل عرض لمريضك.</string>
     <string name="onboarding_title_3">تابع كل طلب حتى اكتماله</string>
     <string name="onboarding_desc_3">حدّث حالة الطلب بضغطة واحدة، ويصل التحديث للمريض تلقائيًا في كل خطوة.</string>
+    <string name="login_google">جوجل</string>
     <string name="action_get_started">ابدأ الآن</string>
     <string name="auth_documents_description">ارفع تراخيص الصيدلية والمستندات المهنية للتحقق من حسابك.</string>
     <string name="registration_pharmacy_license">ترخيص الصيدلية</string>
@@ -61,7 +62,7 @@
     <string name="auth_hide_password">إخفاء كلمة المرور</string>
     <string name="auth_login_action">تسجيل الدخول</string>
     <string name="auth_register_action">انشاء حساب</string>
-    <string name="login_motto">استقبل الطلبات، أرسل العروض، وأدر الطلبات.</string>
+    <string name="login_motto">مرحبا بعودتك الى ادارة صيدليتك.</string>
     <string name="login_account_type_hint">لحسابات الصيدليات المعتمدة</string>
     <string name="login_forgot_password">هل نسيت كلمة المرور؟</string>
     <string name="login_no_account_full">ليس لديك حساب صيدلية؟ %1$s</string>
@@ -282,7 +283,8 @@
     <string name="request_details_back_desc">رجوع</string>
     <string name="request_details_call_desc">اتصال بالعميل</string>
     <string name="request_details_location_desc">فتح الموقع</string>
-    <string name="request_details_request_number_format">رقم الطلب: %1$s</string>    <string name="request_details_minutes_ago">منذ %1$d دقائق</string>
+    <string name="request_details_request_number_format">رقم الطلب: %1$s</string>
+    <string name="request_details_minutes_ago">منذ %1$d دقائق</string>
     <string name="request_details_price_egp">%1$.2f جنيه</string>
     <string name="request_details_requested_medicines">الأدوية المطلوبة</string>
     <string name="request_details_customer_notes">ملاحظات العميل</string>
@@ -338,7 +340,8 @@
     <string name="pharmacist_options_remove_confirm_title">إزالة الصيدلي من الصيدلية؟</string>
     <string name="pharmacist_options_remove_confirm_desc">سيتم إزالة %1$s من صيدلية %2$s\nهل أنت متأكد من هذا الإجراء؟</string>
     <string name="pharmacist_options_cancel">إلغاء</string>
-    <string name="pharmacist_options_remove_action">إزالة</string>    <string name="profile_gender_male">ذكر</string>
+    <string name="pharmacist_options_remove_action">إزالة</string>
+    <string name="profile_gender_male">ذكر</string>
     <string name="profile_gender_female">أنثى</string>
 
     <string name="profile_personal_info_title">البيانات الشخصية</string>

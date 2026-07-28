@@ -48,6 +48,7 @@ import com.medsy.designsystem.components.showError
 import com.medsy.presentation.R
 import com.medsy.presentation.auth.login.components.DontHaveAccount
 import com.medsy.presentation.auth.login.components.LoginPasswordInput
+import com.medsy.presentation.auth.login.components.LoginSocialButton
 import com.medsy.presentation.auth.login.components.LoginTip
 import com.medsy.designsystem.R as DesignR
 
@@ -95,17 +96,14 @@ fun LoginScreen(
     var passwordVisible by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Scaffold(
-            containerColor = MaterialTheme.colorScheme.background,
-        ) { innerPadding ->
+        Scaffold { innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState())
-                    .padding(
-                        vertical = LoginConstants.ScreenPaddingVertical,
-                    ),
+                    .padding(vertical = 24.dp, horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Image(
@@ -123,7 +121,6 @@ fun LoginScreen(
                     ),
                 )
 
-                Spacer(modifier = Modifier.height(LoginConstants.SpacerLogoText))
 
                 Text(
                     text = stringResource(R.string.login_motto),
@@ -135,84 +132,79 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth(),
                 )
 
-                Spacer(modifier = Modifier.height(LoginConstants.SpacerMottoBadge))
 
                 LoginTip()
 
-                Spacer(modifier = Modifier.height(LoginConstants.SpacerTextForm))
 
+                MedsyTextField(
+                    value = state.email,
+                    onValueChange = { onIntent(LoginIntent.EmailChanged(it)) },
+                    placeholder = { Text(stringResource(R.string.auth_email)) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Email,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    singleLine = true,
+                    errorRes = state.emailErrorRes,
+                )
 
-                Column(
-                    modifier = Modifier.padding(LoginConstants.AuthCardPadding),
-                    verticalArrangement = Arrangement.spacedBy(
-                        LoginConstants.AuthCardContentSpacing,
-                    ),
+                LoginPasswordInput(
+                    password = state.password,
+                    onPasswordChange = { onIntent(LoginIntent.PasswordChanged(it)) },
+                    passwordVisible = passwordVisible,
+                    onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
+                    errorRes = state.passwordErrorRes,
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
                 ) {
-
-                    MedsyTextField(
-                        value = state.email,
-                        onValueChange = { onIntent(LoginIntent.EmailChanged(it)) },
-                        placeholder = { Text(stringResource(R.string.auth_email)) },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.Email,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        },
-                        singleLine = true,
-                        errorRes = state.emailErrorRes,
+                    Text(
+                        text = stringResource(R.string.login_forgot_password),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                        ),
+                        modifier = Modifier.clickable { },
                     )
+                }
 
-                    LoginPasswordInput(
-                        password = state.password,
-                        onPasswordChange = { onIntent(LoginIntent.PasswordChanged(it)) },
-                        passwordVisible = passwordVisible,
-                        onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
-                        errorRes = state.passwordErrorRes,
-                    )
+                Spacer(
+                    modifier = Modifier.height(
+                        LoginConstants.SpacerInputButton -
+                                LoginConstants.AuthCardContentSpacing,
+                    ),
+                )
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End,
-                    ) {
+                MedsyButton(
+                    onClick = { onIntent(LoginIntent.Submit) },
+                    isLoading = state.isLoading,
+                ) {
+                    if (state.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    } else {
                         Text(
-                            text = stringResource(R.string.login_forgot_password),
-                            style = MaterialTheme.typography.bodyMedium.copy(
+                            text = stringResource(R.string.auth_login_action),
+                            style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary,
+                                color = MaterialTheme.colorScheme.onPrimary,
                             ),
-                            modifier = Modifier.clickable { },
                         )
                     }
-
-                    Spacer(
-                        modifier = Modifier.height(
-                            LoginConstants.SpacerInputButton -
-                                    LoginConstants.AuthCardContentSpacing,
-                        ),
-                    )
-
-                    MedsyButton(
-                        onClick = { onIntent(LoginIntent.Submit) },
-                        isLoading = state.isLoading,
-                    ) {
-                        if (state.isLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                            )
-                        } else {
-                            Text(
-                                text = stringResource(R.string.auth_login_action),
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                ),
-                            )
-                        }
-                    }
                 }
+
+                LoginSocialButton(
+                    iconResId = DesignR.drawable.ic_google,
+                    text = stringResource(R.string.login_google),
+                    onClick = { onIntent(LoginIntent.LoginWithGoogle) }
+                )
 
                 DontHaveAccount(openRegistration)
             }

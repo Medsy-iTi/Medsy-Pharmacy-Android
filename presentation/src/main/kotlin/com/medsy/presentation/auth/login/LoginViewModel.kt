@@ -45,6 +45,7 @@ class LoginViewModel @Inject constructor(
             }
 
             LoginIntent.Submit -> submit()
+            LoginIntent.LoginWithGoogle -> {}
         }
     }
 

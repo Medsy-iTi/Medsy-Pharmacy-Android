@@ -11,6 +11,7 @@ data class LoginState(
 sealed interface LoginIntent {
     data class EmailChanged(val value: String) : LoginIntent
     data class PasswordChanged(val value: String) : LoginIntent
+    data object LoginWithGoogle : LoginIntent
     data object Submit : LoginIntent
 }
 
