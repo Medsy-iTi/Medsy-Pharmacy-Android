@@ -32,6 +32,13 @@ class FCMTokenService : FirebaseMessagingService() {
         const val ORDERS_CHANNEL_ID = "orders_channel"
         const val EXTRA_REQUEST_ID = "extra_request_id"
         const val EXTRA_RECIPIENT_ID = "extra_recipient_id"
+
+        const val KEY_CATEGORY = "category"
+        const val KEY_TITLE = "title"
+        const val KEY_BODY = "body"
+        const val KEY_REQUEST_ID = "requestId"
+        const val KEY_ID = "id"
+        const val KEY_RECIPIENT_ID = "recipientId"
     }
 
     override fun onNewToken(token: String) {

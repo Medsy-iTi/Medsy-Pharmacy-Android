@@ -20,6 +20,7 @@ import com.medsy.domain.auth.usecase.ObserveSessionUseCase
 import com.medsy.domain.auth.model.PharmacyApprovalStatus
 import com.medsy.domain.notifications.usecase.MarkNotificationAsReadUseCase
 import com.medsy.pharmacy.fcm.FcmTokenManager
+import com.medsy.pharmacy.firebase.FCMTokenService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -48,16 +49,17 @@ class MainViewModel @Inject constructor(
     }
 
     fun handleNotificationIntent(intent: android.content.Intent) {
-        var requestId = intent.getLongExtra(com.medsy.pharmacy.firebase.FCMTokenService.EXTRA_REQUEST_ID, -1L)
-        var recipientId = intent.getLongExtra(com.medsy.pharmacy.firebase.FCMTokenService.EXTRA_RECIPIENT_ID, -1L)
-        
+        var requestId = intent.getLongExtra(FCMTokenService.EXTRA_REQUEST_ID, -1L)
+        var recipientId = intent.getLongExtra(FCMTokenService.EXTRA_RECIPIENT_ID, -1L)
+
         if (requestId == -1L) {
-            val requestIdStr = intent.getStringExtra("requestId") ?: intent.getStringExtra("id")
+            val requestIdStr = intent.getStringExtra(FCMTokenService.KEY_REQUEST_ID)
+                ?: intent.getStringExtra(FCMTokenService.KEY_ID)
             requestId = requestIdStr?.toLongOrNull() ?: -1L
         }
 
         if (recipientId == -1L) {
-            val recipientIdStr = intent.getStringExtra("recipientId")
+            val recipientIdStr = intent.getStringExtra(FCMTokenService.KEY_RECIPIENT_ID)
             recipientId = recipientIdStr?.toLongOrNull() ?: -1L
         }
 

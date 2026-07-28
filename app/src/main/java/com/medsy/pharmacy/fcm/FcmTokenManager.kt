@@ -24,12 +24,16 @@ class FcmTokenManager @Inject constructor(
     @ApplicationContext private val context: Context,
     private val deviceRepository: DeviceRepository
 ) {
+    companion object {
+        const val WORK_NAME = "register_fcm_token"
+        const val UNREGISTER_WORK_NAME = "unregister_fcm_token"
+
+    }
     suspend fun registerDeviceToken() {
         try {
 
             val deviceId = deviceRepository.getDeviceId()
 
-            // هنبعت الـ deviceId بس للـ Worker
             val data = workDataOf(
                 RegisterTokenWorker.KEY_DEVICE_ID to deviceId
             )
@@ -45,7 +49,7 @@ class FcmTokenManager @Inject constructor(
                 .build()
 
             WorkManager.getInstance(context).enqueueUniqueWork(
-                "register_fcm_token",
+                WORK_NAME,
                 ExistingWorkPolicy.REPLACE,
                 request
             )
@@ -71,7 +75,7 @@ class FcmTokenManager @Inject constructor(
             .build()
 
         WorkManager.getInstance(context).enqueueUniqueWork(
-            "unregister_fcm_token",
+            UNREGISTER_WORK_NAME,
             ExistingWorkPolicy.REPLACE,
             request
         )

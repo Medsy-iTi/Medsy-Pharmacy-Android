@@ -12,6 +12,9 @@ class DeviceRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : DeviceRepository {
     override suspend fun getDeviceId(): String {
-        return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: "android_device"
+        return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: DEFAULT_DEVICE_ID
+    }
+    companion object {
+        private const val DEFAULT_DEVICE_ID = "android_device"
     }
 }
