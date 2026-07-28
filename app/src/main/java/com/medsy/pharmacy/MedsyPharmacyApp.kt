@@ -8,6 +8,7 @@ import android.os.Build
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.medsy.pharmacy.firebase.FCMTokenService
+import com.medsy.presentation.R
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -31,12 +32,12 @@ class MedsyPharmacyApp : Application(), Configuration.Provider {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 FCMTokenService.ORDERS_CHANNEL_ID,
-                getString(com.medsy.presentation.R.string.notification_channel_orders_name),
+                getString(R.string.notification_channel_orders_name),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = getString(com.medsy.presentation.R.string.notification_channel_orders_description)
+                description = getString(R.string.notification_channel_orders_description)
             }
-            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
         }
     }

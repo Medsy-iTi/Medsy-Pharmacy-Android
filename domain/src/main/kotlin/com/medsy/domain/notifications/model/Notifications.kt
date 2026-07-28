@@ -2,9 +2,13 @@ package com.medsy.domain.notifications.model
 
 data class DeviceTokenRegistrationDomain(
     val fcmToken: String,
-    val platform: String = "ANDROID",
+    val platform: String = DEFAULT_PLATFORM,
     val deviceId: String
-)
+){
+    companion object {
+        const val DEFAULT_PLATFORM = "ANDROID"
+    }
+}
 
 data class NotificationDomain(
     val recipientId: Long,
@@ -16,8 +20,11 @@ data class NotificationDomain(
     val sentAt: String,
     val readAt: String?
 ) {
+    companion object{
+        const val STATUS_READ = "READ"
+    }
     val isRead: Boolean
-        get() = status.equals("READ", ignoreCase = true) || readAt != null
+        get() = status.equals(STATUS_READ, ignoreCase = true) || readAt != null
 }
 
 data class NotificationPageDomain(
