@@ -46,12 +46,16 @@ class FCMTokenService : FirebaseMessagingService() {
         super.onMessageReceived(message)
         Log.d("FCMTokenService", "Message received from: ${message.from}")
 
-        val title = message.notification?.title
+        val rawTitle = message.notification?.title
             ?: message.data["title"]
             ?: getString(com.medsy.presentation.R.string.notification_default_title)
-        val body = message.notification?.body 
+        val rawBody = message.notification?.body 
             ?: message.data["body"] 
             ?: getString(com.medsy.presentation.R.string.notification_default_body)
+
+        val category = message.data["category"] ?: ""
+        val title = com.medsy.presentation.notifications.NotificationLocalizer.getLocalizedTitle(this, category, rawTitle)
+        val body = com.medsy.presentation.notifications.NotificationLocalizer.getLocalizedBody(this, category, rawBody)
 
         val requestIdStr = message.data["requestId"] ?: message.data["id"]
         val requestId = requestIdStr?.toLongOrNull()

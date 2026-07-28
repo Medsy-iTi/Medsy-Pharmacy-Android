@@ -235,6 +235,18 @@ fun NotificationItem(
 
             Spacer(modifier = Modifier.width(16.dp))
 
+            val context = androidx.compose.ui.platform.LocalContext.current
+            val localizedTitle = NotificationLocalizer.getLocalizedTitle(
+                context = context,
+                category = notification.category,
+                defaultTitle = notification.title
+            )
+            val localizedBody = NotificationLocalizer.getLocalizedBody(
+                context = context,
+                category = notification.category,
+                defaultBody = notification.body
+            )
+
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -244,7 +256,7 @@ fun NotificationItem(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = notification.title,
+                        text = localizedTitle,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = if (notification.isRead) FontWeight.Medium else FontWeight.Bold
                         ),
@@ -264,7 +276,7 @@ fun NotificationItem(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = notification.body,
+                    text = localizedBody,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
