@@ -24,9 +24,6 @@ class RequestsViewModel @Inject constructor(
     private val getCurrentPharmacyRequestsUseCase: GetCurrentPharmacyRequestsUseCase,
     private val submittedOffersManager: SubmittedOffersManager
 ) : ViewModel() {
-
-    private val submittedRequestIds = mutableSetOf<Long>()
-
     private val _state = MutableStateFlow(RequestsUIState())
     val state = _state
         .onStart { loadRequests() }
@@ -125,7 +122,7 @@ fun calculateMinutesAgo(createdAt: String): Int {
         val created = Instant.parse(parseStr)
         val now = Instant.now()
         Duration.between(created, now).toMinutes().coerceAtLeast(0).toInt()
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         0
     }
 }
@@ -135,6 +132,7 @@ fun PharmacyRequestDomain.toPresentation(): RequestSummary {
     val minutes = calculateMinutesAgo(createdAt)
     return RequestSummary(
         id = id,
+        displayId = orderId?.toString() ?: offerId?.toString() ?: id.toString(),
         minutesAgo = minutes,
         status = when (status) {
             "SEARCHING" -> RequestStatus.Searching

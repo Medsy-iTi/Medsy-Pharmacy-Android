@@ -21,6 +21,8 @@ fun PharmacyRequestPageDto.toDomain(): PharmacyRequestPageDomain {
 fun PharmacyRequestDto.toDomain(): PharmacyRequestDomain {
     return PharmacyRequestDomain(
         id = id,
+        offerId = offerId,
+        orderId = orderId,
         customerId = customerId,
         deliveryLatitude = deliveryLatitude,
         deliveryLongitude = deliveryLongitude,

@@ -93,14 +93,9 @@ fun RequestDetailsScreen(
             containerColor = MaterialTheme.colorScheme.background,
         ) { paddingValues ->
         if (state.isLoading || state.request == null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator()
-            }
+            com.medsy.presentation.orderdetails.components.RequestDetailsShimmer(
+                modifier = Modifier.padding(paddingValues)
+            )
             return@Scaffold
         }
 

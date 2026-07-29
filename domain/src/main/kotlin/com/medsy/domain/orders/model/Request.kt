@@ -2,6 +2,8 @@ package com.medsy.domain.orders.model
 
 data class PharmacyRequestDomain(
     val id: Long,
+    val offerId: Long? = null,
+    val orderId: Long? = null,
     val customerId: Long,
     val deliveryLatitude: Double?,
     val deliveryLongitude: Double?,

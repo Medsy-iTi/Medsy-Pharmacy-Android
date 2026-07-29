@@ -19,6 +19,7 @@ enum class PaymentMethod {
 
 data class RequestSummary(
     val id: Long,
+    val displayId: String,
     val minutesAgo: Int,
     val status: RequestStatus,
     val customerName: String,

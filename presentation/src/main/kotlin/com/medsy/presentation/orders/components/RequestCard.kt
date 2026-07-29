@@ -61,7 +61,9 @@ fun RequestCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = stringResource(R.string.request_details_request_number_format, request.id),
+                    text = stringResource(R.string.request_details_request_number_format,
+                        request.displayId
+                    ),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,

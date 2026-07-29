@@ -57,7 +57,7 @@ fun RequestInfoCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = stringResource(R.string.request_details_request_number_format, orderId),
+                    text = stringResource(R.string.request_details_request_number_format, "#MS-$orderId"),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
