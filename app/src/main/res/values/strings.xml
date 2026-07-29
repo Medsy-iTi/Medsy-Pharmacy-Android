@@ -3,4 +3,13 @@
     <string name="nav_home">Home</string>
     <string name="nav_orders">Orders</string>
     <string name="nav_profile">Profile</string>
+
+
+    <!-- Notifications -->
+    <string name="new_patient_request_title">New Patient Request</string>
+    <string name="new_patient_request_body">You have received a new prescription request from a patient.</string>
+
+    <!-- Notification Channels -->
+    <string name="default_notification_channel_id">medsy_pharmacy_notifications</string>
+    <string name="default_notification_channel_name">General Notifications</string>
 </resources>

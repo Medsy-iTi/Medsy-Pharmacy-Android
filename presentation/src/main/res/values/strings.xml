@@ -86,6 +86,19 @@
     <string name="no_pharmacy_invite_body">Ask the pharmacy owner or admin to invite this pharmacist account using your email address.</string>
     <string name="no_pharmacy_review_title">Access starts after review</string>
     <string name="no_pharmacy_review_body">Medsy will keep requests hidden until the pharmacy assignment and approval state are ready.</string>
+    <string name="no_pharmacy_checking_invitations">Checking for pharmacy invitations…</string>
+    <string name="no_pharmacy_retry_invitations">Try again</string>
+    <string name="no_pharmacy_pending_invitations_title">You have pharmacy invitations</string>
+    <plurals name="no_pharmacy_pending_invitations_count">
+        <item quantity="one">%1$d pending invitation waiting for you</item>
+        <item quantity="other">%1$d pending invitations waiting for you</item>
+    </plurals>
+    <string name="no_pharmacy_open_invitations">Open pending invitations</string>
+    <string name="no_pharmacy_invitations_title">Pharmacy invitations</string>
+    <string name="no_pharmacy_invitations_supporting">Choose a pharmacy invitation to join its team.</string>
+    <string name="no_pharmacy_invitations_empty">You have no pending pharmacy invitations.</string>
+    <string name="no_pharmacy_invitation_card_supporting">You have been invited to join this pharmacy.</string>
+    <string name="no_pharmacy_accept_invitation">Accept invitation</string>
 
     <string name="error_no_internet">No internet connection</string>
     <string name="error_request_timeout">The request timed out. Please try again.</string>
@@ -364,4 +377,17 @@
     <string name="home_offer_for_request">Offer for request #%1$s</string>
     <string name="home_offer_distance">%1$s km</string>
     <string name="home_pharmacy_id_format">PH%1$s</string>
+
+    <!-- Notifications -->
+    <string name="notifications_title">Notifications</string>
+    <string name="notifications_empty">You do not have any notifications yet</string>
+    <string name="action_mark_all_read">Mark all as read</string>
+    <string name="default_notification_channel_id">pharmacy_notifications_channel</string>
+    <string name="default_notification_channel_name">Pharmacy Notifications</string>
+    <string name="new_patient_request_title">New Patient Request</string>
+    <string name="new_patient_request_body">A patient has submitted a new prescription request near you.</string>
+    <string name="notification_default_title">Medsy Notification</string>
+    <string name="notification_default_body">You have a new update</string>
+    <string name="notification_channel_orders_name">Orders Channel</string>
+    <string name="notification_channel_orders_description">Notifications related to new requests and orders</string>
 </resources>

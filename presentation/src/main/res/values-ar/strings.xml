@@ -86,6 +86,19 @@
     <string name="no_pharmacy_invite_body">اطلب من مالك الصيدلية أو المسؤول دعوتك باستخدام البريد الإلكتروني لهذا الحساب.</string>
     <string name="no_pharmacy_review_title">يبدأ الوصول بعد المراجعة</string>
     <string name="no_pharmacy_review_body">سيُبقي ميدزي الطلبات مخفية حتى تصبح حالة ربط الصيدلية والموافقة جاهزة.</string>
+    <string name="no_pharmacy_checking_invitations">جارٍ التحقق من دعوات الصيدليات…</string>
+    <string name="no_pharmacy_retry_invitations">حاول مرة أخرى</string>
+    <string name="no_pharmacy_pending_invitations_title">لديك دعوات صيدليات</string>
+    <plurals name="no_pharmacy_pending_invitations_count">
+        <item quantity="one">لديك دعوة صيدلية معلّقة بانتظارك</item>
+        <item quantity="other">لديك %1$d دعوة صيدلية معلّقة بانتظارك</item>
+    </plurals>
+    <string name="no_pharmacy_open_invitations">فتح الدعوات المعلّقة</string>
+    <string name="no_pharmacy_invitations_title">دعوات الصيدليات</string>
+    <string name="no_pharmacy_invitations_supporting">اختر دعوة صيدلية للانضمام إلى فريقها.</string>
+    <string name="no_pharmacy_invitations_empty">ليس لديك أي دعوات صيدليات معلّقة.</string>
+    <string name="no_pharmacy_invitation_card_supporting">تمت دعوتك للانضمام إلى هذه الصيدلية.</string>
+    <string name="no_pharmacy_accept_invitation">قبول الدعوة</string>
 
     <string name="error_no_internet">لا يوجد اتصال بالإنترنت</string>
     <string name="error_request_timeout">انتهت مهلة الطلب. حاول مرة أخرى.</string>
@@ -361,4 +374,17 @@
     <string name="substitute_search_placeholder">ابحث باسم الدواء...</string>
     <string name="substitute_price_egp">%1$s جنيه</string>
     <string name="substitute_search_lottie_desc">ابحث لتظهر لك الأدوية</string>
+
+    <!-- Notifications -->
+    <string name="notifications_title">الإشعارات</string>
+    <string name="notifications_empty">ليس لديك أي إشعارات حالياً</string>
+    <string name="action_mark_all_read">تحديد الكل كمقروء</string>
+    <string name="default_notification_channel_id">pharmacy_notifications_channel</string>
+    <string name="default_notification_channel_name">إشعارات الصيدلية</string>
+    <string name="new_patient_request_title">طلب جديد من مريض</string>
+    <string name="new_patient_request_body">أرسل مريض طلب روشتة جديد بالقرب منك.</string>
+    <string name="notification_default_title">إشعار ميدسي</string>
+    <string name="notification_default_body">لديك تحديث جديد</string>
+    <string name="notification_channel_orders_name">قناة الطلبات</string>
+    <string name="notification_channel_orders_description">الإشعارات المتعلقة بالطلبات والطلبيات الجديدة</string>
 </resources>

@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -20,16 +21,28 @@ import com.medsy.presentation.auth.approval.ApprovalRoot
 import com.medsy.presentation.auth.approval.ApprovalScreenStatus
 import com.medsy.presentation.auth.login.LoginRoot
 import com.medsy.presentation.auth.nopharmacy.NoPharmacyRoot
+import com.medsy.presentation.auth.nopharmacy.invitation.NoPharmacyInvitationsRoot
 import com.medsy.presentation.auth.otp.OtpRoot
 import com.medsy.presentation.auth.register.RegistrationRoot
 import com.medsy.presentation.auth.registerpharmacy.PharmacyRegistrationRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
 import com.medsy.presentation.orderdetails.RequestDetailsRoot
+import com.medsy.presentation.notifications.NotificationsRoot
 import com.medsy.presentation.splash.SplashRoot
 
 @Composable
-fun RootNavDisplay() {
+fun RootNavDisplay(
+    pendingRequestId: Long? = null,
+    onPendingRequestConsumed: () -> Unit = {}
+) {
     val backStack = rememberNavBackStack(Route.Splash)
+
+    LaunchedEffect(pendingRequestId, backStack.lastOrNull()) {
+        if (pendingRequestId != null && backStack.firstOrNull() == Route.NestedNav) {
+            backStack.navigateSingleTop(Route.RequestDetails(pendingRequestId))
+            onPendingRequestConsumed()
+        }
+    }
 
     fun replaceWith(route: Route) {
         backStack.clear()
@@ -90,6 +103,13 @@ fun RootNavDisplay() {
                         backStack.navigateSingleTop(Route.PharmacyRegistration)
                     },
                     openLogin = { replaceWith(Route.Login) },
+                    openInvitations = { backStack.navigateSingleTop(Route.NoPharmacyInvitations) },
+                )
+            }
+            entry<Route.NoPharmacyInvitations> {
+                NoPharmacyInvitationsRoot(
+                    navigateBack = { backStack.removeLastOrNull() },
+                    navigateHome = { replaceWith(Route.NestedNav) },
                 )
             }
             entry<Route.Registration> {
@@ -140,7 +160,16 @@ fun RootNavDisplay() {
                     },
                     openInvitePharmacist = { backStack.navigateSingleTop(Route.InvitePharmacist) },
                     openPharmacistsList = { backStack.navigateSingleTop(Route.PharmacistsList) },
-                    openPersonalInfo = { backStack.navigateSingleTop(Route.PersonalInfo) }
+                    openPersonalInfo = { backStack.navigateSingleTop(Route.PersonalInfo) },
+                    openNotifications = { backStack.navigateSingleTop(Route.Notifications) }
+                )
+            }
+            entry<Route.Notifications> {
+                NotificationsRoot(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNotificationClick = { requestId ->
+                        backStack.navigateSingleTop(Route.RequestDetails(requestId))
+                    }
                 )
             }
             entry<Route.RequestDetails> { route ->

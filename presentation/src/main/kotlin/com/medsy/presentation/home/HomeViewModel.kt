@@ -15,6 +15,7 @@ import com.medsy.domain.orders.model.RequestStatusConstants
 import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
+import com.medsy.domain.notifications.usecase.GetUnreadCountUseCase
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
@@ -24,7 +25,8 @@ class HomeViewModel @Inject constructor(
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
     private val getCurrentPharmacyRequests: GetCurrentPharmacyRequestsUseCase,
-    private val submittedOffersManager: com.medsy.presentation.orders.SubmittedOffersManager
+    private val submittedOffersManager: com.medsy.presentation.orders.SubmittedOffersManager,
+    private val getUnreadCount: GetUnreadCountUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeUIState())
@@ -152,8 +154,11 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            val pharmacyResult = getMyPharmacy()
-            
+            val pharmacyDeferred = async { getMyPharmacy() }
+            val unreadCountDeferred = async { getUnreadCount() }
+
+            val pharmacyResult = pharmacyDeferred.await()
+            val unreadCountResult = unreadCountDeferred.await()
             var newState = _state.value.copy(isLoading = false)
             var currentPharmacyId: Long = 0L
 
@@ -214,6 +219,13 @@ class HomeViewModel @Inject constructor(
                     onError = { }
                 )
             }
+
+            unreadCountResult.fold(
+                onSuccess = { count ->
+                    newState = newState.copy(notificationsCount = count)
+                },
+                onError = { }
+            )
 
             _state.value = newState
         }

@@ -26,6 +26,9 @@ sealed interface Route : NavKey {
     data object NoPharmacy : Route
 
     @Serializable
+    data object NoPharmacyInvitations : Route
+
+    @Serializable
     data object PendingApproval : Route
 
     @Serializable
@@ -39,6 +42,9 @@ sealed interface Route : NavKey {
 
     @Serializable
     data object ActiveOrders : Route
+
+    @Serializable
+    data object Notifications : Route
 
     @Serializable
     data class RequestDetails(val requestId: Long) : Route
