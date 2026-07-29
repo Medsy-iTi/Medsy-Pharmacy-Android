@@ -8,4 +8,5 @@ object RequestStatusConstants {
     const val CANCELLED = "CANCELLED"
     const val COMPLETED = "COMPLETED"
     const val SEARCHING = "SEARCHING"
+    const val EXPIRED = "EXPIRED"
 }

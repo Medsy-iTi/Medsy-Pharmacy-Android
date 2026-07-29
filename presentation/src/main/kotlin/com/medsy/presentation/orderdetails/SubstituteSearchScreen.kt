@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.medsy.designsystem.components.MedsyLottie
 import com.medsy.designsystem.ui.theme.extendedColors
 import com.medsy.domain.products.model.Product
+import com.medsy.presentation.orderdetails.components.ProductItemRow
 import com.medsy.presentation.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -117,22 +118,5 @@ fun SubstituteSearchScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun ProductItemRow(product: Product, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(product.name, style = MaterialTheme.typography.bodyLarge)
-            Text("${product.packSize ?: ""} - ${product.form ?: ""}", style = MaterialTheme.typography.bodySmall)
-        }
-        Text(stringResource(R.string.substitute_price_egp, product.price), style = MaterialTheme.typography.bodyMedium)
     }
 }

@@ -16,6 +16,7 @@ import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
 import com.medsy.domain.notifications.usecase.GetUnreadCountUseCase
+import com.medsy.presentation.orders.SubmittedOffersManager
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
@@ -25,7 +26,7 @@ class HomeViewModel @Inject constructor(
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
     private val getCurrentPharmacyRequests: GetCurrentPharmacyRequestsUseCase,
-    private val submittedOffersManager: com.medsy.presentation.orders.SubmittedOffersManager,
+    private val submittedOffersManager: SubmittedOffersManager,
     private val getUnreadCount: GetUnreadCountUseCase
 ) : ViewModel() {
 

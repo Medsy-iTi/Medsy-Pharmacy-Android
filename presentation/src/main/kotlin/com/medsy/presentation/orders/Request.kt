@@ -14,7 +14,17 @@ enum class RequestStatus {
 enum class PaymentMethod {
     Cash,
     Visa,
-    Mastercard,
+    Mastercard;
+
+    companion object {
+        fun fromApiValue(value: String?): PaymentMethod {
+            return when (value?.uppercase()) {
+                "VISA" -> Visa
+                "MASTERCARD" -> Mastercard
+                else -> Cash
+            }
+        }
+    }
 }
 
 data class RequestSummary(
@@ -22,7 +32,8 @@ data class RequestSummary(
     val displayId: String,
     val minutesAgo: Int,
     val status: RequestStatus,
-    val customerName: String,
+    val customerName: String?,
+    val customerId: Long,
     val customerPhone: String,
     val customerAddress: String,
     val productImages: List<String?>,

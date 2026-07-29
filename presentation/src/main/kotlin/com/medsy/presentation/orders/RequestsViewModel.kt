@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.medsy.domain.common.onError
 import com.medsy.domain.common.onSuccess
 import com.medsy.domain.orders.model.PharmacyRequestDomain
+import com.medsy.domain.orders.model.RequestStatusConstants
 import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -135,25 +136,22 @@ fun PharmacyRequestDomain.toPresentation(): RequestSummary {
         displayId = orderId?.toString() ?: offerId?.toString() ?: id.toString(),
         minutesAgo = minutes,
         status = when (status) {
-            "SEARCHING" -> RequestStatus.Searching
-            "PENDING", "NEW" -> RequestStatus.New
-            "IN_PROGRESS" -> RequestStatus.InProgress
-            "DELIVERED" -> RequestStatus.Delivered
-            "CANCELLED" -> RequestStatus.Cancelled
-            "COMPLETED" -> RequestStatus.Completed
-            "EXPIRED" -> RequestStatus.Expired
+            RequestStatusConstants.SEARCHING -> RequestStatus.Searching
+            RequestStatusConstants.PENDING, RequestStatusConstants.NEW -> RequestStatus.New
+            RequestStatusConstants.IN_PROGRESS -> RequestStatus.InProgress
+            RequestStatusConstants.DELIVERED -> RequestStatus.Delivered
+            RequestStatusConstants.CANCELLED -> RequestStatus.Cancelled
+            RequestStatusConstants.COMPLETED -> RequestStatus.Completed
+            RequestStatusConstants.EXPIRED -> RequestStatus.Expired
             else -> RequestStatus.Searching
         },
-        customerName = customerName ?: "Customer #$customerId",
+        customerName = customerName,
+        customerId = customerId,
         customerPhone = customerPhone ?: "",
         customerAddress = deliveryAddress ?: "",
         productImages = items.map { it.imageUrl },
         total = calculatedTotal,
-        paymentMethod = when (paymentMethod?.uppercase()) {
-            "VISA" -> PaymentMethod.Visa
-            "MASTERCARD" -> PaymentMethod.Mastercard
-            else -> PaymentMethod.Cash
-        },
+        paymentMethod = PaymentMethod.fromApiValue(paymentMethod),
         paymentCardLastDigits = null,
     )
 }

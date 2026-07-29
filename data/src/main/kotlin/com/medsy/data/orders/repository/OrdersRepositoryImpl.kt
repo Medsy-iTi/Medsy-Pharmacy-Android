@@ -2,6 +2,8 @@ package com.medsy.data.orders.repository
 
 import com.medsy.data.orders.datasource.RequestsRemoteDataSource
 import com.medsy.data.orders.mapper.toDomain
+import com.medsy.data.orders.remote.dto.CreateOfferRequestDto
+import com.medsy.data.orders.remote.dto.OfferItemDto
 import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
 import com.medsy.domain.common.map
@@ -41,9 +43,9 @@ class RequestsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createOffer(requestId: Long, items: List<Pair<Long, Long>>): MedsyResult<Unit, MedsyError.Remote> {
-        val requestDto = com.medsy.data.orders.remote.dto.CreateOfferRequestDto(
+        val requestDto = CreateOfferRequestDto(
             items = items.map {
-                com.medsy.data.orders.remote.dto.OfferItemDto(
+                OfferItemDto(
                     requestItemId = it.first,
                     productId = it.second
                 )

@@ -8,18 +8,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,6 +36,8 @@ import com.medsy.presentation.orderdetails.components.RequestTotalSummaryRow
 import com.medsy.presentation.orderdetails.components.PaymentMethodSection
 import com.medsy.presentation.orderdetails.components.PrescriptionImageSection
 import com.medsy.presentation.orderdetails.components.RequestedMedicinesSection
+import com.medsy.presentation.orderdetails.components.ZoomableImageDialog
+import com.medsy.presentation.R
 
 @Composable
 fun RequestDetailsRoot(
@@ -50,7 +54,7 @@ fun RequestDetailsRoot(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(requestId) {
         viewModel.onIntent(RequestDetailsUIIntent.LoadRequest(requestId))
@@ -121,7 +125,7 @@ fun RequestDetailsScreen(
                 RequestInfoCard(
                     orderId = request.id,
                     minutesAgo = request.minutesAgo,
-                    customerName = request.customerName,
+                    customerName = request.customerName ?: stringResource(R.string.customer_default_format, request.customerId),
                     customerPhone = request.customerPhone,
                     customerAddress = request.customerAddress,
                     onCallClick = { onIntent(RequestDetailsUIIntent.CallCustomerClicked) },
@@ -141,7 +145,7 @@ fun RequestDetailsScreen(
                     modifier = Modifier.padding(top = 24.dp),
                 )
 
-                var showImageDialog by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
+                var showImageDialog by remember { mutableStateOf<String?>(null) }
 
                 PrescriptionImageSection(
                     imageUrl = request.prescriptionUrl,
@@ -150,7 +154,7 @@ fun RequestDetailsScreen(
                 )
 
                 if (showImageDialog != null) {
-                    com.medsy.presentation.orderdetails.components.ZoomableImageDialog(
+                    ZoomableImageDialog(
                         imageUrl = showImageDialog!!,
                         onDismissRequest = { showImageDialog = null }
                     )

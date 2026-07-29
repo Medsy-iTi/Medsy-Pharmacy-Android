@@ -16,9 +16,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.medsy.presentation.R
 
+import com.medsy.presentation.orderdetails.model.PaymentMethod
+
 @Composable
 fun PaymentMethodSection(
-    paymentMethod: String,
+    paymentMethod: PaymentMethod,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -40,9 +42,9 @@ fun PaymentMethodSection(
             ),
         ) {
             val paymentString = when (paymentMethod) {
-                "Visa" -> stringResource(R.string.requests_payment_visa)
-                "Mastercard" -> stringResource(R.string.requests_payment_mastercard)
-                else -> stringResource(R.string.requests_payment_cash)
+                PaymentMethod.Visa -> stringResource(R.string.requests_payment_visa)
+                PaymentMethod.Mastercard -> stringResource(R.string.requests_payment_mastercard)
+                PaymentMethod.Cash -> stringResource(R.string.requests_payment_cash)
             }
             Text(
                 text = paymentString,

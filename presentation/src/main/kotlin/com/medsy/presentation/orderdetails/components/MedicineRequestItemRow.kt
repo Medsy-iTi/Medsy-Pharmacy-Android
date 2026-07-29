@@ -26,6 +26,7 @@ import com.medsy.presentation.orderdetails.model.RequestMedicineItem
 import androidx.compose.material3.Checkbox
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.TextButton
+import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun MedicineRequestItemRow(
@@ -75,7 +76,7 @@ fun MedicineRequestItemRow(
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 2,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = item.packInfo,

@@ -95,7 +95,7 @@ fun RequestCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = request.customerName,
+                    text = request.customerName ?: stringResource(R.string.customer_default_format, request.customerId),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,

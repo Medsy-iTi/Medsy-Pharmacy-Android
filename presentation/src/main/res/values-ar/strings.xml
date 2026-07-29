@@ -366,6 +366,7 @@
     <string name="pharmacist_notes_placeholder">أضف أي ملاحظات بخصوص البدائل، الأسعار، أو غيرها...</string>
     <string name="prescription_section_title">روشتة العميل</string>
     <string name="prescription_image_content_description">صورة روشتة العميل</string>
+    <string name="customer_default_format">عميل رقم %1$d</string>
     <string name="home_offer_for_request">عرض لطلب #%1$s</string>
     <string name="home_offer_distance">%1$s كم</string>
     <string name="home_pharmacy_id_format"> %1$s</string>
