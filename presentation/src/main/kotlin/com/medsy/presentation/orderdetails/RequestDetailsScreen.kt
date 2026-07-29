@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -31,6 +30,7 @@ import com.medsy.presentation.orderdetails.components.PaymentMethodSection
 import com.medsy.presentation.orderdetails.components.PharmacistNotesSection
 import com.medsy.presentation.orderdetails.components.PrescriptionImageSection
 import com.medsy.presentation.orderdetails.components.RequestedMedicinesSection
+import com.medsy.presentation.orderdetails.components.RequestDetailsShimmer
 
 @Composable
 fun RequestDetailsRoot(
@@ -84,19 +84,20 @@ fun RequestDetailsScreen(
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { MedsySnackbarHost(hostState = snackbarHostState) },
     ) { paddingValues ->
-        if (state.isLoading || state.request == null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator()
+        val request = state.request
+
+        if (request == null) {
+            if (state.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                ) {
+                    RequestDetailsShimmer()
+                }
             }
             return@Scaffold
         }
-
-        val request = state.request
 
         Column(
             modifier = Modifier

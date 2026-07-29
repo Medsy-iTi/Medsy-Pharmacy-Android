@@ -47,6 +47,8 @@ import com.medsy.presentation.home.components.PharmacyMainCard
 @Composable
 fun HomeRoot(
     onOpenNotifications: () -> Unit,
+    onViewAllOrders: () -> Unit,
+    onOrderClick: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -67,8 +69,8 @@ fun HomeRoot(
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                HomeUIEffect.NavigateToViewAllOrders -> {}
-                is HomeUIEffect.NavigateToOrderDetails -> {}
+                HomeUIEffect.NavigateToViewAllOrders -> onViewAllOrders()
+                is HomeUIEffect.NavigateToOrderDetails -> onOrderClick(effect.orderId)
                 HomeUIEffect.OpenNotifications -> onOpenNotifications()
             }
         }
