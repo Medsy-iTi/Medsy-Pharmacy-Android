@@ -163,7 +163,7 @@ fun RequestCard(
                     modifier = Modifier.padding(top = 14.dp),
                 ) {
                     Text(
-                        text = stringResource(R.string.request_details_accept),
+                        text = stringResource(R.string.view_order_details),
                         style = MaterialTheme.typography.titleMedium,
                     )
                 }

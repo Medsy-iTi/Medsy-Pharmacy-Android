@@ -4,6 +4,7 @@
     <string name="splash_app_name">Medsy Pharmacy</string>
     <string name="splash_tagline">Your pharmacy, with ease.</string>
     <string name="splash_logo_description">Medsy Pharmacy logo</string>
+    <string name="view_order_details">View Order Details</string>
 
 
     <string name="onboarding_title_1">Nearby requests, moment by moment</string>
