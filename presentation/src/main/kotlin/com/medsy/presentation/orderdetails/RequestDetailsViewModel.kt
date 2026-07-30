@@ -74,7 +74,9 @@ class RequestDetailsViewModel @Inject constructor(
 
     private fun loadRequest(id: Long) {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            if (_state.value.request == null) {
+                _state.update { it.copy(isLoading = true) }
+            }
 
             getRequestDetailsUseCase(id)
                 .onSuccess { domainRequest ->

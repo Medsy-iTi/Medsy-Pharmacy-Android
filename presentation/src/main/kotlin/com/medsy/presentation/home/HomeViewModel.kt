@@ -46,7 +46,7 @@ class HomeViewModel @Inject constructor(
 
     fun onIntent(intent: HomeUIIntent) {
         when (intent) {
-            HomeUIIntent.Refresh -> loadHomeData()
+            HomeUIIntent.Refresh -> loadHomeData(isRefresh = true)
             is HomeUIIntent.OnOrderClicked -> {
                 viewModelScope.launch {
                     mutableEffect.send(HomeUIEffect.NavigateToOrderDetails(intent.orderId))
@@ -68,9 +68,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun loadHomeData() {
+    private fun loadHomeData(isRefresh: Boolean = false) {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            val shouldShowShimmer = _state.value.latestOrders.isEmpty() || !isRefresh
+            if (shouldShowShimmer) {
+                _state.update { it.copy(isLoading = true) }
+            }
 
             val pharmacyDeferred = async { getMyPharmacy() }
             val ordersDeferred = async { getCurrentPharmacyRequests(page = 0, size = 10) }
