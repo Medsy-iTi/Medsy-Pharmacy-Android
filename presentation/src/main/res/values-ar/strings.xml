@@ -199,6 +199,7 @@
     <string name="home_order_status_new">جديد</string>
     <string name="home_order_status_preparing">قيد التجهيز</string>
     <string name="home_order_status_delivered">تم التوصيل</string>
+    <string name="home_order_status_offer_submitted">في الانتظار</string>
     <string name="home_order_time_ago">منذ %1$d دقائق</string>
 
     <string name="home_nav_home">الرئيسية</string>
@@ -282,7 +283,9 @@
     <string name="request_details_back_desc">رجوع</string>
     <string name="request_details_call_desc">اتصال بالعميل</string>
     <string name="request_details_location_desc">فتح الموقع</string>
-    <string name="request_details_request_number_format">رقم الطلب: %1$s</string>    <string name="request_details_minutes_ago">منذ %1$d دقائق</string>
+    <string name="request_details_request_number_format">رقم الطلب: %1$s</string>
+    <string name="request_details_minutes_ago">منذ %1$d دقائق</string>
+    <string name="request_details_hours_minutes_ago">منذ %1$d ساعة و %2$d دقيقة</string>
     <string name="request_details_price_egp">%1$.2f جنيه</string>
     <string name="request_details_requested_medicines">الأدوية المطلوبة</string>
     <string name="request_details_customer_notes">ملاحظات العميل</string>
@@ -352,6 +355,7 @@
     <string name="profile_not_provided">غير متوفر</string>
     <string name="profile_save_changes">حفظ التغييرات</string>
     <string name="requests_filter_cancelled">الملغاة</string>
+    <string name="requests_status_expired">منتهي</string>
     <string name="requests_filter_completed">المكتملة</string>
 
     <string name="dialog_ok">موافق</string>
@@ -362,6 +366,15 @@
     <string name="pharmacist_notes_placeholder">أضف أي ملاحظات بخصوص البدائل، الأسعار، أو غيرها...</string>
     <string name="prescription_section_title">روشتة العميل</string>
     <string name="prescription_image_content_description">صورة روشتة العميل</string>
+    <string name="customer_default_format">عميل رقم %1$d</string>
+    <string name="home_offer_for_request">عرض لطلب #%1$s</string>
+    <string name="home_offer_distance">%1$s كم</string>
+    <string name="home_pharmacy_id_format"> %1$s</string>
+    <string name="request_details_add_alternative">إضافة بديل</string>
+    <string name="substitute_search_title">البحث عن بديل</string>
+    <string name="substitute_search_placeholder">ابحث باسم الدواء...</string>
+    <string name="substitute_price_egp">%1$s جنيه</string>
+    <string name="substitute_search_lottie_desc">ابحث لتظهر لك الأدوية</string>
 
     <!-- Notifications -->
     <string name="notifications_title">الإشعارات</string>

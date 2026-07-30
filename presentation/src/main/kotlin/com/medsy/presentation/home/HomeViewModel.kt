@@ -16,13 +16,17 @@ import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
 import com.medsy.domain.notifications.usecase.GetUnreadCountUseCase
+import com.medsy.presentation.orders.SubmittedOffersManager
+import kotlinx.coroutines.delay
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
     private val getCurrentPharmacyRequests: GetCurrentPharmacyRequestsUseCase,
+    private val submittedOffersManager: SubmittedOffersManager,
     private val getUnreadCount: GetUnreadCountUseCase
 ) : ViewModel() {
 
@@ -32,15 +36,95 @@ class HomeViewModel @Inject constructor(
     private val mutableEffect = Channel<HomeUIEffect>(Channel.BUFFERED)
     val effect = mutableEffect.receiveAsFlow()
 
+    private var pollingJob: kotlinx.coroutines.Job? = null
+
     init {
         loadHomeData()
         prefetchProfileData()
+        startPolling()
+        observeSubmittedOffers()
+    }
+
+    private fun observeSubmittedOffers() {
+        viewModelScope.launch {
+            submittedOffersManager.submittedRequestIds.collect { submittedIds ->
+                _state.update { currentState ->
+                    val updatedOrders = currentState.latestOrders.map { order ->
+                        val reqId = order.requestId.toLongOrNull() ?: -1L
+                        if (submittedIds.contains(reqId) && order.status == HomeOrderStatus.NEW) {
+                            order.copy(status = HomeOrderStatus.OFFER_SUBMITTED)
+                        } else {
+                            order
+                        }
+                    }
+                    currentState.copy(latestOrders = updatedOrders)
+                }
+            }
+        }
     }
 
     private fun prefetchProfileData() {
         viewModelScope.launch {
             getCurrentPharmacist(forceRefresh = false)
             getMyPharmacy(forceRefresh = false)
+        }
+    }
+
+    private fun startPolling() {
+        pollingJob = viewModelScope.launch {
+            while (true) {
+                delay(15000.milliseconds)
+                pollOffersSilently()
+            }
+        }
+    }
+
+    private suspend fun pollOffersSilently() {
+        val pharmacyIdStr = _state.value.pharmacyInfo.pharmacyId
+        if (pharmacyIdStr.isBlank()) return
+        
+        val currentPharmacyId = pharmacyIdStr.removePrefix("PH").toLongOrNull() ?: return
+        
+        if (currentPharmacyId > 0) {
+            val requestsResult = getCurrentPharmacyRequests(page = 0, size = 10, sort = listOf("id,desc"))
+            requestsResult.fold(
+                onSuccess = { page ->
+                    val newOrders = page.content.filter { req ->
+                        req.status == RequestStatusConstants.PENDING || 
+                        req.status == RequestStatusConstants.NEW || 
+                        req.status == RequestStatusConstants.SEARCHING 
+                    }
+                    val submitted = submittedOffersManager.submittedRequestIds.value
+                    val latestThree = newOrders.take(3).map { req ->
+                        var mappedStatus = when (req.status) {
+                            RequestStatusConstants.PENDING, RequestStatusConstants.NEW, RequestStatusConstants.SEARCHING -> HomeOrderStatus.NEW
+                            RequestStatusConstants.IN_PROGRESS -> HomeOrderStatus.PREPARING
+                            RequestStatusConstants.DELIVERED -> HomeOrderStatus.DELIVERED
+                            else -> HomeOrderStatus.NEW
+                        }
+                        if (submitted.contains(req.id) && mappedStatus == HomeOrderStatus.NEW) {
+                            mappedStatus = HomeOrderStatus.OFFER_SUBMITTED
+                        }
+                        HomeOrderUI(
+                            id = "#${req.id}",
+                            requestId = req.id.toString(),
+                            distanceKm = 0.0, // Distance not available on request
+                            timeAgo = "",
+                            status = mappedStatus
+                        )
+                    }
+
+                    _state.update { currentState ->
+                        currentState.copy(
+                            latestOrders = latestThree,
+                            stats = currentState.stats.copy(
+                                newOrders = page.content.size,
+                            )
+                        )
+                    }
+                },
+                onError = { }
+            )
         }
     }
 
@@ -64,7 +148,6 @@ class HomeViewModel @Inject constructor(
                     mutableEffect.send(HomeUIEffect.OpenNotifications)
                 }
             }
-
         }
     }
 
@@ -76,61 +159,70 @@ class HomeViewModel @Inject constructor(
             }
 
             val pharmacyDeferred = async { getMyPharmacy() }
-            val ordersDeferred = async { getCurrentPharmacyRequests(page = 0, size = 10) }
             val unreadCountDeferred = async { getUnreadCount() }
 
             val pharmacyResult = pharmacyDeferred.await()
-            val ordersResult = ordersDeferred.await()
             val unreadCountResult = unreadCountDeferred.await()
-
             var newState = _state.value.copy(isLoading = false)
+            var currentPharmacyId: Long = 0L
 
             pharmacyResult.fold(
                 onSuccess = { pharmacy ->
+                    currentPharmacyId = pharmacy.id
                     newState = newState.copy(
                         pharmacyInfo = newState.pharmacyInfo.copy(
                             name = pharmacy.name,
                             address = pharmacy.address ?: "",
-                            pharmacyId = "PH${pharmacy.id}",
+                            pharmacyId = pharmacy.id.toString(),
                             isOpen = true,
-                            closingTime = "11:00 مساءً",
-                            rating = 4.8,
-                            reviewsCount = 256
                         )
                     )
                 },
                 onError = { }
             )
 
-            ordersResult.fold(
-                onSuccess = { page ->
-                    val latestThree = page.content.take(3).map { order ->
-                        HomeOrderUI(
-                            id = "#${order.id}",
-                            customerName = "Customer #${order.customerId}",
-                            location = order.deliveryAddress ?: "No address",
-                            timeAgo = order.createdAt,
-                            status = when (order.status) {
-                                RequestStatusConstants.PENDING, RequestStatusConstants.NEW -> HomeOrderStatus.NEW
+            if (currentPharmacyId > 0) {
+                val requestsResult = getCurrentPharmacyRequests(page = 0, size = 10, sort = listOf("id,desc"))
+                requestsResult.fold(
+                    onSuccess = { page ->
+                        val newOrders = page.content.filter { req ->
+                            req.status == RequestStatusConstants.PENDING || 
+                            req.status == RequestStatusConstants.NEW || 
+                            req.status == RequestStatusConstants.SEARCHING 
+                        }
+                        val submitted = submittedOffersManager.submittedRequestIds.value
+                        val latestThree = newOrders.take(3).map { req ->
+                            var mappedStatus = when (req.status) {
+                                RequestStatusConstants.PENDING, RequestStatusConstants.NEW, RequestStatusConstants.SEARCHING -> HomeOrderStatus.NEW
                                 RequestStatusConstants.IN_PROGRESS -> HomeOrderStatus.PREPARING
                                 RequestStatusConstants.DELIVERED -> HomeOrderStatus.DELIVERED
                                 else -> HomeOrderStatus.NEW
                             }
-                        )
-                    }
+                            if (submitted.contains(req.id) && mappedStatus == HomeOrderStatus.NEW) {
+                                mappedStatus = HomeOrderStatus.OFFER_SUBMITTED
+                            }
+                            HomeOrderUI(
+                                id = "#${req.id}",
+                                requestId = req.id.toString(),
+                                distanceKm = 0.0,
+                                timeAgo = req.createdAt,
+                                status = mappedStatus
+                            )
+                        }
 
-                    newState = newState.copy(
-                        latestOrders = latestThree,
-                        stats = newState.stats.copy(
-                            newOrders = page.content.count {
-                                it.status == RequestStatusConstants.PENDING || it.status == RequestStatusConstants.NEW
-                            },
-                            inProgress = page.content.count { it.status == RequestStatusConstants.IN_PROGRESS }
+                        newState = newState.copy(
+                            latestOrders = latestThree,
+                            stats = newState.stats.copy(
+                                newOrders = page.content.count {
+                                    it.status == RequestStatusConstants.PENDING || it.status == RequestStatusConstants.NEW
+                                },
+                                inProgress = page.content.count { it.status == RequestStatusConstants.IN_PROGRESS }
+                            )
                         )
-                    )
-                },
-                onError = { }
-            )
+                    },
+                    onError = { }
+                )
+            }
 
             unreadCountResult.fold(
                 onSuccess = { count ->

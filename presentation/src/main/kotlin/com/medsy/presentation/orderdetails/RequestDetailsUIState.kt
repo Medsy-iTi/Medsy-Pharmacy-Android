@@ -7,4 +7,5 @@ data class RequestDetailsUIState(
     val request: Request? = null,
     val isSubmitting: Boolean = false,
     val pharmacistNotes: String = "",
+    val selectedItems: Set<Long> = emptySet(),
 )

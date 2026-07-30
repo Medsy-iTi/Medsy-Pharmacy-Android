@@ -23,17 +23,33 @@ import com.medsy.designsystem.ui.theme.extendedColors
 import com.medsy.presentation.R
 import com.medsy.presentation.orderdetails.model.RequestMedicineItem
 
+import androidx.compose.material3.Checkbox
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.text.style.TextOverflow
+
 @Composable
 fun MedicineRequestItemRow(
     item: RequestMedicineItem,
+    isChecked: Boolean,
+    onCheckedChange: ((Boolean) -> Unit)?,
+    onAddSubstituteClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .clickable(enabled = onCheckedChange != null) { onCheckedChange?.invoke(!isChecked) }
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (onCheckedChange != null) {
+            Checkbox(
+                checked = isChecked,
+                onCheckedChange = onCheckedChange,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+        }
         Box(
             modifier = Modifier
                 .size(28.dp)
@@ -59,6 +75,8 @@ fun MedicineRequestItemRow(
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = item.packInfo,
@@ -72,7 +90,13 @@ fun MedicineRequestItemRow(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 4.dp),
+                maxLines = 1,
             )
+            if (!isChecked && onAddSubstituteClick != null) {
+                TextButton(onClick = onAddSubstituteClick, modifier = Modifier.padding(top = 4.dp)) {
+                    Text(stringResource(R.string.request_details_add_alternative))
+                }
+            }
         }
 
         Row(horizontalArrangement = Arrangement.End) {
@@ -84,8 +108,9 @@ fun MedicineRequestItemRow(
                 contentAlignment = Alignment.Center,
             ) {
                 if (item.imageUrl != null) {
+                    val finalUrl = if (item.imageUrl.startsWith("http")) item.imageUrl else com.medsy.presentation.BuildConfig.BASE_URL + item.imageUrl
                     AsyncImage(
-                        model = item.imageUrl,
+                        model = finalUrl,
                         contentDescription = item.name,
                         modifier = Modifier.size(48.dp),
                     )

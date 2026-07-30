@@ -38,6 +38,12 @@ sealed interface Route : NavKey {
     data object Suspended : Route
 
     @Serializable
+    data class SubstituteSearch(val requestItemId: Long) : Route
+
+    @Serializable
+    data object ActiveOrders : Route
+
+    @Serializable
     data object Notifications : Route
 
     @Serializable

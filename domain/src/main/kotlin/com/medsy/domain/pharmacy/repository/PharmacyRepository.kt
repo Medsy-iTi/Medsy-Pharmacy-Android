@@ -10,4 +10,5 @@ interface PharmacyRepository {
     suspend fun registerPharmacy(
         params: RegisterPharmacyParams,
     ): MedsyResult<MyPharmacy, MedsyError.Remote>
+    fun clearCache()
 }

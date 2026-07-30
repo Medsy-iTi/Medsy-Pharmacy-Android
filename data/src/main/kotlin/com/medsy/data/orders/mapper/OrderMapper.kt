@@ -1,5 +1,6 @@
 package com.medsy.data.orders.mapper
 
+import com.medsy.data.BuildConfig.BASE_URL
 import com.medsy.data.orders.model.PharmacyRequestDto
 import com.medsy.data.orders.model.PharmacyRequestPageDto
 import com.medsy.data.orders.model.RequestItemDto
@@ -21,6 +22,8 @@ fun PharmacyRequestPageDto.toDomain(): PharmacyRequestPageDomain {
 fun PharmacyRequestDto.toDomain(): PharmacyRequestDomain {
     return PharmacyRequestDomain(
         id = id,
+        offerId = offerId,
+        orderId = orderId,
         customerId = customerId,
         deliveryLatitude = deliveryLatitude,
         deliveryLongitude = deliveryLongitude,
@@ -28,7 +31,7 @@ fun PharmacyRequestDto.toDomain(): PharmacyRequestDomain {
         status = status,
         createdAt = createdAt,
         items = items.map { it.toDomain() },
-        prescriptionUrl = prescriptionUrl,
+        prescriptionUrl = prescriptionUrl?.let { if (it.startsWith("http")) it else "${BASE_URL}$it" },
         customerName = customerName,
         customerPhone = customerPhone,
         paymentMethod = paymentMethod,

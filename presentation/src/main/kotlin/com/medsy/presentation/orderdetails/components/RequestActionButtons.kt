@@ -30,8 +30,6 @@ import com.medsy.presentation.R
 @Composable
 fun RequestActionButtons(
     isSubmitting: Boolean,
-    onRejectClick: () -> Unit,
-    onContactClick: () -> Unit,
     onAcceptClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -40,62 +38,6 @@ fun RequestActionButtons(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            OutlinedButton(
-                onClick = onRejectClick,
-                enabled = !isSubmitting,
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
-                border = androidx.compose.foundation.BorderStroke(
-                    1.dp,
-                    MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
-                ),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(52.dp),
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp),
-                )
-                Text(
-                    text = stringResource(R.string.request_details_reject),
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(start = 6.dp),
-                )
-            }
-
-            OutlinedButton(
-                onClick = onContactClick,
-                enabled = !isSubmitting,
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.primary
-                ),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(52.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.request_details_contact_customer),
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.Chat,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(18.dp)
-                        .padding(start = 6.dp),
-                )
-            }
-        }
-
         MedsyButton(
             onClick = onAcceptClick,
             isLoading = isSubmitting,

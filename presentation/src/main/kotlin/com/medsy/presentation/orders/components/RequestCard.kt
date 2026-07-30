@@ -60,14 +60,20 @@ fun RequestCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = stringResource(R.string.request_details_request_number_format, request.id),
+                    text = stringResource(R.string.request_details_request_number_format,
+                        request.displayId
+                    ),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = stringResource(R.string.request_details_minutes_ago, request.minutesAgo),
+                        text = if (request.minutesAgo >= 60) {
+                            stringResource(R.string.request_details_hours_minutes_ago, request.minutesAgo / 60, request.minutesAgo % 60)
+                        } else {
+                            stringResource(R.string.request_details_minutes_ago, request.minutesAgo)
+                        },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -88,14 +94,18 @@ fun RequestCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = request.customerName,
+                    text = request.customerName ?: stringResource(R.string.customer_default_format, request.customerId),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                RequestStatusBadge(
-                    status = request.status,
-                )
+                if ((request.status == RequestStatus.New || request.status == RequestStatus.Searching) && request.minutesAgo >= 60) {
+                    // Hide the "New" badge for older requests
+                } else {
+                    RequestStatusBadge(
+                        status = request.status,
+                    )
+                }
             }
 
             Text(
@@ -175,6 +185,8 @@ fun RequestCard(
                 RequestStatus.Delivered -> Unit
                 RequestStatus.Cancelled -> Unit
                 RequestStatus.Completed -> Unit
+                RequestStatus.Expired -> Unit
+                else -> {}
             }
         }
     }

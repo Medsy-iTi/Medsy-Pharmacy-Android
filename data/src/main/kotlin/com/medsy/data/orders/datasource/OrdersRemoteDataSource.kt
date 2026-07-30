@@ -10,4 +10,6 @@ interface RequestsRemoteDataSource {
         size: Int,
         sort: List<String>?
     ): MedsyResult<PharmacyRequestPageDto, MedsyError.Remote>
+
+    suspend fun createOffer(requestId: Long, request: com.medsy.data.orders.remote.dto.CreateOfferRequestDto): MedsyResult<Unit, MedsyError.Remote>
 }

@@ -162,7 +162,7 @@ fun PharmacyMainCard(info: PharmacyUIInfo) {
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = info.pharmacyId,
+                            text = stringResource(R.string.home_pharmacy_id_format, info.pharmacyId),
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                             color = MaterialTheme.colorScheme.onSurface
                         )

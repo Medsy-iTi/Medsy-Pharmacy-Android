@@ -181,9 +181,26 @@ fun RootNavDisplay(
                         val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
                         context.startActivity(intent)
                     },
-                    onOpenLocationOnMap = { },
+                    onOpenLocationOnMap = { lat, lng ->
+                        val uri = android.net.Uri.parse("geo:0,0?q=$lat,$lng(Location)")
+                        val intent = Intent(Intent.ACTION_VIEW, uri)
+                        context.startActivity(intent)
+                    },
                     onOpenPaymentSummary = { },
-                    onOpenCustomerChat = { },
+                    onNavigateToSubstituteSearch = { itemId ->
+                        backStack.navigateSingleTop(Route.SubstituteSearch(itemId))
+                    },
+                    onOpenPrescriptionImage = { url ->
+                        val finalUrl = if (url.startsWith("http")) url else com.medsy.data.BuildConfig.BASE_URL + url
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(finalUrl))
+                        context.startActivity(intent)
+                    }
+                )
+            }
+            entry<Route.SubstituteSearch> { route ->
+                com.medsy.presentation.orderdetails.SubstituteSearchRoot(
+                    requestItemId = route.requestItemId,
+                    onNavigateBack = { backStack.removeLastOrNull() }
                 )
             }
             entry<Route.InvitePharmacist> {

@@ -75,6 +75,10 @@ class PharmacyRepositoryImpl @Inject constructor(
         }.map { it.toDomain() }
     }
 
+    override fun clearCache() {
+        cachedPharmacy = null
+    }
+
     private companion object {
         const val JSON_MEDIA_TYPE = "application/json"
         const val PDF_MEDIA_TYPE = "application/pdf"

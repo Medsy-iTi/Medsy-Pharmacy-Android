@@ -15,4 +15,6 @@ interface RequestsRepository {
     ): MedsyResult<PharmacyRequestPageDomain, MedsyError.Remote>
 
     suspend fun getRequestDetails(requestId: Long): MedsyResult<PharmacyRequestDomain?, MedsyError.Remote>
+    
+    suspend fun createOffer(requestId: Long, items: List<Pair<Long, Long>>): MedsyResult<Unit, MedsyError.Remote>
 }
