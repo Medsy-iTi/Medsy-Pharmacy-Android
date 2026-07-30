@@ -38,15 +38,14 @@ import com.medsy.presentation.orders.RequestSummary
 @Composable
 fun RequestCard(
     request: RequestSummary,
-    onCardClick: () -> Unit,
     onAcceptClick: () -> Unit,
     onPrepareClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onCardClick),
+            .fillMaxWidth(),
+
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = BorderStroke(
