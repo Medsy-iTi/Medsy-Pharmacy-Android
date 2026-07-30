@@ -144,6 +144,7 @@ fun RequestDetailsShimmer(
                     shape = RoundedCornerShape(24.dp)
                 )
             }
+
         }
     }
 }

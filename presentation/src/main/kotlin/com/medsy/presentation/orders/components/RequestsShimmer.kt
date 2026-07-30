@@ -70,6 +70,7 @@ fun RequestsShimmer(modifier: Modifier = Modifier) {
                         )
                     }
                 }
+
             }
         }
     }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -38,6 +37,7 @@ import com.medsy.presentation.R
 import com.medsy.presentation.orders.components.RequestCard
 import com.medsy.presentation.orders.components.RequestsFilterChipsRow
 import com.medsy.presentation.orders.components.RequestsSearchBar
+import com.medsy.presentation.orders.components.RequestsShimmer
 
 @Composable
 fun RequestsRoot(
@@ -123,12 +123,10 @@ fun RequestsScreen(
                 modifier = Modifier.padding(top = 12.dp),
             )
 
-            when {
-                state.isLoading -> com.medsy.presentation.orders.components.RequestsShimmer(
-                    modifier = Modifier.fillMaxSize()
-                )
-
-                state.filteredOrders.isEmpty() -> Column(
+            if (state.isLoading) {
+                RequestsShimmer()
+            } else if (state.filteredOrders.isEmpty()) {
+                Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -145,8 +143,8 @@ fun RequestsScreen(
                         modifier = Modifier.padding(horizontal = 32.dp)
                     )
                 }
-
-                else -> LazyColumn(
+            } else {
+                LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),

@@ -38,6 +38,7 @@ import com.medsy.presentation.orderdetails.components.PrescriptionImageSection
 import com.medsy.presentation.orderdetails.components.RequestedMedicinesSection
 import com.medsy.presentation.orderdetails.components.ZoomableImageDialog
 import com.medsy.presentation.R
+import com.medsy.presentation.orderdetails.components.RequestDetailsShimmer
 
 @Composable
 fun RequestDetailsRoot(
@@ -91,19 +92,25 @@ fun RequestDetailsScreen(
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            containerColor = MaterialTheme.colorScheme.background,
-        ) { paddingValues ->
-        if (state.isLoading || state.request == null) {
-            com.medsy.presentation.orderdetails.components.RequestDetailsShimmer(
-                modifier = Modifier.padding(paddingValues)
-            )
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = { MedsySnackbarHost(hostState = snackbarHostState) },
+    ) { paddingValues ->
+        val request = state.request
+
+        if (request == null) {
+            if (state.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                ) {
+                    RequestDetailsShimmer()
+                }
+            }
             return@Scaffold
         }
-
-        val request = state.request
 
         Column(
             modifier = Modifier
@@ -186,10 +193,5 @@ fun RequestDetailsScreen(
                     .background(MaterialTheme.colorScheme.surface)
             )
         }
-        }
-        MedsySnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier.align(Alignment.TopCenter)
-        )
     }
 }

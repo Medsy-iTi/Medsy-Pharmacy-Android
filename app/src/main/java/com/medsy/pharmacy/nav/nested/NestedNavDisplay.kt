@@ -107,8 +107,18 @@ fun NestedNavDisplay(
             entryProvider = entryProvider {
                 entry<Route.NestedNav.Home> {
                     HomeRoot(
-                        openRequestDetails = openRequestDetails,
-                        onOpenNotifications = openNotifications
+                        onOpenNotifications = openNotifications,
+                        onViewAllOrders = {
+                            backStack.apply {
+                                clear()
+                                navigateSingleTop(Route.NestedNav.Home)
+                                navigateSingleTop(Route.NestedNav.Requests)
+                            }
+                        },
+                        onOrderClick = { orderId ->
+                            val idLong = orderId.removePrefix("#").toLongOrNull() ?: -1L
+                            openRequestDetails(idLong)
+                        }
                     )
                 }
                 entry<Route.NestedNav.Requests> { RequestsRoot(onRequestClick = openRequestDetails) }
