@@ -1,7 +1,6 @@
 package com.medsy.presentation.orders
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -137,7 +136,6 @@ fun RequestsScreen(
                     items(state.filteredOrders, key = { it.id }) { request ->
                         RequestCard(
                             request = request,
-                            onCardClick = { onIntent(RequestsUIIntent.RequestClicked(request.id)) },
                             onAcceptClick = { onIntent(RequestsUIIntent.AcceptRequestClicked(request.id)) },
                             onPrepareClick = { onIntent(RequestsUIIntent.PrepareRequestClicked(request.id)) },
                         )

@@ -4,7 +4,7 @@
     <string name="splash_app_name">ميدزي للصيدليات</string>
     <string name="splash_tagline">صيدليتك، بكل سهولة.</string>
     <string name="splash_logo_description">شعار ميدزي للصيدليات</string>
-
+    <string name="view_order_details">عرض تفاصيل الطلب</string>
 
     <string name="onboarding_title_1">طلبات قريبة منك، لحظة بلحظة</string>
     <string name="onboarding_desc_1">تابع الطلبات المفتوحة من المرضى القريبين مرتبة حسب المسافة، مع صور الروشتة المرفقة.</string>
