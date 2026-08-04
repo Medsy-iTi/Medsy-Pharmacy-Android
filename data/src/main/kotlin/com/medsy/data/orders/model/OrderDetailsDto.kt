@@ -15,6 +15,8 @@ data class PharmacyRequestPageDto(
 @JsonClass(generateAdapter = true)
 data class PharmacyRequestDto(
     val id: Long,
+    val offerId: Long? = null,
+    val orderId: Long? = null,
     val customerId: Long,
     val deliveryLatitude: Double?,
     val deliveryLongitude: Double?,

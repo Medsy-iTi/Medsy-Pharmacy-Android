@@ -7,4 +7,6 @@ sealed interface RequestsUIIntent {
     data class RequestClicked(val requestId: Long) : RequestsUIIntent
     data class AcceptRequestClicked(val requestId: Long) : RequestsUIIntent
     data class PrepareRequestClicked(val requestId: Long) : RequestsUIIntent
+    data class OfferSubmitted(val requestId: Long) : RequestsUIIntent
+    data object Refresh : RequestsUIIntent
 }

@@ -57,13 +57,17 @@ fun RequestInfoCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = stringResource(R.string.request_details_request_number_format, orderId),
+                    text = stringResource(R.string.request_details_request_number_format, "#MS-$orderId"),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
-                    text = stringResource(R.string.request_details_minutes_ago, minutesAgo),
+                    text = if (minutesAgo >= 60) {
+                        stringResource(R.string.request_details_hours_minutes_ago, minutesAgo / 60, minutesAgo % 60)
+                    } else {
+                        stringResource(R.string.request_details_minutes_ago, minutesAgo)
+                    },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

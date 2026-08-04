@@ -28,8 +28,8 @@ data class HomeStatsUI(
 
 data class HomeOrderUI(
     val id: String,
-    val customerName: String,
-    val location: String,
+    val requestId: String,
+    val distanceKm: Double,
     val timeAgo: String,
     val status: HomeOrderStatus
 )
@@ -37,5 +37,6 @@ data class HomeOrderUI(
 enum class HomeOrderStatus {
     NEW,
     PREPARING,
-    DELIVERED
+    DELIVERED,
+    OFFER_SUBMITTED
 }

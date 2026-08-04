@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.medsy.domain.common.onError
 import com.medsy.domain.common.onSuccess
 import com.medsy.domain.orders.model.PharmacyRequestDomain
+import com.medsy.domain.orders.model.RequestStatusConstants
 import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -21,9 +22,9 @@ import java.time.Instant
 
 @HiltViewModel
 class RequestsViewModel @Inject constructor(
-    private val getCurrentPharmacyRequestsUseCase: GetCurrentPharmacyRequestsUseCase
+    private val getCurrentPharmacyRequestsUseCase: GetCurrentPharmacyRequestsUseCase,
+    private val submittedOffersManager: SubmittedOffersManager
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(RequestsUIState())
     val state = _state
         .onStart { loadRequests() }
@@ -48,14 +49,31 @@ class RequestsViewModel @Inject constructor(
 
             RequestsUIIntent.FilterIconClicked -> sendEffect(RequestsUIEffect.OpenFilters)
 
-            is RequestsUIIntent.RequestClicked ->
-                sendEffect(RequestsUIEffect.NavigateToRequestDetails(intent.requestId))
-
-            is RequestsUIIntent.AcceptRequestClicked ->
-                sendEffect(RequestsUIEffect.NavigateToRequestDetails(intent.requestId))
-
-            is RequestsUIIntent.PrepareRequestClicked ->
-                sendEffect(RequestsUIEffect.NavigateToRequestDetails(intent.requestId))
+            is RequestsUIIntent.RequestClicked -> {
+                val reqId = intent.requestId
+                val order = _state.value.orders.find { it.id == reqId }
+                if (order?.status in listOf(RequestStatus.Searching, RequestStatus.New, RequestStatus.InProgress)) {
+                    sendEffect(RequestsUIEffect.NavigateToRequestDetails(reqId))
+                }
+            }
+            is RequestsUIIntent.AcceptRequestClicked -> {
+                val reqId = intent.requestId
+                val order = _state.value.orders.find { it.id == reqId }
+                if (order?.status in listOf(RequestStatus.Searching, RequestStatus.New)) {
+                    sendEffect(RequestsUIEffect.NavigateToRequestDetails(reqId))
+                }
+            }
+            is RequestsUIIntent.PrepareRequestClicked -> {
+                val reqId = intent.requestId
+                val order = _state.value.orders.find { it.id == reqId }
+                if (order?.status == RequestStatus.InProgress) {
+                    sendEffect(RequestsUIEffect.NavigateToRequestDetails(reqId))
+                }
+            }
+            is RequestsUIIntent.OfferSubmitted -> {
+                // Now handled by SubmittedOffersManager, no op here
+            }
+            RequestsUIIntent.Refresh -> loadRequests()
         }
     }
 
@@ -63,10 +81,19 @@ class RequestsViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            val result = getCurrentPharmacyRequestsUseCase(page = 0, size = 10)
+            val result = getCurrentPharmacyRequestsUseCase(page = 0, size = 10, sort = listOf("id,desc"))
 
             result.onSuccess { requestPage ->
-                val uiRequests = requestPage.content.map { it.toPresentation() }
+                val submitted = submittedOffersManager.submittedRequestIds.value
+                val uiRequests = requestPage.content
+                    .map { request ->
+                        var summary = request.toPresentation()
+                        if (submitted.contains(request.id) && (summary.status == RequestStatus.New || summary.status == RequestStatus.Searching)) {
+                            summary = summary.copy(status = RequestStatus.OfferSubmitted)
+                        }
+                        summary
+                    }
+                    .sortedByDescending { it.id }
                 _state.update {
                     it.copy(
                         isLoading = false,
@@ -96,7 +123,7 @@ fun calculateMinutesAgo(createdAt: String): Int {
         val created = Instant.parse(parseStr)
         val now = Instant.now()
         Duration.between(created, now).toMinutes().coerceAtLeast(0).toInt()
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         0
     }
 }
@@ -106,26 +133,25 @@ fun PharmacyRequestDomain.toPresentation(): RequestSummary {
     val minutes = calculateMinutesAgo(createdAt)
     return RequestSummary(
         id = id,
+        displayId = orderId?.toString() ?: offerId?.toString() ?: id.toString(),
         minutesAgo = minutes,
         status = when (status) {
-            "SEARCHING" -> RequestStatus.Searching
-            "PENDING", "NEW" -> RequestStatus.New
-            "IN_PROGRESS" -> RequestStatus.InProgress
-            "DELIVERED" -> RequestStatus.Delivered
-            "CANCELLED" -> RequestStatus.Cancelled
-            "COMPLETED" -> RequestStatus.Completed
+            RequestStatusConstants.SEARCHING -> RequestStatus.Searching
+            RequestStatusConstants.PENDING, RequestStatusConstants.NEW -> RequestStatus.New
+            RequestStatusConstants.IN_PROGRESS -> RequestStatus.InProgress
+            RequestStatusConstants.DELIVERED -> RequestStatus.Delivered
+            RequestStatusConstants.CANCELLED -> RequestStatus.Cancelled
+            RequestStatusConstants.COMPLETED -> RequestStatus.Completed
+            RequestStatusConstants.EXPIRED -> RequestStatus.Expired
             else -> RequestStatus.Searching
         },
-        customerName = customerName ?: "Customer #$customerId",
+        customerName = customerName,
+        customerId = customerId,
         customerPhone = customerPhone ?: "",
         customerAddress = deliveryAddress ?: "",
         productImages = items.map { it.imageUrl },
         total = calculatedTotal,
-        paymentMethod = when (paymentMethod?.uppercase()) {
-            "VISA" -> PaymentMethod.Visa
-            "MASTERCARD" -> PaymentMethod.Mastercard
-            else -> PaymentMethod.Cash
-        },
+        paymentMethod = PaymentMethod.fromApiValue(paymentMethod),
         paymentCardLastDigits = null,
     )
 }

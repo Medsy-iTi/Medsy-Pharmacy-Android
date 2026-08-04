@@ -43,5 +43,3 @@ inline fun <D, E : MedsyError> MedsyResult<D, E>.onError(
     return this
 }
 
-fun <D, E : MedsyError> MedsyResult<D, E>.asEmptyDataResult(): EmptyMedsyResult<E> =
-    map { Unit }

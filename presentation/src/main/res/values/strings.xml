@@ -4,6 +4,7 @@
     <string name="splash_app_name">Medsy Pharmacy</string>
     <string name="splash_tagline">Your pharmacy, with ease.</string>
     <string name="splash_logo_description">Medsy Pharmacy logo</string>
+    <string name="view_order_details">View Order Details</string>
 
 
     <string name="onboarding_title_1">Nearby requests, moment by moment</string>
@@ -202,6 +203,7 @@
     <string name="home_order_status_new">New</string>
     <string name="home_order_status_preparing">In Preparation</string>
     <string name="home_order_status_delivered">Delivered</string>
+    <string name="home_order_status_offer_submitted">Pending</string>
     <string name="home_order_time_ago">%1$d mins ago</string>
 
     <string name="home_nav_home">Home</string>
@@ -269,6 +271,7 @@
     <string name="requests_search_placeholder">Search by order number</string>
     <string name="requests_filter_icon_desc">Filter</string>
     <string name="requests_search_icon_desc">Search</string>
+    <string name="requests_status_offer_submitted">Offer Submitted</string>
     <!--  Requests — card  -->
     <string name="requests_status_in_progress">In Progress</string>
     <string name="requests_action_prepare">Prepare order</string>
@@ -287,6 +290,7 @@
     <string name="request_details_location_desc">Open location</string>
     <string name="request_details_request_number_format">Order Id: %1$s</string>
     <string name="request_details_minutes_ago">%1$d min ago</string>
+    <string name="request_details_hours_minutes_ago">%1$d h %2$d min ago</string>
     <string name="request_details_price_egp">%1$.2f EGP</string>
     <string name="request_details_requested_medicines">Requested medicines</string>
     <string name="request_details_customer_notes">Customer notes</string>
@@ -299,6 +303,11 @@
     <string name="request_details_rejected_message">Order rejected</string>
     <string name="request_details_no_prescription">No prescription sent</string>
     <string name="request_details_payment_method">Payment method</string>
+    <string name="request_details_add_alternative">Add alternative</string>
+    <string name="substitute_search_title">Search for alternative</string>
+    <string name="substitute_search_placeholder">Search medicine name...</string>
+    <string name="substitute_price_egp">%1$s EGP</string>
+    <string name="substitute_search_lottie_desc">Search to see medicines</string>
     <string name="requests_view_sample_order">Sample Order</string>
     <string name="pharmacist_notes_title">Notes for Customer</string>
     <string name="pharmacist_notes_placeholder">Add any notes regarding alternatives, pricing, etc...</string>
@@ -362,10 +371,28 @@
     <string name="profile_not_provided">Not provided</string>
     <string name="profile_save_changes">Save Changes</string>
     <string name="requests_filter_cancelled">Cancelled</string>
+    <string name="requests_status_expired">Expired</string>
     <string name="requests_filter_completed">Completed</string>
 
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="profile_logout_confirm_title">Log Out</string>
     <string name="profile_logout_confirm_desc">Are you sure you want to log out?</string>
+    <string name="customer_default_format">Customer #%1$d</string>
+    <string name="home_offer_for_request">Offer for request #%1$s</string>
+    <string name="home_offer_distance">%1$s km</string>
+    <string name="home_pharmacy_id_format">PH%1$s</string>
+
+    <!-- Notifications -->
+    <string name="notifications_title">Notifications</string>
+    <string name="notifications_empty">You do not have any notifications yet</string>
+    <string name="action_mark_all_read">Mark all as read</string>
+    <string name="default_notification_channel_id">pharmacy_notifications_channel</string>
+    <string name="default_notification_channel_name">Pharmacy Notifications</string>
+    <string name="new_patient_request_title">New Patient Request</string>
+    <string name="new_patient_request_body">A patient has submitted a new prescription request near you.</string>
+    <string name="notification_default_title">Medsy Notification</string>
+    <string name="notification_default_body">You have a new update</string>
+    <string name="notification_channel_orders_name">Orders Channel</string>
+    <string name="notification_channel_orders_description">Notifications related to new requests and orders</string>
 </resources>

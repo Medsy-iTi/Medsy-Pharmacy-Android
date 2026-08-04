@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -26,11 +27,22 @@ import com.medsy.presentation.auth.register.RegistrationRoot
 import com.medsy.presentation.auth.registerpharmacy.PharmacyRegistrationRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
 import com.medsy.presentation.orderdetails.RequestDetailsRoot
+import com.medsy.presentation.notifications.NotificationsRoot
 import com.medsy.presentation.splash.SplashRoot
 
 @Composable
-fun RootNavDisplay() {
+fun RootNavDisplay(
+    pendingRequestId: Long? = null,
+    onPendingRequestConsumed: () -> Unit = {}
+) {
     val backStack = rememberNavBackStack(Route.Splash)
+
+    LaunchedEffect(pendingRequestId, backStack.lastOrNull()) {
+        if (pendingRequestId != null && backStack.firstOrNull() == Route.NestedNav) {
+            backStack.navigateSingleTop(Route.RequestDetails(pendingRequestId))
+            onPendingRequestConsumed()
+        }
+    }
 
     fun replaceWith(route: Route) {
         backStack.clear()
@@ -148,7 +160,16 @@ fun RootNavDisplay() {
                     },
                     openInvitePharmacist = { backStack.navigateSingleTop(Route.InvitePharmacist) },
                     openPharmacistsList = { backStack.navigateSingleTop(Route.PharmacistsList) },
-                    openPersonalInfo = { backStack.navigateSingleTop(Route.PersonalInfo) }
+                    openPersonalInfo = { backStack.navigateSingleTop(Route.PersonalInfo) },
+                    openNotifications = { backStack.navigateSingleTop(Route.Notifications) }
+                )
+            }
+            entry<Route.Notifications> {
+                NotificationsRoot(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNotificationClick = { requestId ->
+                        backStack.navigateSingleTop(Route.RequestDetails(requestId))
+                    }
                 )
             }
             entry<Route.RequestDetails> { route ->
@@ -160,9 +181,26 @@ fun RootNavDisplay() {
                         val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
                         context.startActivity(intent)
                     },
-                    onOpenLocationOnMap = { },
+                    onOpenLocationOnMap = { lat, lng ->
+                        val uri = android.net.Uri.parse("geo:0,0?q=$lat,$lng(Location)")
+                        val intent = Intent(Intent.ACTION_VIEW, uri)
+                        context.startActivity(intent)
+                    },
                     onOpenPaymentSummary = { },
-                    onOpenCustomerChat = { },
+                    onNavigateToSubstituteSearch = { itemId ->
+                        backStack.navigateSingleTop(Route.SubstituteSearch(itemId))
+                    },
+                    onOpenPrescriptionImage = { url ->
+                        val finalUrl = if (url.startsWith("http")) url else com.medsy.data.BuildConfig.BASE_URL + url
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(finalUrl))
+                        context.startActivity(intent)
+                    }
+                )
+            }
+            entry<Route.SubstituteSearch> { route ->
+                com.medsy.presentation.orderdetails.SubstituteSearchRoot(
+                    requestItemId = route.requestItemId,
+                    onNavigateBack = { backStack.removeLastOrNull() }
                 )
             }
             entry<Route.InvitePharmacist> {

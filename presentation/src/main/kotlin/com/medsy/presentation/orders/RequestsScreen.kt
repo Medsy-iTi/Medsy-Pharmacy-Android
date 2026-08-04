@@ -1,7 +1,6 @@
 package com.medsy.presentation.orders
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,12 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -27,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.medsy.designsystem.components.MedsyLottie
 import com.medsy.designsystem.components.MedsySnackbarHost
@@ -36,6 +36,7 @@ import com.medsy.presentation.R
 import com.medsy.presentation.orders.components.RequestCard
 import com.medsy.presentation.orders.components.RequestsFilterChipsRow
 import com.medsy.presentation.orders.components.RequestsSearchBar
+import com.medsy.presentation.orders.components.RequestsShimmer
 
 @Composable
 fun RequestsRoot(
@@ -50,10 +51,23 @@ fun RequestsRoot(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is RequestsUIEffect.NavigateToRequestDetails -> onRequestClick(effect.requestId)
-                RequestsUIEffect.OpenFilters -> { /* TODO: open a filters bottom sheet once designed */ }
+                RequestsUIEffect.OpenFilters -> {  }
                 is RequestsUIEffect.ShowMessage ->
                     snackbarHostState.showSuccess(context.getString(effect.messageRes))
             }
+        }
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                viewModel.onIntent(RequestsUIIntent.Refresh)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
@@ -108,15 +122,10 @@ fun RequestsScreen(
                 modifier = Modifier.padding(top = 12.dp),
             )
 
-            when {
-                state.isLoading -> Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
-                }
-
-                state.filteredOrders.isEmpty() -> Column(
+            if (state.isLoading) {
+                RequestsShimmer()
+            } else if (state.filteredOrders.isEmpty()) {
+                Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -133,8 +142,8 @@ fun RequestsScreen(
                         modifier = Modifier.padding(horizontal = 32.dp)
                     )
                 }
-
-                else -> LazyColumn(
+            } else {
+                LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -142,7 +151,6 @@ fun RequestsScreen(
                     items(state.filteredOrders, key = { it.id }) { request ->
                         RequestCard(
                             request = request,
-                            onCardClick = { onIntent(RequestsUIIntent.RequestClicked(request.id)) },
                             onAcceptClick = { onIntent(RequestsUIIntent.AcceptRequestClicked(request.id)) },
                             onPrepareClick = { onIntent(RequestsUIIntent.PrepareRequestClicked(request.id)) },
                         )

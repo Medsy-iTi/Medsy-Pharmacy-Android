@@ -7,19 +7,33 @@ enum class RequestStatus {
     Delivered,
     Cancelled,
     Completed,
+    Expired,
+    OfferSubmitted,
 }
 
 enum class PaymentMethod {
     Cash,
     Visa,
-    Mastercard,
+    Mastercard;
+
+    companion object {
+        fun fromApiValue(value: String?): PaymentMethod {
+            return when (value?.uppercase()) {
+                "VISA" -> Visa
+                "MASTERCARD" -> Mastercard
+                else -> Cash
+            }
+        }
+    }
 }
 
 data class RequestSummary(
     val id: Long,
+    val displayId: String,
     val minutesAgo: Int,
     val status: RequestStatus,
-    val customerName: String,
+    val customerName: String?,
+    val customerId: Long,
     val customerPhone: String,
     val customerAddress: String,
     val productImages: List<String?>,
@@ -37,23 +51,14 @@ enum class RequestFilter {
     Completed,
 }
 
-private fun RequestStatus.toFilter(): RequestFilter = when (this) {
-    RequestStatus.Searching -> RequestFilter.New
-    RequestStatus.New -> RequestFilter.New
-    RequestStatus.InProgress -> RequestFilter.InProgress
-    RequestStatus.Delivered -> RequestFilter.Delivered
-    RequestStatus.Cancelled -> RequestFilter.Cancelled
-    RequestStatus.Completed -> RequestFilter.Completed
-}
-
 
 fun RequestSummary.matchesFilter(filter: RequestFilter): Boolean {
     return when (filter) {
         RequestFilter.All -> true
-        RequestFilter.New -> this.status == RequestStatus.New || this.status == RequestStatus.Searching
+        RequestFilter.New -> this.status == RequestStatus.New || this.status == RequestStatus.Searching || this.status == RequestStatus.OfferSubmitted
         RequestFilter.InProgress -> this.status == RequestStatus.InProgress
         RequestFilter.Completed -> this.status == RequestStatus.Completed
-        RequestFilter.Cancelled -> this.status == RequestStatus.Cancelled
+        RequestFilter.Cancelled -> this.status == RequestStatus.Cancelled || this.status == RequestStatus.Expired
         RequestFilter.Delivered -> this.status == RequestStatus.Delivered
     }
 }
