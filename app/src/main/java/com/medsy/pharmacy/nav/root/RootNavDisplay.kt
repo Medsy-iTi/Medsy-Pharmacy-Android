@@ -1,7 +1,5 @@
 package com.medsy.pharmacy.nav.root
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -16,8 +14,10 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.medsy.pharmacy.nav.NAVIGATION_DURATION_MILLIS
 import com.medsy.pharmacy.nav.nested.NestedNavDisplay
+import com.medsy.pharmacy.nav.openDialer
+import com.medsy.pharmacy.nav.openImage
+import com.medsy.pharmacy.nav.openLocation
 import com.medsy.presentation.auth.approval.ApprovalRoot
 import com.medsy.presentation.auth.approval.ApprovalScreenStatus
 import com.medsy.presentation.auth.login.LoginRoot
@@ -29,7 +29,14 @@ import com.medsy.presentation.auth.registerpharmacy.PharmacyRegistrationRoot
 import com.medsy.presentation.notifications.NotificationsRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
 import com.medsy.presentation.orderdetails.RequestDetailsRoot
+import com.medsy.presentation.orderdetails.SubstituteSearchRoot
+import com.medsy.presentation.profile.invitationsent.InvitationSentRoot
+import com.medsy.presentation.profile.invite.InvitePharmacistRoot
+import com.medsy.presentation.profile.personalinfo.PersonalInfoRoot
+import com.medsy.presentation.profile.pharmacists.PharmacistsListRoot
 import com.medsy.presentation.splash.SplashRoot
+
+const val NAVIGATION_DURATION_MILLIS = 350
 
 @Composable
 fun RootNavDisplay(
@@ -40,20 +47,15 @@ fun RootNavDisplay(
 
     LaunchedEffect(pendingRequestId, backStack.lastOrNull()) {
         if (pendingRequestId != null && backStack.firstOrNull() == Route.NestedNav) {
-            backStack.navigateSingleTop(Route.RequestDetails(pendingRequestId))
+            backStack.push(Route.RequestDetails(pendingRequestId))
             onPendingRequestConsumed()
         }
-    }
-
-    fun replaceWith(route: Route) {
-        backStack.clear()
-        backStack.navigateSingleTop(route)
     }
 
     NavDisplay(
         modifier = Modifier.fillMaxSize(),
         backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
+        onBack = { backStack.pop() },
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
@@ -73,97 +75,97 @@ fun RootNavDisplay(
         entryProvider = entryProvider {
             entry<Route.Splash> {
                 SplashRoot(
-                    openOnBoarding = { replaceWith(Route.Onboarding) },
-                    openLogin = { replaceWith(Route.Login) },
-                    openHome = { replaceWith(Route.NestedNav) },
-                    openNoPharmacy = { replaceWith(Route.NoPharmacy) },
-                    openPendingApproval = { replaceWith(Route.PendingApproval) },
-                    openRejected = { replaceWith(Route.Rejected) },
-                    openSuspended = { replaceWith(Route.Suspended) },
+                    openOnBoarding = { backStack.setRoot(Route.Onboarding) },
+                    openLogin = { backStack.setRoot(Route.Login) },
+                    openHome = { backStack.setRoot(Route.NestedNav) },
+                    openNoPharmacy = { backStack.setRoot(Route.NoPharmacy) },
+                    openPendingApproval = { backStack.setRoot(Route.PendingApproval) },
+                    openRejected = { backStack.setRoot(Route.Rejected) },
+                    openSuspended = { backStack.setRoot(Route.Suspended) },
                 )
             }
             entry<Route.Onboarding> {
-                OnboardingRoot(openLogin = { replaceWith(Route.Login) })
+                OnboardingRoot(openLogin = { backStack.setRoot(Route.Login) })
             }
             entry<Route.Login> {
                 LoginRoot(
-                    openHome = { replaceWith(Route.NestedNav) },
-                    openNoPharmacy = { replaceWith(Route.NoPharmacy) },
-                    openRegistration = { backStack.navigateSingleTop(Route.Registration) },
+                    openHome = { backStack.setRoot(Route.NestedNav) },
+                    openNoPharmacy = { backStack.setRoot(Route.NoPharmacy) },
+                    openRegistration = { backStack.push(Route.Registration) },
                 )
             }
             entry<Route.NoPharmacy> {
                 NoPharmacyRoot(
                     openPharmacyRegistration = {
-                        backStack.navigateSingleTop(Route.PharmacyRegistration)
+                        backStack.push(Route.PharmacyRegistration)
                     },
-                    openLogin = { replaceWith(Route.Login) },
-                    openInvitations = { backStack.navigateSingleTop(Route.NoPharmacyInvitations) },
+                    openLogin = { backStack.setRoot(Route.Login) },
+                    openInvitations = { backStack.push(Route.NoPharmacyInvitations) },
                 )
             }
             entry<Route.NoPharmacyInvitations> {
                 NoPharmacyInvitationsRoot(
-                    navigateBack = { backStack.removeLastOrNull() },
-                    navigateHome = { replaceWith(Route.NestedNav) },
+                    navigateBack = { backStack.pop() },
+                    navigateHome = { backStack.setRoot(Route.NestedNav) },
                 )
             }
             entry<Route.Registration> {
                 RegistrationRoot(
-                    onNavigateBack = { backStack.removeLastOrNull() },
-                    onNavigateToSignIn = { replaceWith(Route.Login) },
+                    onNavigateBack = { backStack.pop() },
+                    onNavigateToSignIn = { backStack.setRoot(Route.Login) },
                     onNavigateToOtp = { email ->
-                        backStack.navigateSingleTop(Route.OTPVerification(email))
+                        backStack.push(Route.OTPVerification(email))
                     },
                 )
             }
             entry<Route.OTPVerification> { route ->
                 OtpRoot(
                     email = route.email,
-                    onNavigateNoPharmacy = { replaceWith(Route.NoPharmacy) },
-                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateNoPharmacy = { backStack.setRoot(Route.NoPharmacy) },
+                    onNavigateBack = { backStack.pop() },
                 )
             }
             entry<Route.PharmacyRegistration> {
                 PharmacyRegistrationRoot(
-                    openPendingApproval = { replaceWith(Route.PendingApproval) },
+                    openPendingApproval = { backStack.setRoot(Route.PendingApproval) },
                 )
             }
             entry<Route.PendingApproval> {
                 ApprovalRoot(
                     status = ApprovalScreenStatus.Pending,
-                    openLogin = { replaceWith(Route.Login) },
+                    openLogin = { backStack.setRoot(Route.Login) },
                 )
             }
             entry<Route.Rejected> {
                 ApprovalRoot(
                     status = ApprovalScreenStatus.Rejected,
-                    openLogin = { replaceWith(Route.Login) },
+                    openLogin = { backStack.setRoot(Route.Login) },
                 )
             }
             entry<Route.Suspended> {
                 ApprovalRoot(
                     status = ApprovalScreenStatus.Suspended,
-                    openLogin = { replaceWith(Route.Login) },
+                    openLogin = { backStack.setRoot(Route.Login) },
                 )
             }
             entry<Route.NestedNav> {
                 NestedNavDisplay(
-                    navigateBack = { backStack.removeLastOrNull() },
-                    openLogin = { replaceWith(Route.Login) },
+                    navigateBack = { backStack.pop() },
+                    openLogin = { backStack.setRoot(Route.Login) },
                     openRequestDetails = { requestId ->
-                        backStack.navigateSingleTop(Route.RequestDetails(requestId))
+                        backStack.push(Route.RequestDetails(requestId))
                     },
-                    openInvitePharmacist = { backStack.navigateSingleTop(Route.InvitePharmacist) },
-                    openPharmacistsList = { backStack.navigateSingleTop(Route.PharmacistsList) },
-                    openPersonalInfo = { backStack.navigateSingleTop(Route.PersonalInfo) },
-                    openNotifications = { backStack.navigateSingleTop(Route.Notifications) }
+                    openInvitePharmacist = { backStack.push(Route.InvitePharmacist) },
+                    openPharmacistsList = { backStack.push(Route.PharmacistsList) },
+                    openPersonalInfo = { backStack.push(Route.PersonalInfo) },
+                    openNotifications = { backStack.push(Route.Notifications) }
                 )
             }
             entry<Route.Notifications> {
                 NotificationsRoot(
-                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateBack = { backStack.pop() },
                     onNotificationClick = { requestId ->
-                        backStack.navigateSingleTop(Route.RequestDetails(requestId))
+                        backStack.push(Route.RequestDetails(requestId))
                     }
                 )
             }
@@ -171,59 +173,43 @@ fun RootNavDisplay(
                 val context = LocalContext.current
                 RequestDetailsRoot(
                     requestId = route.requestId,
-                    onNavigateBack = { backStack.removeLastOrNull() },
-                    onDialPhoneNumber = { phoneNumber ->
-                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
-                        context.startActivity(intent)
-                    },
-                    onOpenLocationOnMap = { lat, lng ->
-                        val uri = android.net.Uri.parse("geo:0,0?q=$lat,$lng(Location)")
-                        val intent = Intent(Intent.ACTION_VIEW, uri)
-                        context.startActivity(intent)
-                    },
+                    onNavigateBack = { backStack.pop() },
+                    onDialPhoneNumber = context::openDialer,
+                    onOpenLocationOnMap = context::openLocation,
                     onOpenPaymentSummary = { },
                     onNavigateToSubstituteSearch = { itemId ->
-                        backStack.navigateSingleTop(Route.SubstituteSearch(itemId))
+                        backStack.push(Route.SubstituteSearch(itemId))
                     },
-                    onOpenPrescriptionImage = { url ->
-                        val finalUrl =
-                            if (url.startsWith("http")) url else com.medsy.data.BuildConfig.BASE_URL + url
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(finalUrl))
-                        context.startActivity(intent)
-                    }
+                    onOpenPrescriptionImage = context::openImage
                 )
             }
             entry<Route.SubstituteSearch> { route ->
-                com.medsy.presentation.orderdetails.SubstituteSearchRoot(
+                SubstituteSearchRoot(
                     requestItemId = route.requestItemId,
-                    onNavigateBack = { backStack.removeLastOrNull() }
+                    onNavigateBack = { backStack.pop() }
                 )
             }
             entry<Route.InvitePharmacist> {
-                com.medsy.presentation.profile.invite.InvitePharmacistRoot(
-                    navigateBack = { backStack.removeLastOrNull() },
-                    navigateToInvitationSent = { backStack.navigateSingleTop(Route.InvitationSent) }
+                InvitePharmacistRoot(
+                    navigateBack = { backStack.pop() },
+                    navigateToInvitationSent = { backStack.push(Route.InvitationSent) }
                 )
             }
             entry<Route.InvitationSent> {
-                com.medsy.presentation.profile.invitationsent.InvitationSentRoot(
-                    navigateBack = { backStack.removeLastOrNull() },
-                    returnToProfile = {
-                        while (backStack.isNotEmpty() && backStack.last() != Route.NestedNav) {
-                            backStack.removeLastOrNull()
-                        }
-                    }
+                InvitationSentRoot(
+                    navigateBack = { backStack.pop() },
+                    returnToProfile = { backStack.popTo(Route.NestedNav) }
                 )
             }
             entry<Route.PharmacistsList> {
-                com.medsy.presentation.profile.pharmacists.PharmacistsListRoot(
-                    navigateBack = { backStack.removeLastOrNull() },
-                    navigateToInvitePharmacist = { backStack.navigateSingleTop(Route.InvitePharmacist) }
+                PharmacistsListRoot(
+                    navigateBack = { backStack.pop() },
+                    navigateToInvitePharmacist = { backStack.push(Route.InvitePharmacist) }
                 )
             }
             entry<Route.PersonalInfo> {
-                com.medsy.presentation.profile.personalinfo.PersonalInfoRoot(
-                    navigateBack = { backStack.removeLastOrNull() }
+                PersonalInfoRoot(
+                    navigateBack = { backStack.pop() }
                 )
             }
         },

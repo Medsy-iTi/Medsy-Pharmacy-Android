@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,16 +14,17 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
-import com.medsy.pharmacy.nav.NAVIGATION_DURATION_MILLIS
+import com.medsy.pharmacy.nav.root.NAVIGATION_DURATION_MILLIS
 import com.medsy.pharmacy.nav.root.Route
-import com.medsy.pharmacy.nav.root.navigateSingleTop
+import com.medsy.pharmacy.nav.root.pop
+import com.medsy.pharmacy.nav.root.push
+import com.medsy.pharmacy.nav.root.setRoot
 import com.medsy.presentation.home.HomeRoot
 import com.medsy.presentation.orders.RequestsRoot
 import com.medsy.presentation.profile.ProfileRoot
@@ -54,13 +54,11 @@ fun NestedNavDisplay(
         Route.NestedNav.Home,
     )
 
-    val isDark = isSystemInDarkTheme()
-
     Scaffold(
         bottomBar = {
             Column {
                 HorizontalDivider(
-                    color = if (isDark) Color.White.copy(alpha = 0.12f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.16f),
+                    color = MaterialTheme.colorScheme.outline,
                     thickness = 1.dp
                 )
                 NavigationBar(
@@ -71,13 +69,8 @@ fun NestedNavDisplay(
                         val selected = backStack.lastOrNull() == destination.route
                         BottomNavigationButton(
                             onClick = {
-                                backStack.apply {
-                                    clear()
-                                    if (destination.route != Route.NestedNav.Home) {
-                                        navigateSingleTop(Route.NestedNav.Home)
-                                    }
-                                    navigateSingleTop(destination.route)
-                                }
+                                backStack.setRoot(Route.NestedNav.Home)
+                                backStack.push(destination.route)
                             },
                             icon = if (selected) destination.selectedIcon else destination.icon,
                             label = destination.title,
@@ -98,12 +91,12 @@ fun NestedNavDisplay(
                 if (backStack.lastOrNull() == Route.NestedNav.Home) {
                     navigateBack()
                 } else {
-                    backStack.removeLastOrNull()
+                    backStack.pop()
                 }
             },
             transitionSpec = {
                 fadeIn(tween(NAVIGATION_DURATION_MILLIS)) togetherWith
-                    fadeOut(tween(NAVIGATION_DURATION_MILLIS))
+                        fadeOut(tween(NAVIGATION_DURATION_MILLIS))
             },
             popTransitionSpec = {
                 (slideIntoContainer(
@@ -111,11 +104,11 @@ fun NestedNavDisplay(
                     animationSpec = tween(NAVIGATION_DURATION_MILLIS),
                     initialOffset = { it / 3 },
                 ) + fadeIn(tween(NAVIGATION_DURATION_MILLIS))) togetherWith
-                    (slideOutOfContainer(
-                        towards = AnimatedContentTransitionScope.SlideDirection.End,
-                        animationSpec = tween(NAVIGATION_DURATION_MILLIS),
-                        targetOffset = { it / 3 },
-                    ) + fadeOut(tween(NAVIGATION_DURATION_MILLIS)))
+                        (slideOutOfContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.End,
+                            animationSpec = tween(NAVIGATION_DURATION_MILLIS),
+                            targetOffset = { it / 3 },
+                        ) + fadeOut(tween(NAVIGATION_DURATION_MILLIS)))
             },
             predictivePopTransitionSpec = { _ ->
                 (slideIntoContainer(
@@ -123,22 +116,19 @@ fun NestedNavDisplay(
                     animationSpec = tween(NAVIGATION_DURATION_MILLIS),
                     initialOffset = { it / 3 },
                 ) + fadeIn(tween(NAVIGATION_DURATION_MILLIS))) togetherWith
-                    (slideOutOfContainer(
-                        towards = AnimatedContentTransitionScope.SlideDirection.End,
-                        animationSpec = tween(NAVIGATION_DURATION_MILLIS),
-                        targetOffset = { it / 3 },
-                    ) + fadeOut(tween(NAVIGATION_DURATION_MILLIS)))
+                        (slideOutOfContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.End,
+                            animationSpec = tween(NAVIGATION_DURATION_MILLIS),
+                            targetOffset = { it / 3 },
+                        ) + fadeOut(tween(NAVIGATION_DURATION_MILLIS)))
             },
             entryProvider = entryProvider {
                 entry<Route.NestedNav.Home> {
                     HomeRoot(
                         onOpenNotifications = openNotifications,
                         onViewAllOrders = {
-                            backStack.apply {
-                                clear()
-                                navigateSingleTop(Route.NestedNav.Home)
-                                navigateSingleTop(Route.NestedNav.Requests)
-                            }
+                            backStack.setRoot(Route.NestedNav.Home)
+                            backStack.push(Route.NestedNav.Requests)
                         },
                         onOrderClick = { orderId ->
                             val idLong = orderId.removePrefix("#").toLongOrNull() ?: -1L
@@ -146,14 +136,16 @@ fun NestedNavDisplay(
                         }
                     )
                 }
-                entry<Route.NestedNav.Requests> { RequestsRoot(onRequestClick = openRequestDetails) }
-                entry<Route.NestedNav.Profile> { 
+                entry<Route.NestedNav.Requests> {
+                    RequestsRoot(onRequestClick = openRequestDetails)
+                }
+                entry<Route.NestedNav.Profile> {
                     ProfileRoot(
                         openLogin = openLogin,
                         openInvitePharmacist = openInvitePharmacist,
                         openPharmacistsList = openPharmacistsList,
                         openPersonalInfo = openPersonalInfo
-                    ) 
+                    )
                 }
             },
         )
