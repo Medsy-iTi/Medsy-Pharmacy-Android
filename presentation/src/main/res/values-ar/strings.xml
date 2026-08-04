@@ -289,8 +289,6 @@
     <string name="request_details_request_number_format">رقم الطلب: %1$s</string>
     <string name="request_details_minutes_ago">منذ %1$d دقائق</string>
     <string name="request_details_hours_minutes_ago">منذ %1$d ساعة و %2$d دقيقة</string>
-    <string name="request_details_request_number_format">رقم الطلب: %1$s</string>
-    <string name="request_details_minutes_ago">منذ %1$d دقائق</string>
     <string name="request_details_price_egp">%1$.2f جنيه</string>
     <string name="request_details_requested_medicines">الأدوية المطلوبة</string>
     <string name="request_details_customer_notes">ملاحظات العميل</string>

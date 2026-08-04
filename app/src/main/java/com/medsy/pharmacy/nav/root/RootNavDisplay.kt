@@ -2,8 +2,9 @@ package com.medsy.pharmacy.nav.root
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -25,9 +26,9 @@ import com.medsy.presentation.auth.nopharmacy.invitation.NoPharmacyInvitationsRo
 import com.medsy.presentation.auth.otp.OtpRoot
 import com.medsy.presentation.auth.register.RegistrationRoot
 import com.medsy.presentation.auth.registerpharmacy.PharmacyRegistrationRoot
+import com.medsy.presentation.notifications.NotificationsRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
 import com.medsy.presentation.orderdetails.RequestDetailsRoot
-import com.medsy.presentation.notifications.NotificationsRoot
 import com.medsy.presentation.splash.SplashRoot
 
 @Composable
@@ -58,22 +59,16 @@ fun RootNavDisplay(
             rememberViewModelStoreNavEntryDecorator(),
         ),
         transitionSpec = {
-            slideIntoContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(NAVIGATION_DURATION_MILLIS),
-            ) togetherWith slideOutOfContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(NAVIGATION_DURATION_MILLIS),
-            )
+            fadeIn(tween(NAVIGATION_DURATION_MILLIS)) togetherWith
+                    fadeOut(tween(NAVIGATION_DURATION_MILLIS))
         },
         popTransitionSpec = {
-            slideIntoContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(NAVIGATION_DURATION_MILLIS),
-            ) togetherWith slideOutOfContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(NAVIGATION_DURATION_MILLIS),
-            )
+            fadeIn(tween(NAVIGATION_DURATION_MILLIS)) togetherWith
+                    fadeOut(tween(NAVIGATION_DURATION_MILLIS))
+        },
+        predictivePopTransitionSpec = { _ ->
+            fadeIn(tween(NAVIGATION_DURATION_MILLIS)) togetherWith
+                    fadeOut(tween(NAVIGATION_DURATION_MILLIS))
         },
         entryProvider = entryProvider {
             entry<Route.Splash> {
@@ -191,7 +186,8 @@ fun RootNavDisplay(
                         backStack.navigateSingleTop(Route.SubstituteSearch(itemId))
                     },
                     onOpenPrescriptionImage = { url ->
-                        val finalUrl = if (url.startsWith("http")) url else com.medsy.data.BuildConfig.BASE_URL + url
+                        val finalUrl =
+                            if (url.startsWith("http")) url else com.medsy.data.BuildConfig.BASE_URL + url
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(finalUrl))
                         context.startActivity(intent)
                     }

@@ -1,5 +1,6 @@
 package com.medsy.pharmacy.nav.nested
 
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -103,6 +104,30 @@ fun NestedNavDisplay(
             transitionSpec = {
                 fadeIn(tween(NAVIGATION_DURATION_MILLIS)) togetherWith
                     fadeOut(tween(NAVIGATION_DURATION_MILLIS))
+            },
+            popTransitionSpec = {
+                (slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.End,
+                    animationSpec = tween(NAVIGATION_DURATION_MILLIS),
+                    initialOffset = { it / 3 },
+                ) + fadeIn(tween(NAVIGATION_DURATION_MILLIS))) togetherWith
+                    (slideOutOfContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.End,
+                        animationSpec = tween(NAVIGATION_DURATION_MILLIS),
+                        targetOffset = { it / 3 },
+                    ) + fadeOut(tween(NAVIGATION_DURATION_MILLIS)))
+            },
+            predictivePopTransitionSpec = { _ ->
+                (slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.End,
+                    animationSpec = tween(NAVIGATION_DURATION_MILLIS),
+                    initialOffset = { it / 3 },
+                ) + fadeIn(tween(NAVIGATION_DURATION_MILLIS))) togetherWith
+                    (slideOutOfContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.End,
+                        animationSpec = tween(NAVIGATION_DURATION_MILLIS),
+                        targetOffset = { it / 3 },
+                    ) + fadeOut(tween(NAVIGATION_DURATION_MILLIS)))
             },
             entryProvider = entryProvider {
                 entry<Route.NestedNav.Home> {
