@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medsy.domain.auth.usecase.RegisterPharmacyUseCase
 import com.medsy.domain.common.MedsyError
+import com.medsy.domain.common.location.GetAddressFromCoordinatesUseCase
 import com.medsy.domain.common.onError
 import com.medsy.domain.common.onSuccess
 import com.medsy.domain.pharmacy.model.RegisterPharmacyParams
@@ -23,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PharmacyRegistrationViewModel @Inject constructor(
     private val registerPharmacyUseCase: RegisterPharmacyUseCase,
+    private val getAddressFromCoordinatesUseCase: GetAddressFromCoordinatesUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PharmacyRegistrationState())
@@ -47,12 +49,15 @@ class PharmacyRegistrationViewModel @Inject constructor(
                 it.copy(address = intent.value)
             }
 
-            is PharmacyRegistrationIntent.LocationSelected -> _state.update {
-                it.copy(
-                    selectedLatitude = intent.latitude,
-                    selectedLongitude = intent.longitude,
-                    locationErrorRes = null,
-                )
+            is PharmacyRegistrationIntent.LocationSelected -> {
+                _state.update {
+                    it.copy(
+                        selectedLatitude = intent.latitude,
+                        selectedLongitude = intent.longitude,
+                        locationErrorRes = null,
+                    )
+                }
+                updateReadableAddress(intent.latitude, intent.longitude)
             }
 
             is PharmacyRegistrationIntent.LicenseSelected -> handleLicenseSelected(intent)
@@ -69,6 +74,19 @@ class PharmacyRegistrationViewModel @Inject constructor(
             }
 
             PharmacyRegistrationIntent.Submit -> submit()
+        }
+    }
+
+    private fun updateReadableAddress(lat: Double, long: Double) {
+        viewModelScope.launch {
+            getAddressFromCoordinatesUseCase(lat, long)
+                .onSuccess { result ->
+                    result?.let { address ->
+                        _state.update {
+                            it.copy(address = address)
+                        }
+                    }
+                }
         }
     }
 
