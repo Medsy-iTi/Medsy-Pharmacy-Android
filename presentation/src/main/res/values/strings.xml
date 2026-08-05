@@ -135,6 +135,9 @@
     <string name="pharmacy_registration_map_hint">Move the map until the pin is over the pharmacy entrance, then confirm the pin location.</string>
     <string name="pharmacy_registration_map_expand">Expand map</string>
     <string name="pharmacy_registration_map_use_pin">Use this pin location</string>
+    <string name="pharmacy_registration_map_use_current_location">Go to my current location</string>
+    <string name="pharmacy_registration_map_current_location_permission_required">Location permission is needed to center the map on your current location.</string>
+    <string name="pharmacy_registration_map_location_unavailable">Your current location is unavailable. Move the map manually.</string>
     <string name="pharmacy_registration_map_permission_denied">Location permission was not granted, so the map starts in Cairo. Move the pin manually.</string>
     <string name="pharmacy_registration_location_selected">Selected: %1$.5f, %2$.5f</string>
     <string name="pharmacy_registration_license_pdf_title">Pharmacy license PDF</string>
