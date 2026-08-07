@@ -35,11 +35,19 @@ data class PharmacyRequestDto(
 data class RequestItemDto(
     val id: Long,
     val productId: Long,
-    val imageUrl: String?,
+    val quantity: Int,
+    val product: PharmacyProductDto?,
+    val unitPrice: Double
+)
+
+@JsonClass(generateAdapter = true)
+data class PharmacyProductDto(
+    val id: Long,
+    val name: String,
     val productName: String,
     val strength: String?,
     val packSize: String?,
     val form: String?,
-    val quantity: Int,
-    val unitPrice: Double
+    val price: Double,
+    val imageUrl: String?
 )
