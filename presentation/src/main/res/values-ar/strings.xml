@@ -209,7 +209,8 @@
     <string name="home_order_time_ago">منذ %1$d دقائق</string>
 
     <string name="home_nav_home">الرئيسية</string>
-    <string name="home_nav_orders">الطلبات</string>
+    <string name="home_nav_requests">الطلبات</string>
+    <string name="home_nav_orders">الأوردرات</string>
     <string name="home_nav_products">المنتجات</string>
     <string name="home_nav_customers">العملاء</string>
     <string name="home_nav_more">المزيد</string>
@@ -235,8 +236,36 @@
     <string name="requests_supporting">أدر فقط الطلبات المسندة إلى هذه الصيدلية.</string>
     <string name="requests_active">النشطة</string>
     <string name="requests_history">السجل</string>
-    <string name="requests_active_empty">لم يتم ربط طلبات نشطة بعد.</string>
+    <string name="requests_active_empty">لا توجد طلبات جديدة من العملاء.</string>
     <string name="requests_history_empty">لم يتم ربط طلبات مكتملة بعد.</string>
+    <string name="requests_load_error">تعذر تحميل الطلبات.</string>
+    <string name="requests_retry">إعادة المحاولة</string>
+    <string name="orders_title">الأوردرات</string>
+    <string name="orders_filter_all">الكل</string>
+    <string name="orders_filter_active_offers">العروض النشطة</string>
+    <string name="orders_filter_rejected_offers">العروض المرفوضة</string>
+    <string name="orders_filter_in_progress">قيد التنفيذ</string>
+    <string name="orders_filter_delivered">تم التوصيل</string>
+    <string name="orders_status_active_offer">عرض نشط</string>
+    <string name="orders_status_rejected_offer">عرض مرفوض</string>
+    <string name="orders_timeline_preparing">قيد التجهيز</string>
+    <string name="orders_timeline_on_the_way">في الطريق</string>
+    <string name="orders_timeline_delivered">تم التوصيل</string>
+    <string name="orders_empty">لا توجد عناصر في هذا التصنيف.</string>
+    <string name="orders_load_error">تعذر تحميل الأوردرات.</string>
+    <string name="orders_customer_pending">بيانات العميل قيد الإضافة</string>
+    <string name="orders_work_item_icon_desc">عنصر عمل الصيدلية</string>
+    <string name="orders_product_image_desc">صورة الدواء</string>
+    <string name="order_details_title">تفاصيل الأوردر</string>
+    <string name="order_details_load_error">تعذر تحميل تفاصيل الأوردر.</string>
+    <string name="offer_details_title">تفاصيل العرض</string>
+    <string name="offer_details_load_error">تعذر تحميل تفاصيل العرض.</string>
+    <string name="offer_details_waiting">في انتظار موافقة العميل</string>
+    <string name="offer_details_rejected">عرض مرفوض</string>
+    <string name="offer_details_offer_number">العرض رقم %1$d</string>
+    <string name="offer_details_request_number">الطلب رقم %1$d</string>
+    <string name="offer_details_product_fallback">المنتج رقم %1$d</string>
+    <string name="offer_details_customer_unavailable">بيانات العميل والعنوان والدفع غير متاحة لهذا العرض.</string>
     <string name="no_customer_notes">لا توجد ملاحظات من العميل</string>
 
     <string name="profile_title">الملف الشخصي</string>
@@ -273,6 +302,7 @@
     <string name="requests_search_placeholder">ابحث برقم الطلب</string>
     <string name="requests_filter_icon_desc">فلترة</string>
     <string name="requests_search_icon_desc">بحث</string>
+    <string name="requests_status_offer_submitted">تم إرسال العرض</string>
     <!--  Requests — card  -->
     <string name="requests_status_in_progress">قيد التجهيز</string>
     <string name="requests_action_prepare">تجهيز الطلب</string>
@@ -304,6 +334,7 @@
     <string name="request_details_rejected_message">تم رفض الطلب</string>
     <string name="request_details_no_prescription">لم يتم إرسال روشتة</string>
     <string name="request_details_payment_method">طريقة الدفع</string>
+    <string name="request_details_payment_unavailable">طريقة الدفع غير متاحة</string>
     <string name="requests_view_sample_order">طلب تجريبي</string>
     <!-- New Profile Strings -->
     <string name="profile_header_title">الملف الشخصي</string>

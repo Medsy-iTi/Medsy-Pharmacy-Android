@@ -30,6 +30,8 @@ import com.medsy.presentation.notifications.NotificationsRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
 import com.medsy.presentation.orderdetails.RequestDetailsRoot
 import com.medsy.presentation.orderdetails.SubstituteSearchRoot
+import com.medsy.presentation.orderdetails.offer.OfferDetailsRoot
+import com.medsy.presentation.orders.orderdetails.OrderDetailsRoot
 import com.medsy.presentation.profile.invitationsent.InvitationSentRoot
 import com.medsy.presentation.profile.invite.InvitePharmacistRoot
 import com.medsy.presentation.profile.personalinfo.PersonalInfoRoot
@@ -155,6 +157,8 @@ fun RootNavDisplay(
                     openRequestDetails = { requestId ->
                         backStack.push(Route.RequestDetails(requestId))
                     },
+                    openOfferDetails = { offerId -> backStack.push(Route.OfferDetails(offerId)) },
+                    openOrderDetails = { orderId -> backStack.push(Route.OrderDetails(orderId)) },
                     openInvitePharmacist = { backStack.push(Route.InvitePharmacist) },
                     openPharmacistsList = { backStack.push(Route.PharmacistsList) },
                     openPersonalInfo = { backStack.push(Route.PersonalInfo) },
@@ -181,6 +185,21 @@ fun RootNavDisplay(
                         backStack.push(Route.SubstituteSearch(itemId))
                     },
                     onOpenPrescriptionImage = context::openImage
+                )
+            }
+            entry<Route.OfferDetails> { route ->
+                OfferDetailsRoot(
+                    offerId = route.offerId,
+                    onNavigateBack = { backStack.pop() },
+                )
+            }
+            entry<Route.OrderDetails> { route ->
+                val context = LocalContext.current
+                OrderDetailsRoot(
+                    orderId = route.orderId,
+                    onNavigateBack = { backStack.pop() },
+                    onDialPhoneNumber = context::openDialer,
+                    onOpenLocationOnMap = context::openLocation,
                 )
             }
             entry<Route.SubstituteSearch> { route ->

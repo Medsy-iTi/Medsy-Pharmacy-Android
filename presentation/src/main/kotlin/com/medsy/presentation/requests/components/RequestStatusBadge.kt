@@ -1,4 +1,4 @@
-package com.medsy.presentation.orders.components
+package com.medsy.presentation.requests.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,66 +15,58 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.medsy.designsystem.ui.theme.extendedColors
 import com.medsy.presentation.R
-import com.medsy.presentation.orders.RequestStatus
+import com.medsy.presentation.requests.PharmacyWorkStatus
 
 @Composable
-fun RequestStatusBadge(
-    status: RequestStatus,
-    modifier: Modifier = Modifier,
-) {
+fun RequestStatusBadge(status: PharmacyWorkStatus, modifier: Modifier = Modifier) {
     val (container: Color, content: Color, labelRes: Int) = when (status) {
-        RequestStatus.Searching,
-        RequestStatus.New -> Triple(
+        PharmacyWorkStatus.Searching -> Triple(
             MaterialTheme.extendedColors.blueContainer,
             MaterialTheme.extendedColors.blueContent,
-            R.string.request_details_new_badge,
+            R.string.request_details_new_badge
         )
 
-        RequestStatus.OfferSubmitted -> Triple(
+        PharmacyWorkStatus.WaitingForCustomer -> Triple(
             MaterialTheme.extendedColors.blueContainer,
             MaterialTheme.extendedColors.blueContent,
-            R.string.requests_status_offer_submitted,
+            R.string.orders_status_active_offer
         )
 
-        RequestStatus.InProgress -> Triple(
+        PharmacyWorkStatus.RejectedOffer -> Triple(
+            MaterialTheme.extendedColors.redContainer,
+            MaterialTheme.extendedColors.redContent,
+            R.string.orders_status_rejected_offer
+        )
+
+        PharmacyWorkStatus.Preparing -> Triple(
             MaterialTheme.extendedColors.orangeContainer,
             MaterialTheme.extendedColors.orangeContent,
-            R.string.requests_status_in_progress,
+            R.string.orders_timeline_preparing
         )
 
-        RequestStatus.Delivered -> Triple(
-            MaterialTheme.extendedColors.neutralContainer,
-            MaterialTheme.extendedColors.neutralContent,
-            R.string.requests_filter_delivered,
+        PharmacyWorkStatus.OnTheWay -> Triple(
+            MaterialTheme.extendedColors.blueContainer,
+            MaterialTheme.extendedColors.blueContent,
+            R.string.orders_timeline_on_the_way
         )
-        RequestStatus.Cancelled -> Triple(
-            MaterialTheme.extendedColors.redContainer,
-            MaterialTheme.extendedColors.redContent,
-            R.string.requests_filter_cancelled,
-        )
-        RequestStatus.Expired -> Triple(
-            MaterialTheme.extendedColors.redContainer,
-            MaterialTheme.extendedColors.redContent,
-            R.string.requests_status_expired,
-        )
-        RequestStatus.Completed -> Triple(
+
+        PharmacyWorkStatus.Delivered -> Triple(
             MaterialTheme.extendedColors.greenContainer,
             MaterialTheme.extendedColors.greenContent,
-            R.string.requests_filter_completed,
+            R.string.orders_timeline_delivered
         )
     }
-
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
             .background(container)
-            .padding(horizontal = 12.dp, vertical = 6.dp),
+            .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Text(
-            text = stringResource(labelRes),
+            stringResource(labelRes),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.SemiBold,
-            color = content,
+            color = content
         )
     }
 }

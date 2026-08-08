@@ -26,8 +26,9 @@ import com.medsy.pharmacy.nav.root.pop
 import com.medsy.pharmacy.nav.root.push
 import com.medsy.pharmacy.nav.root.setRoot
 import com.medsy.presentation.home.HomeRoot
-import com.medsy.presentation.orders.RequestsRoot
+import com.medsy.presentation.orders.OrdersRoot
 import com.medsy.presentation.profile.ProfileRoot
+import com.medsy.presentation.requests.RequestsRoot
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
@@ -36,6 +37,8 @@ fun NestedNavDisplay(
     navigateBack: () -> Unit,
     openLogin: () -> Unit,
     openRequestDetails: (Long) -> Unit,
+    openOfferDetails: (Long) -> Unit,
+    openOrderDetails: (Long) -> Unit,
     openInvitePharmacist: () -> Unit,
     openPharmacistsList: () -> Unit,
     openPersonalInfo: () -> Unit,
@@ -47,6 +50,7 @@ fun NestedNavDisplay(
                 polymorphic(NavKey::class) {
                     subclass(Route.NestedNav.Home::class, Route.NestedNav.Home.serializer())
                     subclass(Route.NestedNav.Requests::class, Route.NestedNav.Requests.serializer())
+                    subclass(Route.NestedNav.Orders::class, Route.NestedNav.Orders.serializer())
                     subclass(Route.NestedNav.Profile::class, Route.NestedNav.Profile.serializer())
                 }
             }
@@ -128,16 +132,24 @@ fun NestedNavDisplay(
                         onOpenNotifications = openNotifications,
                         onViewAllOrders = {
                             backStack.setRoot(Route.NestedNav.Home)
-                            backStack.push(Route.NestedNav.Requests)
+                            backStack.push(Route.NestedNav.Orders)
                         },
                         onOrderClick = { orderId ->
                             val idLong = orderId.removePrefix("#").toLongOrNull() ?: -1L
-                            openRequestDetails(idLong)
+                            openOrderDetails(idLong)
                         }
                     )
                 }
                 entry<Route.NestedNav.Requests> {
-                    RequestsRoot(onRequestClick = openRequestDetails)
+                    RequestsRoot(
+                        onRequestClick = openRequestDetails,
+                    )
+                }
+                entry<Route.NestedNav.Orders> {
+                    OrdersRoot(
+                        onOfferClick = openOfferDetails,
+                        onOrderClick = openOrderDetails,
+                    )
                 }
                 entry<Route.NestedNav.Profile> {
                     ProfileRoot(

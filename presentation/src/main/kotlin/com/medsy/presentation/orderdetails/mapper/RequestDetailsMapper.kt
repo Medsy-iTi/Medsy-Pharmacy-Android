@@ -24,7 +24,7 @@ fun PharmacyRequestDomain.toPresentation(): Request {
     val calculatedTotal = items.sumOf { it.unitPrice * it.quantity }
     val minutes = calculateMinutesAgo(createdAt)
     return Request(
-        id = (this.orderId?.toString() ?: this.offerId?.toString() ?: this.id.toString()),
+        id = this.id.toString(),
         isNew = (this.status.equals(RequestStatusConstants.SEARCHING, ignoreCase = true) ||
                 this.status.equals(RequestStatusConstants.NEW, ignoreCase = true)) && minutes < 60,
         minutesAgo = minutes,

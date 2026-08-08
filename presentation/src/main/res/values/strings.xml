@@ -210,6 +210,7 @@
     <string name="home_order_time_ago">%1$d mins ago</string>
 
     <string name="home_nav_home">Home</string>
+    <string name="home_nav_requests">Requests</string>
     <string name="home_nav_orders">Orders</string>
     <string name="home_nav_products">Products</string>
     <string name="home_nav_customers">Customers</string>
@@ -232,12 +233,40 @@
     <string name="home_notifications">Operational notifications</string>
     <string name="home_notifications_value">Push notifications are not connected yet</string>
 
-    <string name="requests_title">Orders</string>
+    <string name="requests_title">Requests</string>
     <string name="requests_supporting">Manage only the orders assigned to this pharmacy.</string>
     <string name="requests_active">Active</string>
     <string name="requests_history">History</string>
-    <string name="requests_active_empty">No active orders are connected yet.</string>
+    <string name="requests_active_empty">No new customer requests.</string>
     <string name="requests_history_empty">No completed orders are connected yet.</string>
+    <string name="requests_load_error">Could not load requests.</string>
+    <string name="requests_retry">Retry</string>
+    <string name="orders_title">Orders</string>
+    <string name="orders_filter_all">All</string>
+    <string name="orders_filter_active_offers">Active Offers</string>
+    <string name="orders_filter_rejected_offers">Rejected Offers</string>
+    <string name="orders_filter_in_progress">In Progress</string>
+    <string name="orders_filter_delivered">Delivered</string>
+    <string name="orders_status_active_offer">Active offer</string>
+    <string name="orders_status_rejected_offer">Rejected offer</string>
+    <string name="orders_timeline_preparing">Preparing</string>
+    <string name="orders_timeline_on_the_way">On the way</string>
+    <string name="orders_timeline_delivered">Delivered</string>
+    <string name="orders_empty">No items in this filter.</string>
+    <string name="orders_load_error">Could not load orders.</string>
+    <string name="orders_customer_pending">Customer details pending</string>
+    <string name="orders_work_item_icon_desc">Pharmacy work item</string>
+    <string name="orders_product_image_desc">Medicine image</string>
+    <string name="order_details_title">Order Details</string>
+    <string name="order_details_load_error">Could not load order details.</string>
+    <string name="offer_details_title">Offer Details</string>
+    <string name="offer_details_load_error">Could not load offer details.</string>
+    <string name="offer_details_waiting">Waiting for customer acceptance</string>
+    <string name="offer_details_rejected">Rejected offer</string>
+    <string name="offer_details_offer_number">Offer #%1$d</string>
+    <string name="offer_details_request_number">Request #%1$d</string>
+    <string name="offer_details_product_fallback">Product #%1$d</string>
+    <string name="offer_details_customer_unavailable">Customer, address, and payment details are unavailable for this offer.</string>
 
     <string name="profile_title">Profile</string>
     <string name="profile_supporting">Manage pharmacy configuration and settings.</string>
@@ -306,6 +335,7 @@
     <string name="request_details_rejected_message">Order rejected</string>
     <string name="request_details_no_prescription">No prescription sent</string>
     <string name="request_details_payment_method">Payment method</string>
+    <string name="request_details_payment_unavailable">Payment method unavailable</string>
     <string name="request_details_add_alternative">Add alternative</string>
     <string name="substitute_search_title">Search for alternative</string>
     <string name="substitute_search_placeholder">Search medicine name...</string>

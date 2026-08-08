@@ -7,7 +7,6 @@ sealed interface RequestDetailsUIIntent {
     data object CallCustomerClicked : RequestDetailsUIIntent
     data object OpenLocationClicked : RequestDetailsUIIntent
     data object ViewPaymentSummaryClicked : RequestDetailsUIIntent
-    data object RejectRequestClicked : RequestDetailsUIIntent
     data object AcceptRequestClicked : RequestDetailsUIIntent
     data class ToggleItemSelection(val itemId: Long) : RequestDetailsUIIntent
     data class AddSubstituteClicked(val itemId: Long) : RequestDetailsUIIntent

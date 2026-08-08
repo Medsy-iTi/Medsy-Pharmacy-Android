@@ -34,7 +34,7 @@ import com.medsy.presentation.R
 @Composable
 fun RequestInfoCard(
     orderId: String,
-    minutesAgo: Int,
+    minutesAgo: Int?,
     customerName: String,
     customerPhone: String,
     customerAddress: String,
@@ -62,15 +62,17 @@ fun RequestInfoCard(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                Text(
-                    text = if (minutesAgo >= 60) {
-                        stringResource(R.string.request_details_hours_minutes_ago, minutesAgo / 60, minutesAgo % 60)
-                    } else {
-                        stringResource(R.string.request_details_minutes_ago, minutesAgo)
-                    },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                minutesAgo?.let {
+                    Text(
+                        text = if (it >= 60) {
+                            stringResource(R.string.request_details_hours_minutes_ago, it / 60, it % 60)
+                        } else {
+                            stringResource(R.string.request_details_minutes_ago, it)
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
 
             Column(
@@ -86,38 +88,42 @@ fun RequestInfoCard(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "\u200E" + customerPhone,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    OrderIconButton(
-                        icon = Icons.Filled.Phone,
-                        contentDescription = stringResource(R.string.request_details_call_desc),
-                        onClick = onCallClick,
-                    )
+                if (customerPhone.isNotBlank()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "\u200E" + customerPhone,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        OrderIconButton(
+                            icon = Icons.Filled.Phone,
+                            contentDescription = stringResource(R.string.request_details_call_desc),
+                            onClick = onCallClick,
+                        )
+                    }
                 }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = customerAddress,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    OrderIconButton(
-                        icon = Icons.Filled.Place,
-                        contentDescription = stringResource(R.string.request_details_location_desc),
-                        onClick = onLocationClick,
-                    )
+                if (customerAddress.isNotBlank()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = customerAddress,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        OrderIconButton(
+                            icon = Icons.Filled.Place,
+                            contentDescription = stringResource(R.string.request_details_location_desc),
+                            onClick = onLocationClick,
+                        )
+                    }
                 }
             }
         }
