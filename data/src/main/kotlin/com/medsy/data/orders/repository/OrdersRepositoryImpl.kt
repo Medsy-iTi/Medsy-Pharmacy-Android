@@ -1,56 +1,62 @@
 package com.medsy.data.orders.repository
 
-import com.medsy.data.orders.datasource.RequestsRemoteDataSource
+import com.medsy.data.orders.datasource.OrdersRemoteDataSource
 import com.medsy.data.orders.mapper.toDomain
-import com.medsy.data.orders.remote.dto.CreateOfferRequestDto
-import com.medsy.data.orders.remote.dto.OfferItemDto
 import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
 import com.medsy.domain.common.map
+import com.medsy.domain.orders.model.PharmacyOrderDomain
+import com.medsy.domain.orders.model.PharmacyOrderPageDomain
 import com.medsy.domain.orders.model.PharmacyRequestDomain
 import com.medsy.domain.orders.model.PharmacyRequestPageDomain
-import com.medsy.domain.orders.repository.RequestsRepository
+import com.medsy.domain.orders.repository.OrdersRepository
 import javax.inject.Inject
 
-class RequestsRepositoryImpl @Inject constructor(
-    private val remoteDataSource: RequestsRemoteDataSource
-) : RequestsRepository {
+class OrdersRepositoryImpl @Inject constructor(
+    private val remoteDataSource: OrdersRemoteDataSource,
+) : OrdersRepository {
+
+    private val requestCache = mutableMapOf<Long, PharmacyRequestDomain>()
+    private val orderCache = mutableMapOf<Long, PharmacyOrderDomain>()
 
     override suspend fun getCurrentPharmacyRequests(
         page: Int,
         size: Int,
         sort: List<String>?
     ): MedsyResult<PharmacyRequestPageDomain, MedsyError.Remote> =
-        remoteDataSource.getCurrentPharmacyRequests(page, size, sort)
-            .map { it.toDomain() }
-
-    override suspend fun getRequestDetails(requestId: Long): MedsyResult<PharmacyRequestDomain?, MedsyError.Remote> {
-        val resultDesc = remoteDataSource.getCurrentPharmacyRequests(page = 0, size = 100, sort = listOf("id,desc"))
-        when (resultDesc) {
-            is MedsyResult.Success -> {
-                val found = resultDesc.data.content.find { it.id == requestId }
-                if (found != null) {
-                    return MedsyResult.Success(found.toDomain())
-                }
-            }
-            is MedsyResult.Error -> {
-                return resultDesc
+        remoteDataSource.getCurrentPharmacyRequests(page, size, sort).map { dto ->
+            dto.toDomain().also { pageData ->
+                pageData.content.forEach { requestCache[it.id] = it }
             }
         }
 
-        return remoteDataSource.getCurrentPharmacyRequests(page = 0, size = 50, sort = null)
-            .map { page -> page.content.find { it.id == requestId }?.toDomain() }
-    }
+    override suspend fun getRequestDetails(
+        requestId: Long,
+    ): MedsyResult<PharmacyRequestDomain, MedsyError.Remote> =
+        remoteDataSource.getRequestDetails(requestId).map { dto ->
+            dto.toDomain().also { requestCache[it.id] = it }
+        }
 
-    override suspend fun createOffer(requestId: Long, items: List<Pair<Long, Long>>): MedsyResult<Unit, MedsyError.Remote> {
-        val requestDto = CreateOfferRequestDto(
-            items = items.map {
-                OfferItemDto(
-                    requestItemId = it.first,
-                    productId = it.second
-                )
+    override suspend fun getPharmacyOrders(
+        pharmacyId: Long,
+        page: Int,
+        size: Int,
+        sort: List<String>?,
+    ): MedsyResult<PharmacyOrderPageDomain, MedsyError.Remote> =
+        remoteDataSource.getPharmacyOrders(pharmacyId, page, size, sort).map { dto ->
+            dto.toDomain().also { pageData ->
+                pageData.content.forEach { orderCache[it.id] = it }
             }
-        )
-        return remoteDataSource.createOffer(requestId, requestDto)
-    }
+        }
+
+    override suspend fun getOrderDetails(
+        orderId: Long,
+    ): MedsyResult<PharmacyOrderDomain, MedsyError.Remote> =
+        remoteDataSource.getOrderDetails(orderId).map { dto ->
+            dto.toDomain().also { orderCache[it.id] = it }
+        }
+
+    override fun getCachedRequest(requestId: Long): PharmacyRequestDomain? = requestCache[requestId]
+
+    override fun getCachedOrder(orderId: Long): PharmacyOrderDomain? = orderCache[orderId]
 }

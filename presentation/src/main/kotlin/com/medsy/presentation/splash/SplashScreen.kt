@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,13 +35,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.medsy.designsystem.components.MedsyShimmer
-import com.medsy.designsystem.ui.theme.extendedColors
-import com.medsy.designsystem.R as DesignR
 import com.medsy.presentation.R
 import com.medsy.presentation.splash.components.SplashWaves
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
+import com.medsy.designsystem.R as DesignR
 
 @Composable
 fun SplashRoot(
@@ -68,6 +68,7 @@ fun SplashRoot(
     }
     SplashScreen()
 }
+
 @Composable
 fun SplashScreen() {
     val logoScale = remember { Animatable(0.55f) }
@@ -137,13 +138,14 @@ fun SplashScreen() {
         ) {
             MedsyShimmer(
                 modifier = Modifier
-                    .size(160.dp)
+                    .size(120.dp)
                     .scale(logoScale.value)
                     .alpha(logoAlpha.value),
             ) {
                 Image(
                     painter = painterResource(id = DesignR.drawable.ic_logo_transparent),
                     contentDescription = stringResource(R.string.splash_logo_description),
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize()
                 )
             }

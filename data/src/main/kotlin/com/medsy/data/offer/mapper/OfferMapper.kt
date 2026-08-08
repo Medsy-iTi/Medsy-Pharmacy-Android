@@ -15,7 +15,13 @@ fun OfferItemDto.toDomain(): OfferItem {
     return OfferItem(
         id = id ?: 0L,
         requestItemId = requestItemId ?: 0L,
-        productId = productId ?: 0L
+        productId = productId ?: product?.id ?: 0L,
+        productName = product?.productName ?: product?.name.orEmpty(),
+        strength = product?.strength,
+        packSize = product?.packSize,
+        form = product?.form,
+        imageUrl = product?.imageUrl,
+        unitPrice = product?.price,
     )
 }
 

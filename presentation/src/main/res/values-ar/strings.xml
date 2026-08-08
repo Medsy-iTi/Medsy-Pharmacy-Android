@@ -12,6 +12,9 @@
     <string name="onboarding_desc_2">تحقق من مطابقة الأصناف للروشتة، اقترح بدائل عند الحاجة، وأرسل أفضل عرض لمريضك.</string>
     <string name="onboarding_title_3">تابع كل طلب حتى اكتماله</string>
     <string name="onboarding_desc_3">حدّث حالة الطلب بضغطة واحدة، ويصل التحديث للمريض تلقائيًا في كل خطوة.</string>
+    <string name="login_google">المتابعة باستخدام Google</string>
+    <string name="login_or">أو</string>
+    <string name="login_welcome_back">مرحبًا بعودتك</string>
     <string name="action_get_started">ابدأ الآن</string>
     <string name="auth_documents_description">ارفع تراخيص الصيدلية والمستندات المهنية للتحقق من حسابك.</string>
     <string name="registration_pharmacy_license">ترخيص الصيدلية</string>
@@ -61,7 +64,7 @@
     <string name="auth_hide_password">إخفاء كلمة المرور</string>
     <string name="auth_login_action">تسجيل الدخول</string>
     <string name="auth_register_action">انشاء حساب</string>
-    <string name="login_motto">استقبل الطلبات، أرسل العروض، وأدر الطلبات.</string>
+    <string name="login_motto">سجل الدخول لإدارة صيدليتك.</string>
     <string name="login_account_type_hint">لحسابات الصيدليات المعتمدة</string>
     <string name="login_forgot_password">هل نسيت كلمة المرور؟</string>
     <string name="login_no_account_full">ليس لديك حساب صيدلية؟ %1$s</string>
@@ -131,6 +134,9 @@
     <string name="pharmacy_registration_map_hint">حرّك الخريطة حتى يكون الدبوس فوق مدخل الصيدلية، ثم أكّد الموقع.</string>
     <string name="pharmacy_registration_map_expand">تكبير الخريطة</string>
     <string name="pharmacy_registration_map_use_pin">استخدام هذا الموقع</string>
+    <string name="pharmacy_registration_map_use_current_location">الانتقال إلى موقعي الحالي</string>
+    <string name="pharmacy_registration_map_current_location_permission_required">يلزم منح إذن الموقع للانتقال إلى موقعك الحالي.</string>
+    <string name="pharmacy_registration_map_location_unavailable">تعذّر تحديد موقعك الحالي. حرّك الخريطة يدويًا.</string>
     <string name="pharmacy_registration_map_permission_denied">لم يتم منح إذن الموقع، لذلك تبدأ الخريطة من القاهرة. حرّك الدبوس يدويًا.</string>
     <string name="pharmacy_registration_location_selected">تم الاختيار: %1$.5f، %2$.5f</string>
     <string name="pharmacy_registration_license_pdf_title">ملف ترخيص الصيدلية PDF</string>
@@ -203,7 +209,8 @@
     <string name="home_order_time_ago">منذ %1$d دقائق</string>
 
     <string name="home_nav_home">الرئيسية</string>
-    <string name="home_nav_orders">الطلبات</string>
+    <string name="home_nav_requests">الطلبات</string>
+    <string name="home_nav_orders">الأوردرات</string>
     <string name="home_nav_products">المنتجات</string>
     <string name="home_nav_customers">العملاء</string>
     <string name="home_nav_more">المزيد</string>
@@ -229,8 +236,36 @@
     <string name="requests_supporting">أدر فقط الطلبات المسندة إلى هذه الصيدلية.</string>
     <string name="requests_active">النشطة</string>
     <string name="requests_history">السجل</string>
-    <string name="requests_active_empty">لم يتم ربط طلبات نشطة بعد.</string>
+    <string name="requests_active_empty">لا توجد طلبات جديدة من العملاء.</string>
     <string name="requests_history_empty">لم يتم ربط طلبات مكتملة بعد.</string>
+    <string name="requests_load_error">تعذر تحميل الطلبات.</string>
+    <string name="requests_retry">إعادة المحاولة</string>
+    <string name="orders_title">الأوردرات</string>
+    <string name="orders_filter_all">الكل</string>
+    <string name="orders_filter_active_offers">العروض النشطة</string>
+    <string name="orders_filter_rejected_offers">العروض المرفوضة</string>
+    <string name="orders_filter_in_progress">قيد التنفيذ</string>
+    <string name="orders_filter_delivered">تم التوصيل</string>
+    <string name="orders_status_active_offer">عرض نشط</string>
+    <string name="orders_status_rejected_offer">عرض مرفوض</string>
+    <string name="orders_timeline_preparing">قيد التجهيز</string>
+    <string name="orders_timeline_on_the_way">في الطريق</string>
+    <string name="orders_timeline_delivered">تم التوصيل</string>
+    <string name="orders_empty">لا توجد عناصر في هذا التصنيف.</string>
+    <string name="orders_load_error">تعذر تحميل الأوردرات.</string>
+    <string name="orders_customer_pending">بيانات العميل قيد الإضافة</string>
+    <string name="orders_work_item_icon_desc">عنصر عمل الصيدلية</string>
+    <string name="orders_product_image_desc">صورة الدواء</string>
+    <string name="order_details_title">تفاصيل الأوردر</string>
+    <string name="order_details_load_error">تعذر تحميل تفاصيل الأوردر.</string>
+    <string name="offer_details_title">تفاصيل العرض</string>
+    <string name="offer_details_load_error">تعذر تحميل تفاصيل العرض.</string>
+    <string name="offer_details_waiting">في انتظار موافقة العميل</string>
+    <string name="offer_details_rejected">عرض مرفوض</string>
+    <string name="offer_details_offer_number">العرض رقم %1$d</string>
+    <string name="offer_details_request_number">الطلب رقم %1$d</string>
+    <string name="offer_details_product_fallback">المنتج رقم %1$d</string>
+    <string name="offer_details_customer_unavailable">بيانات العميل والعنوان والدفع غير متاحة لهذا العرض.</string>
     <string name="no_customer_notes">لا توجد ملاحظات من العميل</string>
 
     <string name="profile_title">الملف الشخصي</string>
@@ -267,6 +302,7 @@
     <string name="requests_search_placeholder">ابحث برقم الطلب</string>
     <string name="requests_filter_icon_desc">فلترة</string>
     <string name="requests_search_icon_desc">بحث</string>
+    <string name="requests_status_offer_submitted">تم إرسال العرض</string>
     <!--  Requests — card  -->
     <string name="requests_status_in_progress">قيد التجهيز</string>
     <string name="requests_action_prepare">تجهيز الطلب</string>
@@ -298,6 +334,7 @@
     <string name="request_details_rejected_message">تم رفض الطلب</string>
     <string name="request_details_no_prescription">لم يتم إرسال روشتة</string>
     <string name="request_details_payment_method">طريقة الدفع</string>
+    <string name="request_details_payment_unavailable">طريقة الدفع غير متاحة</string>
     <string name="requests_view_sample_order">طلب تجريبي</string>
     <!-- New Profile Strings -->
     <string name="profile_header_title">الملف الشخصي</string>
@@ -341,7 +378,8 @@
     <string name="pharmacist_options_remove_confirm_title">إزالة الصيدلي من الصيدلية؟</string>
     <string name="pharmacist_options_remove_confirm_desc">سيتم إزالة %1$s من صيدلية %2$s\nهل أنت متأكد من هذا الإجراء؟</string>
     <string name="pharmacist_options_cancel">إلغاء</string>
-    <string name="pharmacist_options_remove_action">إزالة</string>    <string name="profile_gender_male">ذكر</string>
+    <string name="pharmacist_options_remove_action">إزالة</string>
+    <string name="profile_gender_male">ذكر</string>
     <string name="profile_gender_female">أنثى</string>
 
     <string name="profile_personal_info_title">البيانات الشخصية</string>

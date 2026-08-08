@@ -10,6 +10,11 @@ class GetOfferByIdUseCase @Inject constructor(
     private val repository: OfferRepository
 ) {
     suspend operator fun invoke(id: Long): MedsyResult<Offer, MedsyError> {
-        return repository.getOfferById(id)
+        val cached = repository.getCachedOffer(id)
+        return if (cached != null) {
+            MedsyResult.Success(cached)
+        } else {
+            repository.getOfferById(id)
+        }
     }
 }

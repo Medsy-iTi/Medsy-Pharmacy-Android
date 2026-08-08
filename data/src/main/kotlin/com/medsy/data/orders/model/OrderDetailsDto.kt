@@ -1,5 +1,6 @@
 package com.medsy.data.orders.model
 
+import com.medsy.data.common.remote.dto.ProductSummaryDto
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -15,8 +16,6 @@ data class PharmacyRequestPageDto(
 @JsonClass(generateAdapter = true)
 data class PharmacyRequestDto(
     val id: Long,
-    val offerId: Long? = null,
-    val orderId: Long? = null,
     val customerId: Long,
     val deliveryLatitude: Double?,
     val deliveryLongitude: Double?,
@@ -34,12 +33,8 @@ data class PharmacyRequestDto(
 @JsonClass(generateAdapter = true)
 data class RequestItemDto(
     val id: Long,
-    val productId: Long,
-    val imageUrl: String?,
-    val productName: String,
-    val strength: String?,
-    val packSize: String?,
-    val form: String?,
-    val quantity: Int,
-    val unitPrice: Double
+    val productId: Long?,
+    val quantity: Long,
+    val unitPrice: Double?,
+    val product: ProductSummaryDto?,
 )

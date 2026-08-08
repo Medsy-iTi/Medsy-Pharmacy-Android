@@ -45,6 +45,7 @@ fun PaymentMethodSection(
                 PaymentMethod.Visa -> stringResource(R.string.requests_payment_visa)
                 PaymentMethod.Mastercard -> stringResource(R.string.requests_payment_mastercard)
                 PaymentMethod.Cash -> stringResource(R.string.requests_payment_cash)
+                PaymentMethod.Unknown -> stringResource(R.string.request_details_payment_unavailable)
             }
             Text(
                 text = paymentString,

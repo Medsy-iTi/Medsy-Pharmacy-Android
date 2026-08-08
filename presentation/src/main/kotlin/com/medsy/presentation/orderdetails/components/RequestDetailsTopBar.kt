@@ -25,6 +25,7 @@ import com.medsy.presentation.R
 fun RequestDetailsTopBar(
     isNewOrder: Boolean,
     onBackClick: () -> Unit,
+    titleRes: Int = R.string.request_details_title,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -44,7 +45,7 @@ fun RequestDetailsTopBar(
         }
 
         Text(
-            text = stringResource(R.string.request_details_title),
+            text = stringResource(titleRes),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.extendedColors.darkBlueColor,

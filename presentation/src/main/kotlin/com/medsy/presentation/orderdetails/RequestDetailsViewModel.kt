@@ -4,28 +4,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medsy.domain.common.onError
 import com.medsy.domain.common.onSuccess
+import com.medsy.domain.offer.model.CreateOfferItem
+import com.medsy.domain.offer.model.CreateOfferRequest
+import com.medsy.domain.offer.usecase.CreatePharmacyOfferUseCase
 import com.medsy.domain.orders.usecase.GetRequestDetailsUseCase
 import com.medsy.presentation.R
 import com.medsy.presentation.orderdetails.mapper.toPresentation
+import com.medsy.presentation.orderdetails.substitute.SubstituteResultManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-import com.medsy.domain.orders.usecase.CreateOfferUseCase
-import kotlin.time.Duration.Companion.milliseconds
+import javax.inject.Inject
 
 @HiltViewModel
 class RequestDetailsViewModel @Inject constructor(
     private val getRequestDetailsUseCase: GetRequestDetailsUseCase,
-    private val createOfferUseCase: CreateOfferUseCase,
-    private val submittedOffersManager: com.medsy.presentation.orders.SubmittedOffersManager,
+    private val createOfferUseCase: CreatePharmacyOfferUseCase,
+    private val submittedOffersManager: com.medsy.presentation.requests.SubmittedOffersManager,
     private val substituteResultManager: SubstituteResultManager
 ) : ViewModel() {
 
@@ -84,8 +84,6 @@ class RequestDetailsViewModel @Inject constructor(
             RequestDetailsUIIntent.ViewPaymentSummaryClicked ->
                 sendEffect(RequestDetailsUIEffect.OpenPaymentSummary)
 
-            RequestDetailsUIIntent.RejectRequestClicked -> rejectRequest()
-
             RequestDetailsUIIntent.AcceptRequestClicked -> acceptRequest()
 
             is RequestDetailsUIIntent.PharmacistNotesChanged -> {
@@ -103,9 +101,11 @@ class RequestDetailsViewModel @Inject constructor(
                     currentState.copy(selectedItems = newSelection)
                 }
             }
+
             is RequestDetailsUIIntent.AddSubstituteClicked -> {
                 sendEffect(RequestDetailsUIEffect.NavigateToSubstituteSearch(intent.itemId))
             }
+
             is RequestDetailsUIIntent.SubstituteSelected -> {
                 _state.update { currentState ->
                     val order = currentState.request ?: return@update currentState
@@ -130,6 +130,7 @@ class RequestDetailsViewModel @Inject constructor(
                     currentState.copy(request = updatedOrder, selectedItems = newSelection)
                 }
             }
+
             is RequestDetailsUIIntent.OpenPrescriptionImageClicked -> {
                 sendEffect(RequestDetailsUIEffect.OpenPrescriptionImage(intent.imageUrl))
             }
@@ -144,22 +145,15 @@ class RequestDetailsViewModel @Inject constructor(
 
             getRequestDetailsUseCase(id)
                 .onSuccess { domainRequest ->
-                    if (domainRequest != null) {
-                        val presentationRequest = domainRequest.toPresentation()
-                        val allItemsIds = presentationRequest.items.map { it.id.toLongOrNull() ?: -1L }.toSet()
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                                request = presentationRequest,
-                                selectedItems = allItemsIds
-                            )
-                        }
-                    } else {
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                            )
-                        }
+                    val presentationRequest = domainRequest.toPresentation()
+                    val allItemsIds =
+                        presentationRequest.items.map { it.id.toLongOrNull() ?: -1L }.toSet()
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            request = presentationRequest,
+                            selectedItems = allItemsIds
+                        )
                     }
                 }
                 .onError {
@@ -172,36 +166,25 @@ class RequestDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun rejectRequest() {
-        viewModelScope.launch {
-            _state.update { it.copy(isSubmitting = true) }
-            delay(300.milliseconds) // simulated backend call
-            _state.update { it.copy(isSubmitting = false) }
-            sendEffect(RequestDetailsUIEffect.ShowMessage(R.string.request_details_rejected_message))
-            kotlinx.coroutines.delay(1000)
-            sendEffect(RequestDetailsUIEffect.NavigateBack)
-        }
-    }
-
     private fun acceptRequest() {
         val currentState = _state.value
         val order = currentState.request ?: return
         val requestId = order.id.removePrefix("#").toLongOrNull() ?: return
         val selectedIds = currentState.selectedItems
-        
+
         if (selectedIds.isEmpty()) {
             return
         }
 
         viewModelScope.launch {
             _state.update { it.copy(isSubmitting = true) }
-            
+
             val itemsToSubmit = order.items
                 .filter { (it.id.toLongOrNull() ?: -1L) in selectedIds }
-                .map { Pair(it.id.toLongOrNull() ?: -1L, it.productId ?: 0L) }
-                
-            val result = createOfferUseCase(requestId, itemsToSubmit)
-            
+                .map { CreateOfferItem(it.id.toLongOrNull() ?: -1L, it.productId ?: 0L) }
+
+            val result = createOfferUseCase(requestId, CreateOfferRequest(itemsToSubmit))
+
             _state.update { it.copy(isSubmitting = false) }
             result.onSuccess {
                 submittedOffersManager.addSubmittedRequestId(requestId)

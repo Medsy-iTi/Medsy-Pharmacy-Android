@@ -41,7 +41,7 @@ fun NoPharmacyInvitationsRoot(
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                NoPharmacyInvitationsEffect.NavigateHome -> navigateHome()
+                NoPharmacyInvitationsUIEffect.NavigateHome -> navigateHome()
             }
         }
     }
@@ -57,7 +57,7 @@ fun NoPharmacyInvitationsRoot(
 @Composable
 fun NoPharmacyInvitationsScreen(
     state: NoPharmacyInvitationsState,
-    onIntent: (NoPharmacyInvitationsIntent) -> Unit,
+    onIntent: (NoPharmacyInvitationsUIIntent) -> Unit,
     navigateBack: () -> Unit,
 ) {
     Scaffold(
@@ -91,7 +91,7 @@ fun NoPharmacyInvitationsScreen(
                     .fillMaxSize()
                     .padding(innerPadding),
                 errorRes = state.errorRes,
-                onRetry = { onIntent(NoPharmacyInvitationsIntent.Retry) },
+                onRetry = { onIntent(NoPharmacyInvitationsUIIntent.Retry) },
             )
 
             else -> LazyColumn(
@@ -123,7 +123,7 @@ fun NoPharmacyInvitationsScreen(
                         isAccepting = state.acceptingInvitationId == invitation.id,
                         isAcceptEnabled = state.acceptingInvitationId == null,
                         onAccept = {
-                            onIntent(NoPharmacyInvitationsIntent.AcceptInvitation(invitation.id))
+                            onIntent(NoPharmacyInvitationsUIIntent.AcceptInvitation(invitation.id))
                         },
                     )
                 }

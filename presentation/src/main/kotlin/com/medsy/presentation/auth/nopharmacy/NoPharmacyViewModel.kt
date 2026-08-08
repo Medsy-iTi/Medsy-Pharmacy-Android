@@ -24,26 +24,26 @@ class NoPharmacyViewModel @Inject constructor(
     private val _state = MutableStateFlow(NoPharmacyState())
     val state = _state.asStateFlow()
 
-    private val _effect = Channel<NoPharmacyEffect>(Channel.BUFFERED)
+    private val _effect = Channel<NoPharmacyUIEffect>(Channel.BUFFERED)
     val effect = _effect.receiveAsFlow()
 
     init {
         loadInvitations()
     }
 
-    fun onIntent(intent: NoPharmacyIntent) {
+    fun onIntent(intent: NoPharmacyUIIntent) {
         when (intent) {
-            NoPharmacyIntent.RegisterPharmacy -> viewModelScope.launch {
-                _effect.send(NoPharmacyEffect.NavigatePharmacyRegistration)
+            NoPharmacyUIIntent.RegisterPharmacy -> viewModelScope.launch {
+                _effect.send(NoPharmacyUIEffect.NavigatePharmacyRegistration)
             }
 
-            NoPharmacyIntent.SignOut -> viewModelScope.launch {
+            NoPharmacyUIIntent.SignOut -> viewModelScope.launch {
                 clearSessionUseCase()
-                _effect.send(NoPharmacyEffect.NavigateLogin)
+                _effect.send(NoPharmacyUIEffect.NavigateLogin)
             }
 
-            NoPharmacyIntent.OpenInvitations -> viewModelScope.launch {
-                _effect.send(NoPharmacyEffect.NavigateInvitations)
+            NoPharmacyUIIntent.OpenInvitations -> viewModelScope.launch {
+                _effect.send(NoPharmacyUIEffect.NavigateInvitations)
             }
 
         }

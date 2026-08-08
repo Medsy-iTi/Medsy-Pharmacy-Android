@@ -24,6 +24,7 @@ fun RequestedMedicinesSection(
     selectedItems: Set<Long>,
     onItemCheckedChange: (Long) -> Unit,
     onAddSubstituteClick: (Long) -> Unit,
+    readOnly: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -50,8 +51,8 @@ fun RequestedMedicinesSection(
                     MedicineRequestItemRow(
                         item = item,
                         isChecked = selectedItems.contains(itemIdLong),
-                        onCheckedChange = { onItemCheckedChange(itemIdLong) },
-                        onAddSubstituteClick = { onAddSubstituteClick(itemIdLong) }
+                        onCheckedChange = if (readOnly) null else { { _: Boolean -> onItemCheckedChange(itemIdLong) } },
+                        onAddSubstituteClick = if (readOnly) null else { { onAddSubstituteClick(itemIdLong) } },
                     )
                     if (index != items.lastIndex) {
                         HorizontalDivider(
