@@ -1,8 +1,8 @@
 package com.medsy.data.di
 
-import com.medsy.data.orders.repository.RequestsRepositoryImpl
+import com.medsy.data.orders.repository.OrdersRepositoryImpl
 import com.medsy.data.products.repository.ProductsRepositoryImpl
-import com.medsy.domain.orders.repository.RequestsRepository
+import com.medsy.domain.orders.repository.OrdersRepository
 import com.medsy.domain.products.repository.ProductsRepository
 import dagger.Binds
 import dagger.Module
@@ -16,9 +16,9 @@ abstract class RequestsDataModule {
 
     @Binds
     @Singleton
-    abstract fun bindRequestsRepository(
-        requestsRepositoryImpl: RequestsRepositoryImpl
-    ): RequestsRepository
+    abstract fun bindOrdersRepository(
+        ordersRepositoryImpl: OrdersRepositoryImpl
+    ): OrdersRepository
 
     @Binds
     @Singleton

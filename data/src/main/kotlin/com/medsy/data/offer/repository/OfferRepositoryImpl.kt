@@ -17,15 +17,21 @@ class OfferRepositoryImpl @Inject constructor(
     private val api: OfferApi
 ) : OfferRepository {
 
+    private val offerCache = mutableMapOf<Long, Offer>()
+
     override suspend fun createOffer(
         requestId: Long,
         request: CreateOfferRequest
     ): MedsyResult<Offer, MedsyError> {
-        return safeApiCall { api.createPharmacyOffer(requestId, request.toDto()) }.map { it.toDomain() }
+        return safeApiCall { api.createPharmacyOffer(requestId, request.toDto()) }.map { dto ->
+            dto.toDomain().also { offerCache[it.id] = it }
+        }
     }
 
     override suspend fun getOfferById(id: Long): MedsyResult<Offer, MedsyError> {
-        return safeApiCall { api.getOfferById(id) }.map { it.toDomain() }
+        return safeApiCall { api.getOfferById(id) }.map { dto ->
+            dto.toDomain().also { offerCache[it.id] = it }
+        }
     }
 
     override suspend fun getPharmacyOffers(
@@ -34,6 +40,12 @@ class OfferRepositoryImpl @Inject constructor(
         size: Int,
         sort: List<String>
     ): MedsyResult<PaginatedOffers, MedsyError> {
-        return safeApiCall { api.getPharmacyOffers(pharmacyId, page, size, sort) }.map { it.toDomain() }
+        return safeApiCall { api.getPharmacyOffers(pharmacyId, page, size, sort) }.map { dto ->
+            dto.toDomain().also { pageData ->
+                pageData.content.forEach { offerCache[it.id] = it }
+            }
+        }
     }
+
+    override fun getCachedOffer(id: Long): Offer? = offerCache[id]
 }

@@ -10,4 +10,5 @@ interface OfferRepository {
     suspend fun createOffer(requestId: Long, request: CreateOfferRequest): MedsyResult<Offer, MedsyError>
     suspend fun getOfferById(id: Long): MedsyResult<Offer, MedsyError>
     suspend fun getPharmacyOffers(pharmacyId: Long, page: Int, size: Int, sort: List<String>): MedsyResult<PaginatedOffers, MedsyError>
+    fun getCachedOffer(id: Long): Offer?
 }
