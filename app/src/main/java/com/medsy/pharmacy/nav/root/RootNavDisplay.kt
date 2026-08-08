@@ -29,8 +29,8 @@ import com.medsy.presentation.auth.registerpharmacy.PharmacyRegistrationRoot
 import com.medsy.presentation.notifications.NotificationsRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
 import com.medsy.presentation.orderdetails.RequestDetailsRoot
-import com.medsy.presentation.orderdetails.SubstituteSearchRoot
 import com.medsy.presentation.orderdetails.offer.OfferDetailsRoot
+import com.medsy.presentation.orderdetails.substitute.SubstituteSearchRoot
 import com.medsy.presentation.orders.orderdetails.OrderDetailsRoot
 import com.medsy.presentation.profile.invitationsent.InvitationSentRoot
 import com.medsy.presentation.profile.invite.InvitePharmacistRoot

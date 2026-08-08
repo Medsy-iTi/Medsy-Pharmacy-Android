@@ -68,8 +68,8 @@ fun PharmacyRegistrationRoot(
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                PharmacyRegistrationEffect.NavigatePendingApproval -> openPendingApproval()
-                is PharmacyRegistrationEffect.ShowError -> snackbarHostState.showError(
+                PharmacyRegistrationUIEffect.NavigatePendingApproval -> openPendingApproval()
+                is PharmacyRegistrationUIEffect.ShowError -> snackbarHostState.showError(
                     message = ContextCompat.getString(context, effect.messageRes),
                 )
             }
@@ -87,7 +87,7 @@ fun PharmacyRegistrationRoot(
 fun PharmacyRegistrationScreen(
     modifier: Modifier = Modifier,
     state: PharmacyRegistrationState,
-    onIntent: (PharmacyRegistrationIntent) -> Unit,
+    onIntent: (PharmacyRegistrationUIIntent) -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -144,7 +144,7 @@ fun PharmacyRegistrationScreen(
                     MedsyTextField(
                         value = state.pharmacyName,
                         onValueChange = {
-                            onIntent(PharmacyRegistrationIntent.PharmacyNameChanged(it))
+                            onIntent(PharmacyRegistrationUIIntent.PharmacyNameChanged(it))
                         },
                         placeholder = {
                             Text(stringResource(R.string.pharmacy_registration_pharmacy_name))
@@ -163,7 +163,7 @@ fun PharmacyRegistrationScreen(
                     MedsyTextField(
                         value = state.phoneNumber,
                         onValueChange = {
-                            onIntent(PharmacyRegistrationIntent.PhoneNumberChanged(it))
+                            onIntent(PharmacyRegistrationUIIntent.PhoneNumberChanged(it))
                         },
                         placeholder = {
                             Text(stringResource(R.string.pharmacy_registration_phone))
@@ -182,7 +182,7 @@ fun PharmacyRegistrationScreen(
                     MedsyTextField(
                         value = state.address,
                         onValueChange = {
-                            onIntent(PharmacyRegistrationIntent.AddressChanged(it))
+                            onIntent(PharmacyRegistrationUIIntent.AddressChanged(it))
                         },
                         placeholder = {
                             Text(stringResource(R.string.pharmacy_registration_address))
@@ -203,7 +203,7 @@ fun PharmacyRegistrationScreen(
                         locationErrorRes = state.locationErrorRes,
                         onLocationSelected = { latitude, longitude ->
                             onIntent(
-                                PharmacyRegistrationIntent.LocationSelected(
+                                PharmacyRegistrationUIIntent.LocationSelected(
                                     latitude = latitude,
                                     longitude = longitude,
                                 ),
@@ -217,7 +217,7 @@ fun PharmacyRegistrationScreen(
                         licenseErrorRes = state.licenseErrorRes,
                         onLicenseSelected = { displayName, mimeType, bytes ->
                             onIntent(
-                                PharmacyRegistrationIntent.LicenseSelected(
+                                PharmacyRegistrationUIIntent.LicenseSelected(
                                     displayName = displayName,
                                     mimeType = mimeType,
                                     bytes = bytes,
@@ -226,7 +226,7 @@ fun PharmacyRegistrationScreen(
                         },
                         onLicenseSelectionFailed = { messageRes ->
                             onIntent(
-                                PharmacyRegistrationIntent.LicenseSelectionFailed(messageRes),
+                                PharmacyRegistrationUIIntent.LicenseSelectionFailed(messageRes),
                             )
                         },
                     )
@@ -234,7 +234,7 @@ fun PharmacyRegistrationScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     MedsyButton(
-                        onClick = { onIntent(PharmacyRegistrationIntent.Submit) },
+                        onClick = { onIntent(PharmacyRegistrationUIIntent.Submit) },
                         isLoading = state.isSubmitting,
                     ) {
                         if (state.isSubmitting) {

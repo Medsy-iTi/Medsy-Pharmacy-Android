@@ -63,9 +63,9 @@ fun LoginRoot(
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is LoginEffect.NavigateHome -> openHome()
-                is LoginEffect.NavigateNoPharmacy -> openNoPharmacy()
-                is LoginEffect.ShowError -> snackbarHostState.showError(
+                is LoginUIEffect.NavigateHome -> openHome()
+                is LoginUIEffect.NavigateNoPharmacy -> openNoPharmacy()
+                is LoginUIEffect.ShowError -> snackbarHostState.showError(
                     message = ContextCompat.getString(
                         context,
                         effect.messageRes
@@ -86,7 +86,7 @@ fun LoginRoot(
 @Composable
 fun LoginScreen(
     state: LoginState,
-    onIntent: (LoginIntent) -> Unit,
+    onIntent: (LoginUIIntent) -> Unit,
     openRegistration: () -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
@@ -134,7 +134,7 @@ fun LoginScreen(
 
                 LoginPasswordInput(
                     password = state.password,
-                    onPasswordChange = { onIntent(LoginIntent.PasswordChanged(it)) },
+                    onPasswordChange = { onIntent(LoginUIIntent.PasswordChanged(it)) },
                     errorRes = state.passwordErrorRes,
                 )
 
@@ -158,7 +158,7 @@ fun LoginScreen(
                 MedsyButton(
                     onClick = {
                         focusManager.clearFocus()
-                        onIntent(LoginIntent.Submit)
+                        onIntent(LoginUIIntent.Submit)
                     },
                     isLoading = state.isLoading,
                 ) {
@@ -186,7 +186,7 @@ fun LoginScreen(
                     enabled = !state.isLoading,
                     onClick = {
                         focusManager.clearFocus()
-                        onIntent(LoginIntent.LoginWithGoogle)
+                        onIntent(LoginUIIntent.LoginWithGoogle)
                     },
                 )
 

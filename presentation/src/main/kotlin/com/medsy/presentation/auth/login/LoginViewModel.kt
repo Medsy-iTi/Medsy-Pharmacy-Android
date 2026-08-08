@@ -25,27 +25,27 @@ class LoginViewModel @Inject constructor(
     private val _state = MutableStateFlow(LoginState())
     val state = _state.asStateFlow()
 
-    private val _effect = Channel<LoginEffect>(Channel.BUFFERED)
+    private val _effect = Channel<LoginUIEffect>(Channel.BUFFERED)
     val effect = _effect.receiveAsFlow()
 
-    fun onIntent(intent: LoginIntent) {
+    fun onIntent(intent: LoginUIIntent) {
         when (intent) {
-            is LoginIntent.EmailChanged -> _state.update {
+            is LoginUIIntent.EmailChanged -> _state.update {
                 it.copy(
                     email = intent.value,
                     emailErrorRes = null
                 )
             }
 
-            is LoginIntent.PasswordChanged -> _state.update {
+            is LoginUIIntent.PasswordChanged -> _state.update {
                 it.copy(
                     password = intent.value,
                     passwordErrorRes = null
                 )
             }
 
-            LoginIntent.Submit -> submit()
-            LoginIntent.LoginWithGoogle -> {}
+            LoginUIIntent.Submit -> submit()
+            LoginUIIntent.LoginWithGoogle -> {}
         }
     }
 
@@ -60,16 +60,16 @@ class LoginViewModel @Inject constructor(
 
                 when (result) {
                     PharmacistLoginOutcome.NoPharmacy ->
-                        _effect.send(LoginEffect.NavigateNoPharmacy)
+                        _effect.send(LoginUIEffect.NavigateNoPharmacy)
 
-                    else -> _effect.send(LoginEffect.NavigateHome)
+                    else -> _effect.send(LoginUIEffect.NavigateHome)
                 }
 
             }
             .onError { error ->
                 _state.update { it.copy(isLoading = false) }
 
-                _effect.send(LoginEffect.ShowError(error.toMessageRes()))
+                _effect.send(LoginUIEffect.ShowError(error.toMessageRes()))
             }
     }
 

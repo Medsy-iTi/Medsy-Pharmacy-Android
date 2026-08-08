@@ -10,6 +10,7 @@ import com.medsy.domain.offer.usecase.CreatePharmacyOfferUseCase
 import com.medsy.domain.orders.usecase.GetRequestDetailsUseCase
 import com.medsy.presentation.R
 import com.medsy.presentation.orderdetails.mapper.toPresentation
+import com.medsy.presentation.orderdetails.substitute.SubstituteResultManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

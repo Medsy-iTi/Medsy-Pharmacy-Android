@@ -30,26 +30,26 @@ class PharmacyRegistrationViewModel @Inject constructor(
     private val _state = MutableStateFlow(PharmacyRegistrationState())
     val state = _state.asStateFlow()
 
-    private val _effect = Channel<PharmacyRegistrationEffect>(Channel.BUFFERED)
+    private val _effect = Channel<PharmacyRegistrationUIEffect>(Channel.BUFFERED)
     val effect = _effect.receiveAsFlow()
 
     private var licenseBytes: ByteArray? = null
 
-    fun onIntent(intent: PharmacyRegistrationIntent) {
+    fun onIntent(intent: PharmacyRegistrationUIIntent) {
         when (intent) {
-            is PharmacyRegistrationIntent.PharmacyNameChanged -> _state.update {
+            is PharmacyRegistrationUIIntent.PharmacyNameChanged -> _state.update {
                 it.copy(pharmacyName = intent.value, pharmacyNameErrorRes = null)
             }
 
-            is PharmacyRegistrationIntent.PhoneNumberChanged -> _state.update {
+            is PharmacyRegistrationUIIntent.PhoneNumberChanged -> _state.update {
                 it.copy(phoneNumber = intent.value)
             }
 
-            is PharmacyRegistrationIntent.AddressChanged -> _state.update {
+            is PharmacyRegistrationUIIntent.AddressChanged -> _state.update {
                 it.copy(address = intent.value)
             }
 
-            is PharmacyRegistrationIntent.LocationSelected -> {
+            is PharmacyRegistrationUIIntent.LocationSelected -> {
                 _state.update {
                     it.copy(
                         selectedLatitude = intent.latitude,
@@ -60,9 +60,9 @@ class PharmacyRegistrationViewModel @Inject constructor(
                 updateReadableAddress(intent.latitude, intent.longitude)
             }
 
-            is PharmacyRegistrationIntent.LicenseSelected -> handleLicenseSelected(intent)
+            is PharmacyRegistrationUIIntent.LicenseSelected -> handleLicenseSelected(intent)
 
-            is PharmacyRegistrationIntent.LicenseSelectionFailed -> {
+            is PharmacyRegistrationUIIntent.LicenseSelectionFailed -> {
                 licenseBytes = null
                 _state.update {
                     it.copy(
@@ -73,7 +73,7 @@ class PharmacyRegistrationViewModel @Inject constructor(
                 }
             }
 
-            PharmacyRegistrationIntent.Submit -> submit()
+            PharmacyRegistrationUIIntent.Submit -> submit()
         }
     }
 
@@ -90,7 +90,7 @@ class PharmacyRegistrationViewModel @Inject constructor(
         }
     }
 
-    private fun handleLicenseSelected(intent: PharmacyRegistrationIntent.LicenseSelected) {
+    private fun handleLicenseSelected(intent: PharmacyRegistrationUIIntent.LicenseSelected) {
         val isPdf = intent.mimeType == PDF_MEDIA_TYPE ||
                 intent.displayName.endsWith(".pdf", ignoreCase = true)
         val error = when {
@@ -179,11 +179,11 @@ class PharmacyRegistrationViewModel @Inject constructor(
             ),
         ).onSuccess {
             _state.update { it.copy(isSubmitting = false) }
-            _effect.send(PharmacyRegistrationEffect.NavigatePendingApproval)
+            _effect.send(PharmacyRegistrationUIEffect.NavigatePendingApproval)
         }.onError { error ->
             _state.update { it.copy(isSubmitting = false) }
             _effect.send(
-                PharmacyRegistrationEffect.ShowError(error.toRegistrationMessageRes()),
+                PharmacyRegistrationUIEffect.ShowError(error.toRegistrationMessageRes()),
             )
         }
     }

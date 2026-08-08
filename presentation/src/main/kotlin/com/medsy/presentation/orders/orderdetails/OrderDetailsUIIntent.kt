@@ -1,0 +1,9 @@
+package com.medsy.presentation.orders.orderdetails
+
+sealed interface OrderDetailsUIIntent {
+    data class Load(val orderId: Long) : OrderDetailsUIIntent
+    data object Retry : OrderDetailsUIIntent
+    data object BackClicked : OrderDetailsUIIntent
+    data object CallCustomerClicked : OrderDetailsUIIntent
+    data object OpenLocationClicked : OrderDetailsUIIntent
+}

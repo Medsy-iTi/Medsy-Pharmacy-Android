@@ -1,4 +1,4 @@
-package com.medsy.presentation.orderdetails
+package com.medsy.presentation.orderdetails.substitute
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

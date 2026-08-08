@@ -60,9 +60,9 @@ fun NoPharmacyRoot(
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                NoPharmacyEffect.NavigatePharmacyRegistration -> openPharmacyRegistration()
-                NoPharmacyEffect.NavigateLogin -> openLogin()
-                NoPharmacyEffect.NavigateInvitations -> openInvitations()
+                NoPharmacyUIEffect.NavigatePharmacyRegistration -> openPharmacyRegistration()
+                NoPharmacyUIEffect.NavigateLogin -> openLogin()
+                NoPharmacyUIEffect.NavigateInvitations -> openInvitations()
             }
         }
     }
@@ -73,7 +73,7 @@ fun NoPharmacyRoot(
 @Composable
 fun NoPharmacyScreen(
     state: NoPharmacyState,
-    onIntent: (NoPharmacyIntent) -> Unit,
+    onIntent: (NoPharmacyUIIntent) -> Unit,
 ) {
     val animationContentDescription = stringResource(
         R.string.no_pharmacy_animation_content_desc,
@@ -143,7 +143,7 @@ fun NoPharmacyScreen(
                 when {
                     state.pendingInvitationCount > 0 -> PendingInvitationsCard(
                         count = state.pendingInvitationCount,
-                        onClick = { onIntent(NoPharmacyIntent.OpenInvitations) },
+                        onClick = { onIntent(NoPharmacyUIIntent.OpenInvitations) },
                     )
 
                     else -> NoPharmacyGuidanceCard(
@@ -155,7 +155,7 @@ fun NoPharmacyScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                MedsyButton(onClick = { onIntent(NoPharmacyIntent.RegisterPharmacy) }) {
+                MedsyButton(onClick = { onIntent(NoPharmacyUIIntent.RegisterPharmacy) }) {
                     Text(
                         text = stringResource(R.string.no_pharmacy_register_pharmacy),
                         style = MaterialTheme.typography.titleMedium.copy(
@@ -166,7 +166,7 @@ fun NoPharmacyScreen(
                 }
 
                 OutlinedButton(
-                    onClick = { onIntent(NoPharmacyIntent.SignOut) },
+                    onClick = { onIntent(NoPharmacyUIIntent.SignOut) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium,
                 ) {

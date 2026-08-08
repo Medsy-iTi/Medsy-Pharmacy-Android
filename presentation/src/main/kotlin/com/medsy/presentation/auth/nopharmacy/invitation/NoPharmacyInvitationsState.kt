@@ -9,12 +9,3 @@ data class NoPharmacyInvitationsState(
     val acceptingInvitationId: Long? = null,
     @StringRes val errorRes: Int? = null,
 )
-
-sealed interface NoPharmacyInvitationsIntent {
-    data object Retry : NoPharmacyInvitationsIntent
-    data class AcceptInvitation(val invitationId: Long) : NoPharmacyInvitationsIntent
-}
-
-sealed interface NoPharmacyInvitationsEffect {
-    data object NavigateHome : NoPharmacyInvitationsEffect
-}

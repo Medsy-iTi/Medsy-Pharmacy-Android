@@ -1,4 +1,4 @@
-package com.medsy.presentation.orderdetails
+package com.medsy.presentation.orderdetails.substitute
 
 import com.medsy.domain.products.model.Product
 

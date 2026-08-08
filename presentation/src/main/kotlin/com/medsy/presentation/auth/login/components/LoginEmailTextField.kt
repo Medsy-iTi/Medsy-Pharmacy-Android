@@ -12,17 +12,17 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.medsy.designsystem.components.MedsyTextField
 import com.medsy.presentation.R
-import com.medsy.presentation.auth.login.LoginIntent
+import com.medsy.presentation.auth.login.LoginUIIntent
 
 @Composable
 fun LoginEmailTextField(
     email: String,
     emailErrorRes: Int?,
-    onIntent: (LoginIntent) -> Unit
+    onIntent: (LoginUIIntent) -> Unit
 ) {
     MedsyTextField(
         value = email,
-        onValueChange = { onIntent(LoginIntent.EmailChanged(it)) },
+        onValueChange = { onIntent(LoginUIIntent.EmailChanged(it)) },
         placeholder = { Text(stringResource(R.string.auth_email)) },
         leadingIcon = {
             Icon(

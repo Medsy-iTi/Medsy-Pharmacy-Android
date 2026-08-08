@@ -1,4 +1,4 @@
-package com.medsy.presentation.orderdetails
+package com.medsy.presentation.orderdetails.substitute
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -40,11 +40,20 @@ class SubstituteSearchViewModel @Inject constructor(
                 _state.update { it.copy(query = intent.query) }
                 performSearch(intent.query)
             }
+
             is SubstituteSearchUIIntent.ProductSelected -> {
                 viewModelScope.launch {
-                    mutableEffect.send(SubstituteSearchUIEffect.ReturnSubstitute(intent.productId, intent.productName, intent.productPrice, intent.productImage))
+                    mutableEffect.send(
+                        SubstituteSearchUIEffect.ReturnSubstitute(
+                            intent.productId,
+                            intent.productName,
+                            intent.productPrice,
+                            intent.productImage
+                        )
+                    )
                 }
             }
+
             SubstituteSearchUIIntent.BackClicked -> {
                 viewModelScope.launch {
                     mutableEffect.send(SubstituteSearchUIEffect.NavigateBack)
