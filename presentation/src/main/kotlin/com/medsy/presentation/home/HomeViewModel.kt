@@ -2,30 +2,27 @@ package com.medsy.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.medsy.domain.common.onError
+import com.medsy.domain.common.onSuccess
+import com.medsy.domain.notifications.usecase.GetUnreadCountUseCase
+import com.medsy.domain.orders.model.RequestStatusConstants
+import com.medsy.domain.orders.usecase.GetPharmacyOrdersUseCase
+import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
+import com.medsy.presentation.common.util.toMessageRes
+import com.medsy.presentation.requests.SubmittedOffersManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.medsy.domain.common.fold
-import com.medsy.domain.orders.model.RequestStatusConstants
-import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
-import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
-import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
-import com.medsy.domain.notifications.usecase.GetUnreadCountUseCase
-import com.medsy.presentation.orders.SubmittedOffersManager
-import kotlinx.coroutines.delay
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
-    private val getCurrentPharmacyRequests: GetCurrentPharmacyRequestsUseCase,
+    private val getPharmacyOrdersUseCase: GetPharmacyOrdersUseCase,
     private val submittedOffersManager: SubmittedOffersManager,
     private val getUnreadCount: GetUnreadCountUseCase
 ) : ViewModel() {
@@ -36,12 +33,8 @@ class HomeViewModel @Inject constructor(
     private val mutableEffect = Channel<HomeUIEffect>(Channel.BUFFERED)
     val effect = mutableEffect.receiveAsFlow()
 
-    private var pollingJob: kotlinx.coroutines.Job? = null
-
     init {
         loadHomeData()
-        prefetchProfileData()
-        startPolling()
         observeSubmittedOffers()
     }
 
@@ -63,39 +56,68 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun prefetchProfileData() {
+    private fun loadHomeData() {
+        _state.update { it.copy(isLoading = true) }
+        loadPharmacyInfo()
+        countNotifications()
+    }
+
+    private fun countNotifications() {
         viewModelScope.launch {
-            getCurrentPharmacist(forceRefresh = false)
+            getUnreadCount()
+                .onSuccess { notificationCount ->
+                    _state.update {
+                        it.copy(notificationsCount = notificationCount)
+                    }
+                }
+        }
+    }
+
+    private fun loadPharmacyInfo() {
+        viewModelScope.launch {
             getMyPharmacy(forceRefresh = false)
+                .onSuccess { pharmacy ->
+                    loadOrders(pharmacy.id)
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorRes = null,
+                            pharmacyInfo = PharmacyUIInfo(
+                                name = pharmacy.name,
+                                address = pharmacy.address ?: "",
+                                pharmacyId = pharmacy.id.toString(),
+                                isOpen = true,
+                            )
+                        )
+                    }
+                }
+                .onError { error ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorRes = error.toMessageRes()
+                        )
+                    }
+                }
         }
     }
 
-    private fun startPolling() {
-        pollingJob = viewModelScope.launch {
-            while (true) {
-                delay(15000.milliseconds)
-                pollOffersSilently()
-            }
-        }
-    }
-
-    private suspend fun pollOffersSilently() {
-        val pharmacyIdStr = _state.value.pharmacyInfo.pharmacyId
-        if (pharmacyIdStr.isBlank()) return
-        
-        val currentPharmacyId = pharmacyIdStr.removePrefix("PH").toLongOrNull() ?: return
-        
-        if (currentPharmacyId > 0) {
-            val requestsResult = getCurrentPharmacyRequests(page = 0, size = 10, sort = listOf("id,desc"))
-            requestsResult.fold(
-                onSuccess = { page ->
+    private fun loadOrders(pharmacyId: Long) {
+        viewModelScope.launch {
+            getPharmacyOrdersUseCase(
+                page = 0,
+                size = 3,
+                pharmacyId = pharmacyId,
+                sort = listOf("id,desc")
+            )
+                .onSuccess { page ->
                     val newOrders = page.content.filter { req ->
-                        req.status == RequestStatusConstants.PENDING || 
-                        req.status == RequestStatusConstants.NEW || 
-                        req.status == RequestStatusConstants.SEARCHING 
+                        req.status == RequestStatusConstants.PENDING ||
+                                req.status == RequestStatusConstants.NEW ||
+                                req.status == RequestStatusConstants.SEARCHING
                     }
                     val submitted = submittedOffersManager.submittedRequestIds.value
-                    val latestThree = newOrders.take(3).map { req ->
+                    val latestThree = newOrders.map { req ->
                         var mappedStatus = when (req.status) {
                             RequestStatusConstants.PENDING, RequestStatusConstants.NEW, RequestStatusConstants.SEARCHING -> HomeOrderStatus.NEW
                             RequestStatusConstants.IN_PROGRESS -> HomeOrderStatus.PREPARING
@@ -122,15 +144,13 @@ class HomeViewModel @Inject constructor(
                             )
                         )
                     }
-                },
-                onError = { }
-            )
+                }
         }
     }
 
     fun onIntent(intent: HomeUIIntent) {
         when (intent) {
-            HomeUIIntent.Refresh -> loadHomeData(isRefresh = true)
+            HomeUIIntent.Refresh -> loadHomeData()
             is HomeUIIntent.OnOrderClicked -> {
                 viewModelScope.launch {
                     mutableEffect.send(HomeUIEffect.NavigateToOrderDetails(intent.orderId))
@@ -148,90 +168,6 @@ class HomeViewModel @Inject constructor(
                     mutableEffect.send(HomeUIEffect.OpenNotifications)
                 }
             }
-        }
-    }
-
-    private fun loadHomeData(isRefresh: Boolean = false) {
-        viewModelScope.launch {
-            val shouldShowShimmer = _state.value.latestOrders.isEmpty() || !isRefresh
-            if (shouldShowShimmer) {
-                _state.update { it.copy(isLoading = true) }
-            }
-
-            val pharmacyDeferred = async { getMyPharmacy() }
-            val unreadCountDeferred = async { getUnreadCount() }
-
-            val pharmacyResult = pharmacyDeferred.await()
-            val unreadCountResult = unreadCountDeferred.await()
-            var newState = _state.value.copy(isLoading = false)
-            var currentPharmacyId: Long = 0L
-
-            pharmacyResult.fold(
-                onSuccess = { pharmacy ->
-                    currentPharmacyId = pharmacy.id
-                    newState = newState.copy(
-                        pharmacyInfo = newState.pharmacyInfo.copy(
-                            name = pharmacy.name,
-                            address = pharmacy.address ?: "",
-                            pharmacyId = pharmacy.id.toString(),
-                            isOpen = true,
-                        )
-                    )
-                },
-                onError = { }
-            )
-
-            if (currentPharmacyId > 0) {
-                val requestsResult = getCurrentPharmacyRequests(page = 0, size = 10, sort = listOf("id,desc"))
-                requestsResult.fold(
-                    onSuccess = { page ->
-                        val newOrders = page.content.filter { req ->
-                            req.status == RequestStatusConstants.PENDING || 
-                            req.status == RequestStatusConstants.NEW || 
-                            req.status == RequestStatusConstants.SEARCHING 
-                        }
-                        val submitted = submittedOffersManager.submittedRequestIds.value
-                        val latestThree = newOrders.take(3).map { req ->
-                            var mappedStatus = when (req.status) {
-                                RequestStatusConstants.PENDING, RequestStatusConstants.NEW, RequestStatusConstants.SEARCHING -> HomeOrderStatus.NEW
-                                RequestStatusConstants.IN_PROGRESS -> HomeOrderStatus.PREPARING
-                                RequestStatusConstants.DELIVERED -> HomeOrderStatus.DELIVERED
-                                else -> HomeOrderStatus.NEW
-                            }
-                            if (submitted.contains(req.id) && mappedStatus == HomeOrderStatus.NEW) {
-                                mappedStatus = HomeOrderStatus.OFFER_SUBMITTED
-                            }
-                            HomeOrderUI(
-                                id = "#${req.id}",
-                                requestId = req.id.toString(),
-                                distanceKm = 0.0,
-                                timeAgo = req.createdAt,
-                                status = mappedStatus
-                            )
-                        }
-
-                        newState = newState.copy(
-                            latestOrders = latestThree,
-                            stats = newState.stats.copy(
-                                newOrders = page.content.count {
-                                    it.status == RequestStatusConstants.PENDING || it.status == RequestStatusConstants.NEW
-                                },
-                                inProgress = page.content.count { it.status == RequestStatusConstants.IN_PROGRESS }
-                            )
-                        )
-                    },
-                    onError = { }
-                )
-            }
-
-            unreadCountResult.fold(
-                onSuccess = { count ->
-                    newState = newState.copy(notificationsCount = count)
-                },
-                onError = { }
-            )
-
-            _state.value = newState
         }
     }
 }
