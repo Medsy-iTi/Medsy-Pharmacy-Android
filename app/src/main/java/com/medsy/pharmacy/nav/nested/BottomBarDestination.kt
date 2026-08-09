@@ -15,11 +15,17 @@ enum class BottomBarDestination(
         selectedIcon = PresentationR.drawable.home,
         route = Route.NestedNav.Home,
     ),
-    Orders(
-        title = PresentationR.string.home_nav_orders,
+    Requests(
+        title = PresentationR.string.home_nav_requests,
         icon = PresentationR.drawable.orderlist,
         selectedIcon = PresentationR.drawable.orderlist,
         route = Route.NestedNav.Requests,
+    ),
+    Orders(
+        title = PresentationR.string.home_nav_orders,
+        icon = PresentationR.drawable.order_history,
+        selectedIcon = PresentationR.drawable.order_history,
+        route = Route.NestedNav.Orders,
     ),
     Profile(
         title = PresentationR.string.profile_title,

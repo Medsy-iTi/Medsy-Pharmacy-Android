@@ -14,14 +14,16 @@ data class RequestMedicineItem(
 enum class PaymentMethod {
     Cash,
     Visa,
-    Mastercard;
+    Mastercard,
+    Unknown;
 
     companion object {
         fun fromApiValue(value: String?): PaymentMethod {
             return when (value?.uppercase()) {
                 "VISA" -> Visa
                 "MASTERCARD" -> Mastercard
-                else -> Cash
+                "CASH" -> Cash
+                else -> Unknown
             }
         }
     }

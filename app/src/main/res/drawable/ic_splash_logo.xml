@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:width="140dp"
-        android:height="140dp"
+        android:width="90dp"
+        android:height="74dp"
+        android:viewportWidth="683"
+        android:viewportHeight="558"
         android:gravity="center"
         android:drawable="@drawable/ic_logo_transparent" />
 </layer-list>

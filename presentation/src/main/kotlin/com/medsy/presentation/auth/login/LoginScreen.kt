@@ -10,15 +10,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -26,29 +23,30 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.medsy.designsystem.components.MedsyButton
 import com.medsy.designsystem.components.MedsySnackbarHost
-import com.medsy.designsystem.components.MedsyTextField
 import com.medsy.designsystem.components.showError
 import com.medsy.presentation.R
 import com.medsy.presentation.auth.login.components.DontHaveAccount
+import com.medsy.presentation.auth.login.components.LoginEmailTextField
 import com.medsy.presentation.auth.login.components.LoginPasswordInput
-import com.medsy.presentation.auth.login.components.LoginTip
+import com.medsy.presentation.auth.login.components.LoginSocialButton
+import com.medsy.presentation.auth.login.components.OrDivider
 import com.medsy.designsystem.R as DesignR
 
 @Composable
@@ -65,9 +63,9 @@ fun LoginRoot(
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is LoginEffect.NavigateHome -> openHome()
-                is LoginEffect.NavigateNoPharmacy -> openNoPharmacy()
-                is LoginEffect.ShowError -> snackbarHostState.showError(
+                is LoginUIEffect.NavigateHome -> openHome()
+                is LoginUIEffect.NavigateNoPharmacy -> openNoPharmacy()
+                is LoginUIEffect.ShowError -> snackbarHostState.showError(
                     message = ContextCompat.getString(
                         context,
                         effect.messageRes
@@ -88,136 +86,124 @@ fun LoginRoot(
 @Composable
 fun LoginScreen(
     state: LoginState,
-    onIntent: (LoginIntent) -> Unit,
+    onIntent: (LoginUIIntent) -> Unit,
     openRegistration: () -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
-    var passwordVisible by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Scaffold(
-            containerColor = MaterialTheme.colorScheme.background,
-        ) { innerPadding ->
+        Scaffold { innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState())
-                    .padding(
-                        vertical = LoginConstants.ScreenPaddingVertical,
-                    ),
+                    .imePadding()
+                    .padding(horizontal = 24.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
+            )
+            {
                 Image(
                     painter = painterResource(id = DesignR.drawable.ic_logo_transparent),
                     contentDescription = stringResource(R.string.medsy_logo_content_desc),
-                    modifier = Modifier.width(LoginConstants.LogoWidth),
-                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier.size(90.dp),
+                    contentScale = ContentScale.Fit,
                 )
-
                 Text(
-                    text = stringResource(R.string.app_name),
-                    style = MaterialTheme.typography.displaySmall.copy(
+                    text = stringResource(R.string.login_welcome_back),
+                    style = MaterialTheme.typography.headlineLarge.copy(
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.onBackground,
                     ),
                 )
 
-                Spacer(modifier = Modifier.height(LoginConstants.SpacerLogoText))
-
                 Text(
                     text = stringResource(R.string.login_motto),
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
                     ),
                     modifier = Modifier.fillMaxWidth(),
                 )
 
-                Spacer(modifier = Modifier.height(LoginConstants.SpacerMottoBadge))
+                Spacer(modifier = Modifier.height(32.dp))
 
-                LoginTip()
+                LoginEmailTextField(state.email, state.emailErrorRes, onIntent)
 
-                Spacer(modifier = Modifier.height(LoginConstants.SpacerTextForm))
+                LoginPasswordInput(
+                    password = state.password,
+                    onPasswordChange = { onIntent(LoginUIIntent.PasswordChanged(it)) },
+                    errorRes = state.passwordErrorRes,
+                )
 
-
-                Column(
-                    modifier = Modifier.padding(LoginConstants.AuthCardPadding),
-                    verticalArrangement = Arrangement.spacedBy(
-                        LoginConstants.AuthCardContentSpacing,
-                    ),
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
                 ) {
-
-                    MedsyTextField(
-                        value = state.email,
-                        onValueChange = { onIntent(LoginIntent.EmailChanged(it)) },
-                        placeholder = { Text(stringResource(R.string.auth_email)) },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.Email,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        },
-                        singleLine = true,
-                        errorRes = state.emailErrorRes,
+                    Text(
+                        text = stringResource(R.string.login_forgot_password),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                        ),
+                        modifier = Modifier
+                            .clickable { }
                     )
+                }
 
-                    LoginPasswordInput(
-                        password = state.password,
-                        onPasswordChange = { onIntent(LoginIntent.PasswordChanged(it)) },
-                        passwordVisible = passwordVisible,
-                        onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
-                        errorRes = state.passwordErrorRes,
-                    )
+                Spacer(modifier = Modifier.height(8.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End,
-                    ) {
+                MedsyButton(
+                    onClick = {
+                        focusManager.clearFocus()
+                        onIntent(LoginUIIntent.Submit)
+                    },
+                    isLoading = state.isLoading,
+                ) {
+                    if (state.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    } else {
                         Text(
-                            text = stringResource(R.string.login_forgot_password),
-                            style = MaterialTheme.typography.bodyMedium.copy(
+                            text = stringResource(R.string.auth_login_action),
+                            style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary,
+                                color = MaterialTheme.colorScheme.onPrimary,
                             ),
-                            modifier = Modifier.clickable { },
                         )
                     }
-
-                    Spacer(
-                        modifier = Modifier.height(
-                            LoginConstants.SpacerInputButton -
-                                    LoginConstants.AuthCardContentSpacing,
-                        ),
-                    )
-
-                    MedsyButton(
-                        onClick = { onIntent(LoginIntent.Submit) },
-                        isLoading = state.isLoading,
-                    ) {
-                        if (state.isLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                            )
-                        } else {
-                            Text(
-                                text = stringResource(R.string.auth_login_action),
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                ),
-                            )
-                        }
-                    }
                 }
+
+                OrDivider()
+
+                LoginSocialButton(
+                    iconResId = DesignR.drawable.ic_google,
+                    text = stringResource(R.string.login_google),
+                    enabled = !state.isLoading,
+                    onClick = {
+                        focusManager.clearFocus()
+                        onIntent(LoginUIIntent.LoginWithGoogle)
+                    },
+                )
 
                 DontHaveAccount(openRegistration)
             }
         }
-
-        MedsySnackbarHost(hostState = snackbarHostState)
     }
+
+    MedsySnackbarHost(hostState = snackbarHostState)
+}
+
+@Preview
+@Composable
+fun PreviewLoginScreen() {
+    LoginScreen(
+        state = LoginState(),
+        onIntent = {},
+        openRegistration = {}
+    )
 }

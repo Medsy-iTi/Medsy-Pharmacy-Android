@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medsy.domain.auth.usecase.RegisterPharmacyUseCase
 import com.medsy.domain.common.MedsyError
+import com.medsy.domain.common.location.GetAddressFromCoordinatesUseCase
 import com.medsy.domain.common.onError
 import com.medsy.domain.common.onSuccess
 import com.medsy.domain.pharmacy.model.RegisterPharmacyParams
@@ -23,41 +24,45 @@ import javax.inject.Inject
 @HiltViewModel
 class PharmacyRegistrationViewModel @Inject constructor(
     private val registerPharmacyUseCase: RegisterPharmacyUseCase,
+    private val getAddressFromCoordinatesUseCase: GetAddressFromCoordinatesUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PharmacyRegistrationState())
     val state = _state.asStateFlow()
 
-    private val _effect = Channel<PharmacyRegistrationEffect>(Channel.BUFFERED)
+    private val _effect = Channel<PharmacyRegistrationUIEffect>(Channel.BUFFERED)
     val effect = _effect.receiveAsFlow()
 
     private var licenseBytes: ByteArray? = null
 
-    fun onIntent(intent: PharmacyRegistrationIntent) {
+    fun onIntent(intent: PharmacyRegistrationUIIntent) {
         when (intent) {
-            is PharmacyRegistrationIntent.PharmacyNameChanged -> _state.update {
+            is PharmacyRegistrationUIIntent.PharmacyNameChanged -> _state.update {
                 it.copy(pharmacyName = intent.value, pharmacyNameErrorRes = null)
             }
 
-            is PharmacyRegistrationIntent.PhoneNumberChanged -> _state.update {
+            is PharmacyRegistrationUIIntent.PhoneNumberChanged -> _state.update {
                 it.copy(phoneNumber = intent.value)
             }
 
-            is PharmacyRegistrationIntent.AddressChanged -> _state.update {
+            is PharmacyRegistrationUIIntent.AddressChanged -> _state.update {
                 it.copy(address = intent.value)
             }
 
-            is PharmacyRegistrationIntent.LocationSelected -> _state.update {
-                it.copy(
-                    selectedLatitude = intent.latitude,
-                    selectedLongitude = intent.longitude,
-                    locationErrorRes = null,
-                )
+            is PharmacyRegistrationUIIntent.LocationSelected -> {
+                _state.update {
+                    it.copy(
+                        selectedLatitude = intent.latitude,
+                        selectedLongitude = intent.longitude,
+                        locationErrorRes = null,
+                    )
+                }
+                updateReadableAddress(intent.latitude, intent.longitude)
             }
 
-            is PharmacyRegistrationIntent.LicenseSelected -> handleLicenseSelected(intent)
+            is PharmacyRegistrationUIIntent.LicenseSelected -> handleLicenseSelected(intent)
 
-            is PharmacyRegistrationIntent.LicenseSelectionFailed -> {
+            is PharmacyRegistrationUIIntent.LicenseSelectionFailed -> {
                 licenseBytes = null
                 _state.update {
                     it.copy(
@@ -68,11 +73,24 @@ class PharmacyRegistrationViewModel @Inject constructor(
                 }
             }
 
-            PharmacyRegistrationIntent.Submit -> submit()
+            PharmacyRegistrationUIIntent.Submit -> submit()
         }
     }
 
-    private fun handleLicenseSelected(intent: PharmacyRegistrationIntent.LicenseSelected) {
+    private fun updateReadableAddress(lat: Double, long: Double) {
+        viewModelScope.launch {
+            getAddressFromCoordinatesUseCase(lat, long)
+                .onSuccess { result ->
+                    result?.let { address ->
+                        _state.update {
+                            it.copy(address = address)
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun handleLicenseSelected(intent: PharmacyRegistrationUIIntent.LicenseSelected) {
         val isPdf = intent.mimeType == PDF_MEDIA_TYPE ||
                 intent.displayName.endsWith(".pdf", ignoreCase = true)
         val error = when {
@@ -161,11 +179,11 @@ class PharmacyRegistrationViewModel @Inject constructor(
             ),
         ).onSuccess {
             _state.update { it.copy(isSubmitting = false) }
-            _effect.send(PharmacyRegistrationEffect.NavigatePendingApproval)
+            _effect.send(PharmacyRegistrationUIEffect.NavigatePendingApproval)
         }.onError { error ->
             _state.update { it.copy(isSubmitting = false) }
             _effect.send(
-                PharmacyRegistrationEffect.ShowError(error.toRegistrationMessageRes()),
+                PharmacyRegistrationUIEffect.ShowError(error.toRegistrationMessageRes()),
             )
         }
     }

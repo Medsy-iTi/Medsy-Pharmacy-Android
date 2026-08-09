@@ -28,17 +28,17 @@ class NoPharmacyInvitationsViewModel @Inject constructor(
     private val _state = MutableStateFlow(NoPharmacyInvitationsState())
     val state = _state.asStateFlow()
 
-    private val _effect = Channel<NoPharmacyInvitationsEffect>(Channel.BUFFERED)
+    private val _effect = Channel<NoPharmacyInvitationsUIEffect>(Channel.BUFFERED)
     val effect = _effect.receiveAsFlow()
 
     init {
         loadInvitations()
     }
 
-    fun onIntent(intent: NoPharmacyInvitationsIntent) {
+    fun onIntent(intent: NoPharmacyInvitationsUIIntent) {
         when (intent) {
-            NoPharmacyInvitationsIntent.Retry -> loadInvitations()
-            is NoPharmacyInvitationsIntent.AcceptInvitation -> acceptInvitation(intent.invitationId)
+            NoPharmacyInvitationsUIIntent.Retry -> loadInvitations()
+            is NoPharmacyInvitationsUIIntent.AcceptInvitation -> acceptInvitation(intent.invitationId)
         }
     }
 
@@ -61,7 +61,7 @@ class NoPharmacyInvitationsViewModel @Inject constructor(
             .onSuccess {
                 updateApprovalStatusUseCase(PharmacyApprovalStatus.Approved)
                 _state.update { it.copy(acceptingInvitationId = null) }
-                _effect.send(NoPharmacyInvitationsEffect.NavigateHome)
+                _effect.send(NoPharmacyInvitationsUIEffect.NavigateHome)
             }
             .onError { error ->
                 _state.update {
