@@ -204,7 +204,14 @@ class RequestDetailsViewModel @Inject constructor(
             
             _state.update { it.copy(isSubmitting = false) }
             result.onSuccess {
-                submittedOffersManager.addSubmittedRequestId(requestId)
+                val submittedItems = order.items.filter {
+                    (it.id.toLongOrNull() ?: -1L) in selectedIds
+                }
+                val offerData = com.medsy.presentation.orders.SubmittedOfferData(
+                    productImages = submittedItems.map { it.imageUrl },
+                    total = submittedItems.sumOf { it.price * it.quantity },
+                )
+                submittedOffersManager.addSubmittedOffer(requestId, offerData)
                 sendEffect(RequestDetailsUIEffect.ShowMessage(R.string.request_details_accepted_message))
                 kotlinx.coroutines.delay(1000)
                 sendEffect(RequestDetailsUIEffect.NavigateBack)

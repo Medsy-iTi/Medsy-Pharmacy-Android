@@ -269,6 +269,7 @@
     <string name="requests_filter_icon_desc">Filter</string>
     <string name="requests_search_icon_desc">Search</string>
     <string name="requests_status_offer_submitted">Offer Submitted</string>
+    <string name="requests_action_offer_submitted">Offer Submitted — Awaiting Patient</string>
     <!--  Requests — card  -->
     <string name="requests_status_in_progress">In Progress</string>
     <string name="requests_action_prepare">Prepare order</string>

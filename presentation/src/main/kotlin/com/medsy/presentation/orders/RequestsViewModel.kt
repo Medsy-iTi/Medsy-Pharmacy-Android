@@ -9,6 +9,7 @@ import com.medsy.domain.orders.model.RequestStatusConstants
 import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -36,6 +37,8 @@ class RequestsViewModel @Inject constructor(
 
     private val mutableEffect = Channel<RequestsUIEffect>(Channel.BUFFERED)
     val effect = mutableEffect.receiveAsFlow()
+
+    private var loadJob: Job? = null
 
     fun onIntent(intent: RequestsUIIntent) {
         when (intent) {
@@ -78,18 +81,27 @@ class RequestsViewModel @Inject constructor(
     }
 
     private fun loadRequests() {
-        viewModelScope.launch {
+        // Cancel any in-flight request to avoid parallel duplicate HTTP calls.
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
             val result = getCurrentPharmacyRequestsUseCase(page = 0, size = 10, sort = listOf("id,desc"))
 
             result.onSuccess { requestPage ->
                 val submitted = submittedOffersManager.submittedRequestIds.value
+                val offerDataMap = submittedOffersManager.submittedOfferData.value
                 val uiRequests = requestPage.content
                     .map { request ->
                         var summary = request.toPresentation()
                         if (submitted.contains(request.id) && (summary.status == RequestStatus.New || summary.status == RequestStatus.Searching)) {
                             summary = summary.copy(status = RequestStatus.OfferSubmitted)
+                        }
+                        offerDataMap[request.id]?.let { offerData ->
+                            summary = summary.copy(
+                                productImages = offerData.productImages,
+                                total = offerData.total,
+                            )
                         }
                         summary
                     }

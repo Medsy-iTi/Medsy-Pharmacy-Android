@@ -177,6 +177,27 @@ fun RequestCard(
                     )
                 }
 
+                RequestStatus.OfferSubmitted -> Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 14.dp)
+                        .height(52.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(
+                            MaterialTheme.extendedColors.blueContainer.copy(alpha = 0.5f)
+                        )
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(R.string.requests_action_offer_submitted),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.extendedColors.blueContent.copy(alpha = 0.6f),
+                    )
+                }
+
                 RequestStatus.InProgress -> PrepareRequestButton(
                     onClick = onPrepareClick,
                     modifier = Modifier.padding(top = 14.dp),
@@ -186,7 +207,6 @@ fun RequestCard(
                 RequestStatus.Cancelled -> Unit
                 RequestStatus.Completed -> Unit
                 RequestStatus.Expired -> Unit
-                else -> {}
             }
         }
     }
