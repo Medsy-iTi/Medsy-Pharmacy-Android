@@ -6,7 +6,9 @@ data class PharmacyRequestDomain(
     val deliveryLatitude: Double?,
     val deliveryLongitude: Double?,
     val deliveryAddress: String?,
-    val status: String,
+    val requestStatus: String,
+    val assignmentStatus: PharmacyRequestAssignmentStatus,
+    val distanceKm: Double?,
     val createdAt: String,
     val items: List<RequestItemDomain>,
     val prescriptionUrl: String?,
@@ -15,6 +17,24 @@ data class PharmacyRequestDomain(
     val paymentMethod: String?,
     val notes: String?
 )
+
+enum class PharmacyRequestAssignmentStatus(val apiValue: String?) {
+    Pending("PENDING"),
+    OfferCreated("OFFER_CREATED"),
+    Expired("EXPIRED"),
+    Unknown(null),
+    ;
+
+    companion object {
+        fun fromApiValue(value: String?): PharmacyRequestAssignmentStatus =
+            when (value?.uppercase()) {
+                "PENDING" -> Pending
+                "OFFER_CREATED" -> OfferCreated
+                "EXPIRED" -> Expired
+                else -> Unknown
+            }
+    }
+}
 
 data class RequestItemDomain(
     val id: Long,

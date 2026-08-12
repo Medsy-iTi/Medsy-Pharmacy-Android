@@ -1,7 +1,7 @@
 package com.medsy.data.orders.mapper
 
 import com.medsy.data.BuildConfig.BASE_URL
-import com.medsy.data.orders.model.PharmacyRequestDto
+import com.medsy.data.orders.model.PharmacyRequestAssignmentDto
 import com.medsy.data.orders.model.PharmacyRequestPageDto
 import com.medsy.data.orders.model.PharmacyOrderDto
 import com.medsy.data.orders.model.PharmacyOrderItemDto
@@ -11,6 +11,7 @@ import com.medsy.domain.orders.model.OrderItemDomain
 import com.medsy.domain.orders.model.PharmacyOrderDomain
 import com.medsy.domain.orders.model.PharmacyOrderPageDomain
 import com.medsy.domain.orders.model.PharmacyRequestDomain
+import com.medsy.domain.orders.model.PharmacyRequestAssignmentStatus
 import com.medsy.domain.orders.model.PharmacyRequestPageDomain
 import com.medsy.domain.orders.model.RequestItemDomain
 
@@ -25,21 +26,24 @@ fun PharmacyRequestPageDto.toDomain(): PharmacyRequestPageDomain {
     )
 }
 
-fun PharmacyRequestDto.toDomain(): PharmacyRequestDomain {
+fun PharmacyRequestAssignmentDto.toDomain(): PharmacyRequestDomain {
+    val medicineRequest = request
     return PharmacyRequestDomain(
-        id = id,
-        customerId = customerId,
-        deliveryLatitude = deliveryLatitude,
-        deliveryLongitude = deliveryLongitude,
-        deliveryAddress = deliveryAddress,
-        status = status,
-        createdAt = createdAt,
-        items = items.map { it.toDomain() },
-        prescriptionUrl = prescriptionUrl?.let { if (it.startsWith("http")) it else "${BASE_URL}$it" },
-        customerName = customerName,
-        customerPhone = customerPhone,
-        paymentMethod = paymentMethod,
-        notes = notes
+        id = medicineRequest.id,
+        customerId = medicineRequest.customerId,
+        deliveryLatitude = medicineRequest.deliveryLatitude,
+        deliveryLongitude = medicineRequest.deliveryLongitude,
+        deliveryAddress = medicineRequest.deliveryAddress,
+        requestStatus = medicineRequest.status,
+        assignmentStatus = PharmacyRequestAssignmentStatus.fromApiValue(assignmentStatus),
+        distanceKm = distanceKm,
+        createdAt = medicineRequest.createdAt,
+        items = medicineRequest.items.map { it.toDomain() },
+        prescriptionUrl = medicineRequest.prescriptionUrl?.let { if (it.startsWith("http")) it else "${BASE_URL}$it" },
+        customerName = medicineRequest.customerName,
+        customerPhone = medicineRequest.customerPhone,
+        paymentMethod = medicineRequest.paymentMethod,
+        notes = medicineRequest.notes
     )
 }
 

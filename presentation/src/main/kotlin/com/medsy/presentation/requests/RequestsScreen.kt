@@ -1,15 +1,19 @@
 package com.medsy.presentation.requests
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -77,9 +81,14 @@ fun RequestsScreen(
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
         ) {
+            RequestsFiltersRow(
+                selected = state.selectedFilter,
+                onSelected = { onIntent(RequestsUIIntent.FilterSelected(it)) },
+            )
             RequestsSearchBar(
                 query = state.searchQuery,
                 onQueryChange = { onIntent(RequestsUIIntent.SearchQueryChanged(it)) },
+                modifier = Modifier.padding(top = 12.dp),
             )
 
             when {
@@ -103,7 +112,9 @@ fun RequestsScreen(
                             item = item,
                             onClick = { onIntent(RequestsUIIntent.RequestClicked(item.id)) })
                         if (index == state.visibleRequests.lastIndex && state.canLoadMore) {
-                            LaunchedEffect(item.stableKey) { onIntent(RequestsUIIntent.LoadMore) }
+                            LaunchedEffect(item.stableKey, state.selectedFilter) {
+                                onIntent(RequestsUIIntent.LoadMore)
+                            }
                         }
                     }
                     if (state.isLoadingMore) {
@@ -119,6 +130,34 @@ fun RequestsScreen(
             }
         }
     }
+}
+
+@Composable
+private fun RequestsFiltersRow(
+    selected: RequestsFilter,
+    onSelected: (RequestsFilter) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        RequestsFilter.entries.forEach { filter ->
+            FilterChip(
+                selected = selected == filter,
+                onClick = { onSelected(filter) },
+                label = { Text(stringResource(filter.labelRes())) },
+            )
+        }
+    }
+}
+
+private fun RequestsFilter.labelRes(): Int = when (this) {
+    RequestsFilter.All -> R.string.requests_filter_all
+    RequestsFilter.Pending -> R.string.requests_filter_pending
+    RequestsFilter.OfferCreated -> R.string.requests_filter_offer_created
+    RequestsFilter.Expired -> R.string.requests_filter_expired
 }
 
 @Composable

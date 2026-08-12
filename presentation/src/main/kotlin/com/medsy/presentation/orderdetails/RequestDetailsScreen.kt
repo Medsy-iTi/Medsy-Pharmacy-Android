@@ -30,6 +30,7 @@ import com.medsy.designsystem.components.showSuccess
 import kotlinx.coroutines.launch
 import com.medsy.presentation.orderdetails.components.CustomerNotesSection
 import com.medsy.presentation.orderdetails.components.RequestActionButtons
+import com.medsy.presentation.orderdetails.components.RequestAssignmentStatusCard
 import com.medsy.presentation.orderdetails.components.RequestDetailsTopBar
 import com.medsy.presentation.orderdetails.components.RequestInfoCard
 import com.medsy.presentation.orderdetails.components.RequestTotalSummaryRow
@@ -118,7 +119,7 @@ fun RequestDetailsScreen(
                 .padding(paddingValues),
         ) {
             RequestDetailsTopBar(
-                isNewOrder = request.isNew,
+                isNewOrder = request.isNew && state.canCreateOffer,
                 onBackClick = { onIntent(RequestDetailsUIIntent.BackClicked) },
                 modifier = Modifier.padding(horizontal = 12.dp),
             )
@@ -129,6 +130,13 @@ fun RequestDetailsScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp),
             ) {
+                if (!state.canCreateOffer) {
+                    RequestAssignmentStatusCard(
+                        status = state.assignmentStatus,
+                        modifier = Modifier.padding(top = 16.dp),
+                    )
+                }
+
                 RequestInfoCard(
                     orderId = request.id,
                     minutesAgo = request.minutesAgo,
@@ -149,6 +157,7 @@ fun RequestDetailsScreen(
                     onAddSubstituteClick = { itemId ->
                         onIntent(RequestDetailsUIIntent.AddSubstituteClicked(itemId))
                     },
+                    readOnly = !state.canCreateOffer,
                     modifier = Modifier.padding(top = 24.dp),
                 )
 
@@ -185,13 +194,15 @@ fun RequestDetailsScreen(
                 )
             }
 
-            RequestActionButtons(
-                isSubmitting = state.isSubmitting,
-                onAcceptClick = { onIntent(RequestDetailsUIIntent.AcceptRequestClicked) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
-            )
+            if (state.canCreateOffer) {
+                RequestActionButtons(
+                    isSubmitting = state.isSubmitting,
+                    onAcceptClick = { onIntent(RequestDetailsUIIntent.AcceptRequestClicked) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surface)
+                )
+            }
         }
     }
 }

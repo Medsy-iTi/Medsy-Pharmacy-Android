@@ -7,12 +7,22 @@ enum class PharmacyWorkSource {
 }
 
 enum class PharmacyWorkStatus {
-    Searching,
+    CanOffer,
+    OfferCreatedRequest,
+    ExpiredRequest,
+    UnavailableRequest,
     WaitingForCustomer,
     RejectedOffer,
     Preparing,
     OnTheWay,
     Delivered,
+}
+
+enum class RequestsFilter {
+    All,
+    Pending,
+    OfferCreated,
+    Expired,
 }
 
 enum class PaymentMethod {

@@ -296,7 +296,10 @@
 
 
     <!--  Requests — filters & search  -->
-    <string name="requests_filter_all">All Orders</string>
+    <string name="requests_filter_all">All</string>
+    <string name="requests_filter_pending">Pending</string>
+    <string name="requests_filter_offer_created">Offer Created</string>
+    <string name="requests_filter_expired">Expired</string>
     <string name="requests_filter_new_format">New (%1$d)</string>
     <string name="requests_filter_in_progress_format">In Progress (%1$d)</string>
     <string name="requests_filter_delivered">Delivered</string>
@@ -304,7 +307,9 @@
     <string name="requests_filter_icon_desc">Filter</string>
     <string name="requests_search_icon_desc">Search</string>
     <string name="requests_status_offer_submitted">Offer Submitted</string>
-    <string name="requests_action_offer_submitted">Offer Submitted — Awaiting Patient</string>
+    <string name="requests_status_pending">Can offer</string>
+    <string name="requests_status_offer_created">Offer created</string>
+    <string name="requests_status_unavailable">Unavailable</string>
     <!--  Requests — card  -->
     <string name="requests_status_in_progress">In Progress</string>
     <string name="requests_action_prepare">Prepare order</string>
@@ -331,8 +336,12 @@
     <string name="request_details_view_payment_summary">View payment summary</string>
     <string name="request_details_reject">Reject order</string>
     <string name="request_details_contact_customer">Contact customer</string>
-    <string name="request_details_accept">Accept Order</string>
+    <string name="request_details_accept">Send Offer</string>
     <string name="request_details_accepted_message">Order accepted</string>
+    <string name="request_details_offer_submitted_message">Offer submitted successfully</string>
+    <string name="request_details_offer_already_submitted">An offer has already been submitted for this request</string>
+    <string name="request_details_request_expired">This request has expired</string>
+    <string name="request_details_request_unavailable">This request is unavailable for offers</string>
     <string name="request_details_rejected_message">Order rejected</string>
     <string name="request_details_no_prescription">No prescription sent</string>
     <string name="request_details_payment_method">Payment method</string>

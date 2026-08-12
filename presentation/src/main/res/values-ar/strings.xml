@@ -295,7 +295,10 @@
     <string name="auth_error_no_pharmacy">يجب أن يكون حسابك مرتبطًا بصيدلية</string>
 
     <!--  Requests — filters & search  -->
-    <string name="requests_filter_all">جميع الطلبات</string>
+    <string name="requests_filter_all">الكل</string>
+    <string name="requests_filter_pending">قيد الانتظار</string>
+    <string name="requests_filter_offer_created">تم إنشاء العرض</string>
+    <string name="requests_filter_expired">منتهي</string>
     <string name="requests_filter_new_format">جديدة %1$d</string>
     <string name="requests_filter_in_progress_format">قيد التجهيز %1$d</string>
     <string name="requests_filter_delivered">تم التوصيل</string>
@@ -303,8 +306,10 @@
     <string name="requests_filter_icon_desc">فلترة</string>
     <string name="requests_search_icon_desc">بحث</string>
     <string name="requests_status_offer_submitted">تم إرسال العرض</string>
+    <string name="requests_status_pending">يمكن تقديم عرض</string>
+    <string name="requests_status_offer_created">تم إنشاء العرض</string>
+    <string name="requests_status_unavailable">غير متاح</string>
     <!--  Requests — card  -->
-    <string name="requests_action_offer_submitted">تم إرسال العرض — في انتظار المريض</string>
     <string name="requests_status_in_progress">قيد التجهيز</string>
     <string name="requests_action_prepare">تجهيز الطلب</string>
     <string name="requests_payment_prefix">الدفع: %1$s</string>
@@ -330,8 +335,12 @@
     <string name="request_details_view_payment_summary">عرض ملخص الدفع</string>
     <string name="request_details_reject">رفض الطلب</string>
     <string name="request_details_contact_customer">تواصل مع العميل</string>
-    <string name="request_details_accept">قبول الطلب</string>
+    <string name="request_details_accept">إرسال العرض</string>
     <string name="request_details_accepted_message">تم قبول الطلب</string>
+    <string name="request_details_offer_submitted_message">تم إرسال العرض بنجاح</string>
+    <string name="request_details_offer_already_submitted">تم إرسال عرض لهذا الطلب بالفعل</string>
+    <string name="request_details_request_expired">انتهت صلاحية هذا الطلب</string>
+    <string name="request_details_request_unavailable">هذا الطلب غير متاح لتقديم عرض</string>
     <string name="request_details_rejected_message">تم رفض الطلب</string>
     <string name="request_details_no_prescription">لم يتم إرسال روشتة</string>
     <string name="request_details_payment_method">طريقة الدفع</string>

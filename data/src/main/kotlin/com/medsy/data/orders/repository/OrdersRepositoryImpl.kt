@@ -9,6 +9,7 @@ import com.medsy.domain.orders.model.PharmacyOrderDomain
 import com.medsy.domain.orders.model.PharmacyOrderPageDomain
 import com.medsy.domain.orders.model.PharmacyRequestDomain
 import com.medsy.domain.orders.model.PharmacyRequestPageDomain
+import com.medsy.domain.orders.model.PharmacyRequestAssignmentStatus
 import com.medsy.domain.orders.repository.OrdersRepository
 import javax.inject.Inject
 
@@ -22,9 +23,15 @@ class OrdersRepositoryImpl @Inject constructor(
     override suspend fun getCurrentPharmacyRequests(
         page: Int,
         size: Int,
-        sort: List<String>?
+        sort: List<String>?,
+        assignmentStatus: PharmacyRequestAssignmentStatus?,
     ): MedsyResult<PharmacyRequestPageDomain, MedsyError.Remote> =
-        remoteDataSource.getCurrentPharmacyRequests(page, size, sort).map { dto ->
+        remoteDataSource.getCurrentPharmacyRequests(
+            page,
+            size,
+            sort,
+            assignmentStatus?.apiValue,
+        ).map { dto ->
             dto.toDomain().also { pageData ->
                 pageData.content.forEach { requestCache[it.id] = it }
             }

@@ -2,7 +2,7 @@ package com.medsy.data.remote.api
 
 import com.medsy.data.orders.model.PharmacyOrderDto
 import com.medsy.data.orders.model.PharmacyOrderPageDto
-import com.medsy.data.orders.model.PharmacyRequestDto
+import com.medsy.data.orders.model.PharmacyRequestAssignmentDto
 import com.medsy.data.orders.model.PharmacyRequestPageDto
 import com.medsy.data.orders.remote.dto.CreateOfferRequestDto
 import com.medsy.data.products.remote.dto.ProductsPageDto
@@ -19,13 +19,14 @@ interface ApiService{
     suspend fun getCurrentPharmacyRequests(
         @Query("page") page: Int,
         @Query("size") size: Int,
-        @Query("sort") sort: List<String>? = null
+        @Query("sort") sort: List<String>? = null,
+        @Query("status") assignmentStatus: String? = null,
     ): Response<ApiResponse<PharmacyRequestPageDto>>
 
-    @GET("api/v1/requests/{requestId}")
+    @GET("api/v1/pharmacies/requests/{requestId}")
     suspend fun getRequestById(
         @Path("requestId") requestId: Long,
-    ): Response<ApiResponse<PharmacyRequestDto>>
+    ): Response<ApiResponse<PharmacyRequestAssignmentDto>>
 
     @GET("api/v1/orders/pharmacy/{pharmacyId}")
     suspend fun getPharmacyOrders(

@@ -4,6 +4,7 @@ import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
 import com.medsy.domain.orders.model.PharmacyRequestDomain
 import com.medsy.domain.orders.model.PharmacyRequestPageDomain
+import com.medsy.domain.orders.model.PharmacyRequestAssignmentStatus
 import com.medsy.domain.orders.model.PharmacyOrderDomain
 import com.medsy.domain.orders.model.PharmacyOrderPageDomain
 
@@ -12,7 +13,8 @@ interface OrdersRepository {
     suspend fun getCurrentPharmacyRequests(
         page: Int,
         size: Int,
-        sort: List<String>?
+        sort: List<String>?,
+        assignmentStatus: PharmacyRequestAssignmentStatus? = null,
     ): MedsyResult<PharmacyRequestPageDomain, MedsyError.Remote>
 
     suspend fun getRequestDetails(requestId: Long): MedsyResult<PharmacyRequestDomain, MedsyError.Remote>

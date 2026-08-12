@@ -20,10 +20,28 @@ import com.medsy.presentation.requests.PharmacyWorkStatus
 @Composable
 fun RequestStatusBadge(status: PharmacyWorkStatus, modifier: Modifier = Modifier) {
     val (container: Color, content: Color, labelRes: Int) = when (status) {
-        PharmacyWorkStatus.Searching -> Triple(
+        PharmacyWorkStatus.CanOffer -> Triple(
             MaterialTheme.extendedColors.blueContainer,
             MaterialTheme.extendedColors.blueContent,
-            R.string.request_details_new_badge
+            R.string.requests_status_pending
+        )
+
+        PharmacyWorkStatus.OfferCreatedRequest -> Triple(
+            MaterialTheme.extendedColors.blueContainer,
+            MaterialTheme.extendedColors.blueContent,
+            R.string.requests_status_offer_created
+        )
+
+        PharmacyWorkStatus.ExpiredRequest -> Triple(
+            MaterialTheme.extendedColors.redContainer,
+            MaterialTheme.extendedColors.redContent,
+            R.string.requests_status_expired
+        )
+
+        PharmacyWorkStatus.UnavailableRequest -> Triple(
+            MaterialTheme.colorScheme.surfaceVariant,
+            MaterialTheme.colorScheme.onSurfaceVariant,
+            R.string.requests_status_unavailable
         )
 
         PharmacyWorkStatus.WaitingForCustomer -> Triple(

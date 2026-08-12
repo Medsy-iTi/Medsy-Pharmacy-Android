@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PharmacyRequestPageDto(
-    val content: List<PharmacyRequestDto>,
+    val content: List<PharmacyRequestAssignmentDto>,
     val pageNumber: Int,
     val pageSize: Int,
     val totalElements: Long,
@@ -14,7 +14,14 @@ data class PharmacyRequestPageDto(
 )
 
 @JsonClass(generateAdapter = true)
-data class PharmacyRequestDto(
+data class PharmacyRequestAssignmentDto(
+    val request: MedicineRequestDto,
+    val assignmentStatus: String? = null,
+    val distanceKm: Double? = null,
+)
+
+@JsonClass(generateAdapter = true)
+data class MedicineRequestDto(
     val id: Long,
     val customerId: Long,
     val deliveryLatitude: Double?,
