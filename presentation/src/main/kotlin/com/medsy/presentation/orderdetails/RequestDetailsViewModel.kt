@@ -10,6 +10,7 @@ import com.medsy.domain.offer.model.CreateOfferRequest
 import com.medsy.domain.offer.usecase.CreatePharmacyOfferUseCase
 import com.medsy.domain.orders.model.PharmacyRequest
 import com.medsy.domain.orders.model.PharmacyRequestAssignmentStatus
+import com.medsy.domain.orders.model.PharmacyRequestStatus
 import com.medsy.domain.orders.usecase.GetRequestDetailsUseCase
 import com.medsy.presentation.R
 import com.medsy.presentation.orderdetails.substitute.SubstituteResultManager
@@ -131,7 +132,8 @@ class RequestDetailsViewModel @Inject constructor(
 
     private fun reconcileRequest(request: PharmacyRequest) {
         mutableState.update { previous ->
-            val actionable = request.assignmentStatus == PharmacyRequestAssignmentStatus.Pending
+            val actionable = request.requestStatus == PharmacyRequestStatus.Searching &&
+                request.assignmentStatus == PharmacyRequestAssignmentStatus.Pending
             val validIds = request.items.mapTo(mutableSetOf()) { it.id }
             val initialSelection = request.items.mapTo(mutableSetOf()) { it.id }
             previous.copy(

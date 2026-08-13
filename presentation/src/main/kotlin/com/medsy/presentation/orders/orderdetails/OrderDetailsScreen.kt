@@ -27,7 +27,6 @@ import com.medsy.designsystem.components.MedsyButton
 import com.medsy.designsystem.components.MedsySnackbarHost
 import com.medsy.designsystem.components.showSuccess
 import com.medsy.presentation.R
-import com.medsy.presentation.orderdetails.PharmacyWorkDetailsScreen
 import com.medsy.presentation.orderdetails.components.RequestDetailsShimmer
 
 @Composable
@@ -74,19 +73,19 @@ fun OrderDetailsScreen(
     val order = state.order
     if (order != null) {
         Box(Modifier.fillMaxSize()) {
-            PharmacyWorkDetailsScreen(
+            OrderDetailsContent(
                 order = order,
                 isRefreshing = state.isRefreshing,
-                isMarkingReady = state.isMarkingReady,
-                isReadyActionBlocked = state.isReadyActionBlocked,
-                showReadyConfirmation = state.showReadyConfirmation,
+                isUpdatingStatus = state.isUpdatingStatus,
+                isStatusActionBlocked = state.isStatusActionBlocked,
+                showStatusConfirmation = state.showStatusConfirmation,
                 onBack = { onIntent(OrderDetailsUIIntent.BackClicked) },
                 onRefresh = { onIntent(OrderDetailsUIIntent.Refresh) },
                 onCall = { onIntent(OrderDetailsUIIntent.CallCustomerClicked) },
                 onLocation = { onIntent(OrderDetailsUIIntent.OpenLocationClicked) },
-                onMarkReady = { onIntent(OrderDetailsUIIntent.MarkReadyClicked) },
-                onConfirmReady = { onIntent(OrderDetailsUIIntent.ConfirmMarkReady) },
-                onDismissReady = { onIntent(OrderDetailsUIIntent.DismissReadyConfirmation) },
+                onStatusAction = { onIntent(OrderDetailsUIIntent.StatusActionClicked) },
+                onConfirmStatus = { onIntent(OrderDetailsUIIntent.ConfirmStatusAction) },
+                onDismissStatus = { onIntent(OrderDetailsUIIntent.DismissStatusConfirmation) },
             )
             MedsySnackbarHost(snackbarHostState, Modifier.align(Alignment.BottomCenter))
         }

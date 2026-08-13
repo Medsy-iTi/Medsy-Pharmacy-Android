@@ -7,7 +7,7 @@ sealed interface OrderDetailsUIIntent {
     data object BackClicked : OrderDetailsUIIntent
     data object CallCustomerClicked : OrderDetailsUIIntent
     data object OpenLocationClicked : OrderDetailsUIIntent
-    data object MarkReadyClicked : OrderDetailsUIIntent
-    data object DismissReadyConfirmation : OrderDetailsUIIntent
-    data object ConfirmMarkReady : OrderDetailsUIIntent
+    data object StatusActionClicked : OrderDetailsUIIntent
+    data object DismissStatusConfirmation : OrderDetailsUIIntent
+    data object ConfirmStatusAction : OrderDetailsUIIntent
 }

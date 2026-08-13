@@ -7,7 +7,7 @@ data class OrderDetailsUIState(
     val isRefreshing: Boolean = false,
     val hasError: Boolean = false,
     val order: PharmacyOrder? = null,
-    val showReadyConfirmation: Boolean = false,
-    val isMarkingReady: Boolean = false,
-    val isReadyActionBlocked: Boolean = false,
+    val showStatusConfirmation: Boolean = false,
+    val isUpdatingStatus: Boolean = false,
+    val isStatusActionBlocked: Boolean = false,
 )

@@ -14,18 +14,26 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.medsy.domain.orders.model.PharmacyRequestAssignmentStatus
+import com.medsy.domain.orders.model.PharmacyRequestStatus
 import com.medsy.presentation.R
 
 @Composable
-fun RequestAssignmentStatusCard(
-    status: PharmacyRequestAssignmentStatus,
+fun RequestStatusCard(
+    requestStatus: PharmacyRequestStatus,
+    assignmentStatus: PharmacyRequestAssignmentStatus,
     modifier: Modifier = Modifier,
 ) {
-    val labelRes = when (status) {
-        PharmacyRequestAssignmentStatus.Pending -> return
-        PharmacyRequestAssignmentStatus.OfferCreated -> R.string.request_details_offer_already_submitted
-        PharmacyRequestAssignmentStatus.Expired -> R.string.request_details_request_expired
-        PharmacyRequestAssignmentStatus.Unknown -> R.string.request_details_request_unavailable
+    val labelRes = when (requestStatus) {
+        PharmacyRequestStatus.Completed -> R.string.request_details_request_completed
+        PharmacyRequestStatus.Cancelled -> R.string.request_details_request_cancelled
+        PharmacyRequestStatus.Expired -> R.string.request_details_request_expired
+        PharmacyRequestStatus.Unknown -> R.string.request_details_request_unavailable
+        PharmacyRequestStatus.Searching -> when (assignmentStatus) {
+            PharmacyRequestAssignmentStatus.Pending -> return
+            PharmacyRequestAssignmentStatus.OfferCreated -> R.string.request_details_offer_already_submitted
+            PharmacyRequestAssignmentStatus.Expired -> R.string.request_details_request_expired
+            PharmacyRequestAssignmentStatus.Unknown -> R.string.request_details_request_unavailable
+        }
     }
 
     Card(

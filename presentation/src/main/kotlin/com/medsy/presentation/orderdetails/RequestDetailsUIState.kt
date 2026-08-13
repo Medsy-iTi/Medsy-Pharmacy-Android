@@ -2,6 +2,7 @@ package com.medsy.presentation.orderdetails
 
 import com.medsy.domain.orders.model.PharmacyRequest
 import com.medsy.domain.orders.model.PharmacyRequestAssignmentStatus
+import com.medsy.domain.orders.model.PharmacyRequestStatus
 
 data class SubstituteDraft(
     val productId: Long,
@@ -20,5 +21,16 @@ data class RequestDetailsUIState(
     val substitutes: Map<Long, SubstituteDraft> = emptyMap(),
 ) {
     val canCreateOffer: Boolean
-        get() = request?.assignmentStatus == PharmacyRequestAssignmentStatus.Pending
+        get() = request?.let {
+            it.requestStatus == PharmacyRequestStatus.Searching &&
+                it.assignmentStatus == PharmacyRequestAssignmentStatus.Pending
+        } == true
+
+    val offerSubtotal: Double
+        get() = request?.items
+            ?.filter { it.id in selectedItems }
+            ?.sumOf { item ->
+                (substitutes[item.id]?.productPrice ?: item.unitPrice) * item.quantity
+            }
+            ?: 0.0
 }

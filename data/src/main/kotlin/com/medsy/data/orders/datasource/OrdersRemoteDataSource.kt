@@ -23,9 +23,14 @@ interface OrdersRemoteDataSource {
         page: Int,
         size: Int,
         sort: List<String>?,
+        status: String? = null,
     ): MedsyResult<PharmacyOrderPageDto, MedsyError.Remote>
 
     suspend fun getOrderDetails(orderId: Long): MedsyResult<PharmacyOrderDto, MedsyError.Remote>
 
     suspend fun markOrderReady(orderId: Long): EmptyMedsyResult<MedsyError.Remote>
+
+    suspend fun markOrderOutForDelivery(orderId: Long): EmptyMedsyResult<MedsyError.Remote>
+
+    suspend fun markOrderDelivered(orderId: Long): EmptyMedsyResult<MedsyError.Remote>
 }

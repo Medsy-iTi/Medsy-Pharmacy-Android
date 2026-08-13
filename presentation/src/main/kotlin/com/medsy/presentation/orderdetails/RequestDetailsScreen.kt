@@ -28,6 +28,7 @@ import com.medsy.designsystem.components.MedsyButton
 import com.medsy.designsystem.components.MedsySnackbarHost
 import com.medsy.designsystem.components.showSuccess
 import com.medsy.presentation.R
+import com.medsy.presentation.orderdetails.components.RequestDetailsContent
 import com.medsy.presentation.orderdetails.components.RequestDetailsShimmer
 
 @Composable
@@ -57,8 +58,15 @@ fun RequestDetailsRoot(
             when (effect) {
                 RequestDetailsUIEffect.NavigateBack -> onNavigateBack()
                 is RequestDetailsUIEffect.DialPhoneNumber -> onDialPhoneNumber(effect.phoneNumber)
-                is RequestDetailsUIEffect.OpenLocationOnMap -> onOpenLocationOnMap(effect.latitude, effect.longitude)
-                is RequestDetailsUIEffect.NavigateToSubstituteSearch -> onNavigateToSubstituteSearch(effect.itemId)
+                is RequestDetailsUIEffect.OpenLocationOnMap -> onOpenLocationOnMap(
+                    effect.latitude,
+                    effect.longitude
+                )
+
+                is RequestDetailsUIEffect.NavigateToSubstituteSearch -> onNavigateToSubstituteSearch(
+                    effect.itemId
+                )
+
                 is RequestDetailsUIEffect.ShowMessage -> snackbarHostState.showSuccess(
                     ContextCompat.getString(context, effect.messageRes)
                 )
@@ -77,12 +85,8 @@ fun RequestDetailsScreen(
     val request = state.request
     if (request != null) {
         Box(Modifier.fillMaxSize()) {
-            PharmacyWorkDetailsScreen(
-                request = request,
-                isRefreshing = state.isRefreshing,
-                isSubmitting = state.isSubmitting,
-                selectedItems = state.selectedItems,
-                substitutes = state.substitutes,
+            RequestDetailsContent(
+                state = state,
                 onBack = { onIntent(RequestDetailsUIIntent.BackClicked) },
                 onRefresh = { onIntent(RequestDetailsUIIntent.Refresh) },
                 onCall = { onIntent(RequestDetailsUIIntent.CallCustomerClicked) },
@@ -97,10 +101,23 @@ fun RequestDetailsScreen(
     }
     Scaffold(snackbarHost = { MedsySnackbarHost(snackbarHostState) }) { padding ->
         when {
-            state.isLoading -> Box(Modifier.fillMaxSize().padding(padding)) { RequestDetailsShimmer() }
-            state.hasError -> Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+            state.isLoading -> Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            ) { RequestDetailsShimmer() }
+
+            state.hasError -> Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentAlignment = Alignment.Center
+            ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(stringResource(R.string.request_details_load_error), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        stringResource(R.string.request_details_load_error),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                     MedsyButton(
                         onClick = { onIntent(RequestDetailsUIIntent.Retry) },
                         modifier = Modifier.padding(top = 16.dp),

@@ -8,6 +8,7 @@ import com.medsy.domain.common.map
 import com.medsy.domain.common.EmptyMedsyResult
 import com.medsy.domain.orders.model.PharmacyOrder
 import com.medsy.domain.orders.model.PharmacyOrderPage
+import com.medsy.domain.orders.model.PharmacyOrderStatus
 import com.medsy.domain.orders.model.PharmacyRequest
 import com.medsy.domain.orders.model.PharmacyRequestPage
 import com.medsy.domain.orders.model.PharmacyRequestAssignmentStatus
@@ -50,12 +51,35 @@ class OrdersRepositoryImpl @Inject constructor(
         page: Int,
         size: Int,
         sort: List<String>?,
-    ): MedsyResult<PharmacyOrderPage, MedsyError.Remote> =
-        remoteDataSource.getPharmacyOrders(pharmacyId, page, size, sort).map { dto ->
-            dto.toDomain().also { pageData ->
-                pageData.content.forEach { orderCache[it.id] = it }
+        statuses: List<PharmacyOrderStatus>?,
+    ): MedsyResult<PharmacyOrderPage, MedsyError.Remote> {
+        val requestedStatuses = statuses.orEmpty().mapNotNull(PharmacyOrderStatus::apiValue)
+        if (requestedStatuses.isEmpty()) {
+            return remoteDataSource.getPharmacyOrders(pharmacyId, page, size, sort).map { dto ->
+                dto.toDomain().also(::cacheOrders)
             }
         }
+
+        val statusPages = mutableListOf<PharmacyOrderPage>()
+        requestedStatuses.forEach { status ->
+            when (val result = remoteDataSource.getPharmacyOrders(pharmacyId, page, size, sort, status)) {
+                is MedsyResult.Success -> statusPages += result.data.toDomain()
+                is MedsyResult.Error -> return result
+            }
+        }
+        return MedsyResult.Success(
+            PharmacyOrderPage(
+                content = statusPages.flatMap(PharmacyOrderPage::content)
+                    .distinctBy(PharmacyOrder::id)
+                    .sortedByDescending(PharmacyOrder::id),
+                pageNumber = page,
+                pageSize = size * requestedStatuses.size,
+                totalElements = statusPages.sumOf(PharmacyOrderPage::totalElements),
+                totalPages = statusPages.maxOfOrNull(PharmacyOrderPage::totalPages) ?: 0,
+                last = statusPages.all(PharmacyOrderPage::last),
+            ).also(::cacheOrders)
+        )
+    }
 
     override suspend fun getOrderDetails(
         orderId: Long,
@@ -68,7 +92,19 @@ class OrdersRepositoryImpl @Inject constructor(
         orderId: Long,
     ): EmptyMedsyResult<MedsyError.Remote> = remoteDataSource.markOrderReady(orderId)
 
+    override suspend fun markOrderOutForDelivery(
+        orderId: Long,
+    ): EmptyMedsyResult<MedsyError.Remote> = remoteDataSource.markOrderOutForDelivery(orderId)
+
+    override suspend fun markOrderDelivered(
+        orderId: Long,
+    ): EmptyMedsyResult<MedsyError.Remote> = remoteDataSource.markOrderDelivered(orderId)
+
     override fun getCachedRequest(requestId: Long): PharmacyRequest? = requestCache[requestId]
 
     override fun getCachedOrder(orderId: Long): PharmacyOrder? = orderCache[orderId]
+
+    private fun cacheOrders(page: PharmacyOrderPage) {
+        page.content.forEach { orderCache[it.id] = it }
+    }
 }

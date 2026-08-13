@@ -6,7 +6,7 @@ data class PharmacyRequest(
     val deliveryLatitude: Double?,
     val deliveryLongitude: Double?,
     val deliveryAddress: String?,
-    val requestStatus: String,
+    val requestStatus: PharmacyRequestStatus,
     val assignmentStatus: PharmacyRequestAssignmentStatus,
     val distanceKm: Double?,
     val createdAt: String,
@@ -17,6 +17,25 @@ data class PharmacyRequest(
     val paymentMethod: PaymentMethod,
     val notes: String?
 )
+
+enum class PharmacyRequestStatus {
+    Searching,
+    Completed,
+    Cancelled,
+    Expired,
+    Unknown,
+    ;
+
+    companion object {
+        fun fromApiValue(value: String?): PharmacyRequestStatus = when (value?.uppercase()) {
+            "SEARCHING" -> Searching
+            "COMPLETED" -> Completed
+            "CANCELLED" -> Cancelled
+            "EXPIRED" -> Expired
+            else -> Unknown
+        }
+    }
+}
 
 enum class PharmacyRequestAssignmentStatus(val apiValue: String?) {
     Pending("PENDING"),
@@ -73,8 +92,26 @@ data class PharmacyOrder(
     val createdAt: String?,
     val status: PharmacyOrderStatus,
     val paymentMethod: PaymentMethod,
+    val fulfillmentMethod: OrderFulfillmentMethod,
     val items: List<OrderItem>,
-)
+) {
+    val effectiveFulfillmentMethod: OrderFulfillmentMethod
+        get() = when (fulfillmentMethod) {
+            OrderFulfillmentMethod.Delivery,
+            OrderFulfillmentMethod.Pickup -> fulfillmentMethod
+            OrderFulfillmentMethod.Unknown -> when (status) {
+                PharmacyOrderStatus.ReadyForPickup -> OrderFulfillmentMethod.Pickup
+                PharmacyOrderStatus.Pending,
+                PharmacyOrderStatus.PendingPayment,
+                PharmacyOrderStatus.Preparing,
+                PharmacyOrderStatus.ReadyForDelivery,
+                PharmacyOrderStatus.OutForDelivery,
+                PharmacyOrderStatus.Delivered,
+                PharmacyOrderStatus.Cancelled,
+                PharmacyOrderStatus.Unknown -> OrderFulfillmentMethod.Delivery
+            }
+        }
+}
 
 data class OrderItem(
     val id: Long,
@@ -121,6 +158,19 @@ enum class PharmacyOrderStatus {
     val canMarkReady: Boolean
         get() = this == Preparing
 
+    val apiValue: String?
+        get() = when (this) {
+            Pending -> "PENDING"
+            PendingPayment -> "PENDING_PAYMENT"
+            Preparing -> "PREPARING"
+            ReadyForPickup -> "READY_FOR_PICKUP"
+            ReadyForDelivery -> "READY_FOR_DELIVERY"
+            OutForDelivery -> "OUT_FOR_DELIVERY"
+            Delivered -> "DELIVERED"
+            Cancelled -> "CANCELLED"
+            Unknown -> null
+        }
+
     companion object {
         fun fromApiValue(value: String?): PharmacyOrderStatus = when (value?.uppercase()) {
             "PENDING" -> Pending
@@ -131,6 +181,21 @@ enum class PharmacyOrderStatus {
             "OUT_FOR_DELIVERY" -> OutForDelivery
             "DELIVERED" -> Delivered
             "CANCELLED" -> Cancelled
+            else -> Unknown
+        }
+    }
+}
+
+enum class OrderFulfillmentMethod {
+    Delivery,
+    Pickup,
+    Unknown,
+    ;
+
+    companion object {
+        fun fromApiValue(value: String?): OrderFulfillmentMethod = when (value?.uppercase()) {
+            "DELIVERY" -> Delivery
+            "PICKUP" -> Pickup
             else -> Unknown
         }
     }

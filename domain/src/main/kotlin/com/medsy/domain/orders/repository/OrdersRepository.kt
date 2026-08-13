@@ -8,6 +8,7 @@ import com.medsy.domain.orders.model.PharmacyRequestPage
 import com.medsy.domain.orders.model.PharmacyRequestAssignmentStatus
 import com.medsy.domain.orders.model.PharmacyOrder
 import com.medsy.domain.orders.model.PharmacyOrderPage
+import com.medsy.domain.orders.model.PharmacyOrderStatus
 
 interface OrdersRepository {
 
@@ -25,11 +26,16 @@ interface OrdersRepository {
         page: Int,
         size: Int,
         sort: List<String>?,
+        statuses: List<PharmacyOrderStatus>? = null,
     ): MedsyResult<PharmacyOrderPage, MedsyError.Remote>
 
     suspend fun getOrderDetails(orderId: Long): MedsyResult<PharmacyOrder, MedsyError.Remote>
 
     suspend fun markOrderReady(orderId: Long): EmptyMedsyResult<MedsyError.Remote>
+
+    suspend fun markOrderOutForDelivery(orderId: Long): EmptyMedsyResult<MedsyError.Remote>
+
+    suspend fun markOrderDelivered(orderId: Long): EmptyMedsyResult<MedsyError.Remote>
 
     fun getCachedRequest(requestId: Long): PharmacyRequest?
 
