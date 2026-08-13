@@ -1,6 +1,6 @@
 package com.medsy.domain.orders.model
 
-data class PharmacyRequestDomain(
+data class PharmacyRequest(
     val id: Long,
     val customerId: Long,
     val deliveryLatitude: Double?,
@@ -10,11 +10,11 @@ data class PharmacyRequestDomain(
     val assignmentStatus: PharmacyRequestAssignmentStatus,
     val distanceKm: Double?,
     val createdAt: String,
-    val items: List<RequestItemDomain>,
+    val items: List<RequestItem>,
     val prescriptionUrl: String?,
     val customerName: String?,
     val customerPhone: String?,
-    val paymentMethod: String?,
+    val paymentMethod: PaymentMethod,
     val notes: String?
 )
 
@@ -36,7 +36,7 @@ enum class PharmacyRequestAssignmentStatus(val apiValue: String?) {
     }
 }
 
-data class RequestItemDomain(
+data class RequestItem(
     val id: Long,
     val productId: Long,
     val imageUrl: String?,
@@ -48,8 +48,8 @@ data class RequestItemDomain(
     val unitPrice: Double
 )
 
-data class PharmacyRequestPageDomain(
-    val content: List<PharmacyRequestDomain>,
+data class PharmacyRequestPage(
+    val content: List<PharmacyRequest>,
     val pageNumber: Int,
     val pageSize: Int,
     val totalElements: Long,
@@ -57,7 +57,7 @@ data class PharmacyRequestPageDomain(
     val last: Boolean
 )
 
-data class PharmacyOrderDomain(
+data class PharmacyOrder(
     val id: Long,
     val customerId: Long,
     val customerName: String?,
@@ -69,17 +69,14 @@ data class PharmacyOrderDomain(
     val prescriptionUrl: String?,
     val offerId: Long?,
     val subTotal: Double,
-    val deliveryFee: Double,
     val total: Double,
     val createdAt: String?,
-    val status: String,
-    val paymentMethod: String?,
-    val paymentStatus: String?,
-    val paidAt: String?,
-    val items: List<OrderItemDomain>,
+    val status: PharmacyOrderStatus,
+    val paymentMethod: PaymentMethod,
+    val items: List<OrderItem>,
 )
 
-data class OrderItemDomain(
+data class OrderItem(
     val id: Long,
     val productId: Long?,
     val productName: String,
@@ -91,11 +88,64 @@ data class OrderItemDomain(
     val imageUrl: String?,
 )
 
-data class PharmacyOrderPageDomain(
-    val content: List<PharmacyOrderDomain>,
+data class PharmacyOrderPage(
+    val content: List<PharmacyOrder>,
     val pageNumber: Int,
     val pageSize: Int,
     val totalElements: Long,
     val totalPages: Int,
     val last: Boolean,
 )
+
+enum class PharmacyOrderStatus {
+    Pending,
+    PendingPayment,
+    Preparing,
+    ReadyForPickup,
+    ReadyForDelivery,
+    OutForDelivery,
+    Delivered,
+    Cancelled,
+    Unknown;
+
+    val isWaitingForPatient: Boolean
+        get() = this == Pending || this == PendingPayment
+
+    val isInProgress: Boolean
+        get() = this == Preparing || this == ReadyForPickup ||
+            this == ReadyForDelivery || this == OutForDelivery
+
+    val isCompleted: Boolean
+        get() = this == Delivered || this == Cancelled
+
+    val canMarkReady: Boolean
+        get() = this == Preparing
+
+    companion object {
+        fun fromApiValue(value: String?): PharmacyOrderStatus = when (value?.uppercase()) {
+            "PENDING" -> Pending
+            "PENDING_PAYMENT" -> PendingPayment
+            "PREPARING" -> Preparing
+            "READY_FOR_PICKUP" -> ReadyForPickup
+            "READY_FOR_DELIVERY" -> ReadyForDelivery
+            "OUT_FOR_DELIVERY" -> OutForDelivery
+            "DELIVERED" -> Delivered
+            "CANCELLED" -> Cancelled
+            else -> Unknown
+        }
+    }
+}
+
+enum class PaymentMethod {
+    Cash,
+    Card,
+    Unknown;
+
+    companion object {
+        fun fromApiValue(value: String?): PaymentMethod = when (value?.uppercase()) {
+            "CASH" -> Cash
+            "CARD" -> Card
+            else -> Unknown
+        }
+    }
+}

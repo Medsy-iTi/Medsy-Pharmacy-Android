@@ -2,6 +2,8 @@ package com.medsy.data.offer.di
 
 import com.medsy.data.di.AuthenticatedRetrofit
 import com.medsy.data.offer.remote.api.OfferApi
+import com.medsy.data.offer.datasource.OfferRemoteDataSource
+import com.medsy.data.offer.datasource.OfferRemoteDataSourceImpl
 import com.medsy.data.offer.repository.OfferRepositoryImpl
 import com.medsy.domain.offer.repository.OfferRepository
 import dagger.Binds
@@ -21,6 +23,12 @@ abstract class OfferDataModule {
     abstract fun bindOfferRepository(
         impl: OfferRepositoryImpl
     ): OfferRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindOfferRemoteDataSource(
+        impl: OfferRemoteDataSourceImpl,
+    ): OfferRemoteDataSource
 
     companion object {
         @Provides

@@ -7,16 +7,18 @@ import com.medsy.data.orders.model.PharmacyOrderDto
 import com.medsy.data.orders.model.PharmacyOrderItemDto
 import com.medsy.data.orders.model.PharmacyOrderPageDto
 import com.medsy.data.orders.model.RequestItemDto
-import com.medsy.domain.orders.model.OrderItemDomain
-import com.medsy.domain.orders.model.PharmacyOrderDomain
-import com.medsy.domain.orders.model.PharmacyOrderPageDomain
-import com.medsy.domain.orders.model.PharmacyRequestDomain
+import com.medsy.domain.orders.model.OrderItem
+import com.medsy.domain.orders.model.PaymentMethod
+import com.medsy.domain.orders.model.PharmacyOrder
+import com.medsy.domain.orders.model.PharmacyOrderPage
+import com.medsy.domain.orders.model.PharmacyOrderStatus
+import com.medsy.domain.orders.model.PharmacyRequest
 import com.medsy.domain.orders.model.PharmacyRequestAssignmentStatus
-import com.medsy.domain.orders.model.PharmacyRequestPageDomain
-import com.medsy.domain.orders.model.RequestItemDomain
+import com.medsy.domain.orders.model.PharmacyRequestPage
+import com.medsy.domain.orders.model.RequestItem
 
-fun PharmacyRequestPageDto.toDomain(): PharmacyRequestPageDomain {
-    return PharmacyRequestPageDomain(
+fun PharmacyRequestPageDto.toDomain(): PharmacyRequestPage {
+    return PharmacyRequestPage(
         content = content.map { it.toDomain() },
         pageNumber = pageNumber,
         pageSize = pageSize,
@@ -26,9 +28,9 @@ fun PharmacyRequestPageDto.toDomain(): PharmacyRequestPageDomain {
     )
 }
 
-fun PharmacyRequestAssignmentDto.toDomain(): PharmacyRequestDomain {
+fun PharmacyRequestAssignmentDto.toDomain(): PharmacyRequest {
     val medicineRequest = request
-    return PharmacyRequestDomain(
+    return PharmacyRequest(
         id = medicineRequest.id,
         customerId = medicineRequest.customerId,
         deliveryLatitude = medicineRequest.deliveryLatitude,
@@ -42,14 +44,14 @@ fun PharmacyRequestAssignmentDto.toDomain(): PharmacyRequestDomain {
         prescriptionUrl = medicineRequest.prescriptionUrl?.let { if (it.startsWith("http")) it else "${BASE_URL}$it" },
         customerName = medicineRequest.customerName,
         customerPhone = medicineRequest.customerPhone,
-        paymentMethod = medicineRequest.paymentMethod,
+        paymentMethod = PaymentMethod.fromApiValue(medicineRequest.paymentMethod),
         notes = medicineRequest.notes
     )
 }
 
-fun RequestItemDto.toDomain(): RequestItemDomain {
+fun RequestItemDto.toDomain(): RequestItem {
     val resolvedProduct = product
-    return RequestItemDomain(
+    return RequestItem(
         id = id,
         productId = productId ?: resolvedProduct?.id ?: 0L,
         imageUrl = resolvedProduct?.imageUrl,
@@ -62,7 +64,7 @@ fun RequestItemDto.toDomain(): RequestItemDomain {
     )
 }
 
-fun PharmacyOrderPageDto.toDomain(): PharmacyOrderPageDomain = PharmacyOrderPageDomain(
+fun PharmacyOrderPageDto.toDomain(): PharmacyOrderPage = PharmacyOrderPage(
     content = content.map(PharmacyOrderDto::toDomain),
     pageNumber = pageNumber,
     pageSize = pageSize,
@@ -71,7 +73,7 @@ fun PharmacyOrderPageDto.toDomain(): PharmacyOrderPageDomain = PharmacyOrderPage
     last = last,
 )
 
-fun PharmacyOrderDto.toDomain(): PharmacyOrderDomain = PharmacyOrderDomain(
+fun PharmacyOrderDto.toDomain(): PharmacyOrder = PharmacyOrder(
     id = id,
     customerId = customerId,
     customerName = customerName,
@@ -83,17 +85,14 @@ fun PharmacyOrderDto.toDomain(): PharmacyOrderDomain = PharmacyOrderDomain(
     prescriptionUrl = prescriptionUrl?.let { if (it.startsWith("http")) it else "${BASE_URL}$it" },
     offerId = offerId,
     subTotal = subTotal ?: 0.0,
-    deliveryFee = deliveryFee ?: 0.0,
     total = total ?: 0.0,
     createdAt = createdAt,
-    status = status,
-    paymentMethod = paymentMethod,
-    paymentStatus = paymentStatus,
-    paidAt = paidAt,
+    status = PharmacyOrderStatus.fromApiValue(status),
+    paymentMethod = PaymentMethod.fromApiValue(paymentMethod),
     items = items.map(PharmacyOrderItemDto::toDomain),
 )
 
-fun PharmacyOrderItemDto.toDomain(): OrderItemDomain = OrderItemDomain(
+fun PharmacyOrderItemDto.toDomain(): OrderItem = OrderItem(
     id = id,
     productId = productId ?: product?.id,
     productName = product?.productName ?: product?.name.orEmpty(),

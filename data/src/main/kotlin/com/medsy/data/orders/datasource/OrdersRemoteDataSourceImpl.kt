@@ -6,6 +6,8 @@ import com.medsy.data.orders.model.PharmacyRequestAssignmentDto
 import com.medsy.data.orders.model.PharmacyRequestPageDto
 import com.medsy.data.remote.api.ApiService
 import com.medsy.data.remote.network.safeApiCall
+import com.medsy.data.remote.network.safeEmptyRestCall
+import com.medsy.domain.common.EmptyMedsyResult
 import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
 import javax.inject.Inject
@@ -33,10 +35,15 @@ class OrdersRemoteDataSourceImpl @Inject constructor(
         size: Int,
         sort: List<String>?,
     ): MedsyResult<PharmacyOrderPageDto, MedsyError.Remote> =
-        safeApiCall { apiService.getPharmacyOrders(pharmacyId, page, size, null) }
+        safeApiCall { apiService.getPharmacyOrders(pharmacyId, page, size, sort) }
 
     override suspend fun getOrderDetails(
         orderId: Long,
     ): MedsyResult<PharmacyOrderDto, MedsyError.Remote> =
         safeApiCall { apiService.getOrderById(orderId) }
+
+    override suspend fun markOrderReady(
+        orderId: Long,
+    ): EmptyMedsyResult<MedsyError.Remote> =
+        safeEmptyRestCall { apiService.markOrderReady(orderId) }
 }

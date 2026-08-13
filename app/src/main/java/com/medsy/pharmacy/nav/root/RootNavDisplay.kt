@@ -16,7 +16,6 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.medsy.pharmacy.nav.nested.NestedNavDisplay
 import com.medsy.pharmacy.nav.openDialer
-import com.medsy.pharmacy.nav.openImage
 import com.medsy.pharmacy.nav.openLocation
 import com.medsy.presentation.auth.approval.ApprovalRoot
 import com.medsy.presentation.auth.approval.ApprovalScreenStatus
@@ -29,7 +28,6 @@ import com.medsy.presentation.auth.registerpharmacy.PharmacyRegistrationRoot
 import com.medsy.presentation.notifications.NotificationsRoot
 import com.medsy.presentation.onboarding.OnboardingRoot
 import com.medsy.presentation.orderdetails.RequestDetailsRoot
-import com.medsy.presentation.orderdetails.offer.OfferDetailsRoot
 import com.medsy.presentation.orderdetails.substitute.SubstituteSearchRoot
 import com.medsy.presentation.orders.orderdetails.OrderDetailsRoot
 import com.medsy.presentation.profile.invitationsent.InvitationSentRoot
@@ -43,7 +41,9 @@ const val NAVIGATION_DURATION_MILLIS = 350
 @Composable
 fun RootNavDisplay(
     pendingRequestId: Long? = null,
-    onPendingRequestConsumed: () -> Unit = {}
+    pendingOrderId: Long? = null,
+    onPendingRequestConsumed: () -> Unit = {},
+    onPendingOrderConsumed: () -> Unit = {},
 ) {
     val backStack = rememberNavBackStack(Route.Splash)
 
@@ -51,6 +51,13 @@ fun RootNavDisplay(
         if (pendingRequestId != null && backStack.firstOrNull() == Route.NestedNav) {
             backStack.push(Route.RequestDetails(pendingRequestId))
             onPendingRequestConsumed()
+        }
+    }
+
+    LaunchedEffect(pendingOrderId, backStack.lastOrNull()) {
+        if (pendingOrderId != null && backStack.firstOrNull() == Route.NestedNav) {
+            backStack.push(Route.OrderDetails(pendingOrderId))
+            onPendingOrderConsumed()
         }
     }
 
@@ -157,7 +164,6 @@ fun RootNavDisplay(
                     openRequestDetails = { requestId ->
                         backStack.push(Route.RequestDetails(requestId))
                     },
-                    openOfferDetails = { offerId -> backStack.push(Route.OfferDetails(offerId)) },
                     openOrderDetails = { orderId -> backStack.push(Route.OrderDetails(orderId)) },
                     openInvitePharmacist = { backStack.push(Route.InvitePharmacist) },
                     openPharmacistsList = { backStack.push(Route.PharmacistsList) },
@@ -168,9 +174,12 @@ fun RootNavDisplay(
             entry<Route.Notifications> {
                 NotificationsRoot(
                     onNavigateBack = { backStack.pop() },
-                    onNotificationClick = { requestId ->
+                    onRequestNotificationClick = { requestId ->
                         backStack.push(Route.RequestDetails(requestId))
-                    }
+                    },
+                    onOrderNotificationClick = { orderId ->
+                        backStack.push(Route.OrderDetails(orderId))
+                    },
                 )
             }
             entry<Route.RequestDetails> { route ->
@@ -180,17 +189,9 @@ fun RootNavDisplay(
                     onNavigateBack = { backStack.pop() },
                     onDialPhoneNumber = context::openDialer,
                     onOpenLocationOnMap = context::openLocation,
-                    onOpenPaymentSummary = { },
                     onNavigateToSubstituteSearch = { itemId ->
                         backStack.push(Route.SubstituteSearch(itemId))
-                    },
-                    onOpenPrescriptionImage = context::openImage
-                )
-            }
-            entry<Route.OfferDetails> { route ->
-                OfferDetailsRoot(
-                    offerId = route.offerId,
-                    onNavigateBack = { backStack.pop() },
+                    }
                 )
             }
             entry<Route.OrderDetails> { route ->

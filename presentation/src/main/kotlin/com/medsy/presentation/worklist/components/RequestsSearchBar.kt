@@ -1,4 +1,4 @@
-package com.medsy.presentation.requests.components
+package com.medsy.presentation.worklist.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search

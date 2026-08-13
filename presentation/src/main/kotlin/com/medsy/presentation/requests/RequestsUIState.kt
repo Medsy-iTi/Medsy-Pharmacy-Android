@@ -1,9 +1,12 @@
 package com.medsy.presentation.requests
 
+import com.medsy.domain.orders.model.PharmacyRequest
+
 data class RequestsUIState(
     val selectedFilter: RequestsFilter = RequestsFilter.All,
     val searchQuery: String = "",
     val filterStates: Map<RequestsFilter, RequestsFilterState> = emptyMap(),
+    val isRefreshing: Boolean = false,
 ) {
     val selectedFilterState: RequestsFilterState
         get() = filterStates[selectedFilter] ?: RequestsFilterState()
@@ -20,12 +23,14 @@ data class RequestsUIState(
     val canLoadMore: Boolean
         get() = selectedFilterState.canLoadMore
 
-    val visibleRequests: List<PharmacyWorkItem>
-        get() = selectedFilterState.requests.filter { it.matchesQuery(searchQuery) }
+    val visibleRequests: List<PharmacyRequest>
+        get() = selectedFilterState.requests.filter {
+            searchQuery.isBlank() || it.id.toString().contains(searchQuery, ignoreCase = true)
+        }
 }
 
 data class RequestsFilterState(
-    val requests: List<PharmacyWorkItem> = emptyList(),
+    val requests: List<PharmacyRequest> = emptyList(),
     val nextPage: Int = 0,
     val canLoadMore: Boolean = false,
     val hasLoaded: Boolean = false,

@@ -4,12 +4,11 @@ import com.medsy.data.orders.model.PharmacyOrderDto
 import com.medsy.data.orders.model.PharmacyOrderPageDto
 import com.medsy.data.orders.model.PharmacyRequestAssignmentDto
 import com.medsy.data.orders.model.PharmacyRequestPageDto
-import com.medsy.data.orders.remote.dto.CreateOfferRequestDto
 import com.medsy.data.products.remote.dto.ProductsPageDto
 import com.medsy.data.remote.network.ApiResponse
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.PATCH
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -41,10 +40,9 @@ interface ApiService{
         @Path("orderId") orderId: Long,
     ): Response<ApiResponse<PharmacyOrderDto>>
 
-    @POST("api/v1/offers/requests/{requestId}")
-    suspend fun createOffer(
-        @Path("requestId") requestId: Long,
-        @retrofit2.http.Body request: CreateOfferRequestDto
+    @PATCH("api/v1/pharmacists/orders/{orderId}/ready")
+    suspend fun markOrderReady(
+        @Path("orderId") orderId: Long,
     ): Response<ApiResponse<Any>>
 
     @GET("api/v1/products/search")

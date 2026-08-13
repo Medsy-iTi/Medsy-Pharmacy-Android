@@ -6,6 +6,7 @@ import com.medsy.data.orders.model.PharmacyRequestAssignmentDto
 import com.medsy.data.orders.model.PharmacyRequestPageDto
 import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
+import com.medsy.domain.common.EmptyMedsyResult
 
 interface OrdersRemoteDataSource {
     suspend fun getCurrentPharmacyRequests(
@@ -25,4 +26,6 @@ interface OrdersRemoteDataSource {
     ): MedsyResult<PharmacyOrderPageDto, MedsyError.Remote>
 
     suspend fun getOrderDetails(orderId: Long): MedsyResult<PharmacyOrderDto, MedsyError.Remote>
+
+    suspend fun markOrderReady(orderId: Long): EmptyMedsyResult<MedsyError.Remote>
 }

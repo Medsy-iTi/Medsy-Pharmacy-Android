@@ -30,6 +30,7 @@ import com.medsy.presentation.R
 @Composable
 fun RequestActionButtons(
     isSubmitting: Boolean,
+    enabled: Boolean,
     onAcceptClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -41,6 +42,7 @@ fun RequestActionButtons(
         MedsyButton(
             onClick = onAcceptClick,
             isLoading = isSubmitting,
+            enabled = enabled,
             modifier = Modifier.padding(top = 12.dp),
         ) {
             if (isSubmitting) {
@@ -52,7 +54,7 @@ fun RequestActionButtons(
             } else {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = stringResource(R.string.request_details_accept),
+                        text = stringResource(R.string.request_details_send_offer),
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Icon(
