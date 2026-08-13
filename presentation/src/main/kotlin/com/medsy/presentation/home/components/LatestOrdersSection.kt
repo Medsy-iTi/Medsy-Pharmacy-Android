@@ -1,21 +1,10 @@
 package com.medsy.presentation.home.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Storefront
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,54 +14,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.medsy.designsystem.components.MedsyLottie
+import com.medsy.domain.orders.model.PharmacyOrder
 import com.medsy.presentation.R
-import com.medsy.presentation.home.HomeOrderUI
 
 @Composable
-fun LatestOrdersSection(
-    orders: List<HomeOrderUI>,
-    onViewAllClick: () -> Unit,
-    onOrderClick: (String) -> Unit
-) {
+fun LatestOrdersSection(orders: List<PharmacyOrder>, onOrderClick: (Long) -> Unit) {
     Column {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(R.string.home_latest_orders_title),
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
+        Text(stringResource(R.string.home_latest_orders_title), style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+        Spacer(Modifier.height(12.dp))
         if (orders.isEmpty()) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                MedsyLottie(
-                    resId = com.medsy.designsystem.R.raw.no_data_found,
-                    modifier = Modifier.height(150.dp)
-                )
-                Text(
-                    text = stringResource(R.string.requests_active_empty),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                MedsyLottie(com.medsy.designsystem.R.raw.no_data_found, Modifier.height(150.dp))
+                Text(stringResource(R.string.orders_empty), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                orders.forEach { order ->
-                    OrderListItem(
-                        order = order,
-                        onClick = { onOrderClick(order.requestId) }
-                    )
-                }
+                orders.forEach { order -> OrderListItem(order) { onOrderClick(order.id) } }
             }
         }
-
     }
 }

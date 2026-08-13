@@ -4,13 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medsy.domain.common.onError
 import com.medsy.domain.common.onSuccess
+import com.medsy.domain.dashboard.model.DashboardPeriod
+import com.medsy.domain.dashboard.usecase.GetPharmacyDashboardUseCase
 import com.medsy.domain.notifications.usecase.GetUnreadCountUseCase
-import com.medsy.domain.orders.model.RequestStatusConstants
 import com.medsy.domain.orders.usecase.GetPharmacyOrdersUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
 import com.medsy.presentation.common.util.toMessageRes
-import com.medsy.presentation.requests.SubmittedOffersManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,152 +23,113 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getMyPharmacy: GetMyPharmacyUseCase,
-    private val getPharmacyOrdersUseCase: GetPharmacyOrdersUseCase,
-    private val submittedOffersManager: SubmittedOffersManager,
-    private val getUnreadCount: GetUnreadCountUseCase
+    private val getDashboard: GetPharmacyDashboardUseCase,
+    private val getPharmacyOrders: GetPharmacyOrdersUseCase,
+    private val getUnreadCount: GetUnreadCountUseCase,
 ) : ViewModel() {
-
-    private val _state = MutableStateFlow(HomeUIState())
-    val state = _state.asStateFlow()
+    private val mutableState = MutableStateFlow(HomeUIState())
+    val state = mutableState.asStateFlow()
 
     private val mutableEffect = Channel<HomeUIEffect>(Channel.BUFFERED)
     val effect = mutableEffect.receiveAsFlow()
 
+    private var loadJob: Job? = null
+
     init {
-        loadHomeData()
-        observeSubmittedOffers()
-    }
-
-    private fun observeSubmittedOffers() {
-        viewModelScope.launch {
-            submittedOffersManager.submittedRequestIds.collect { submittedIds ->
-                _state.update { currentState ->
-                    val updatedOrders = currentState.latestOrders.map { order ->
-                        val reqId = order.requestId.toLongOrNull() ?: -1L
-                        if (submittedIds.contains(reqId) && order.status == HomeOrderStatus.NEW) {
-                            order.copy(status = HomeOrderStatus.OFFER_SUBMITTED)
-                        } else {
-                            order
-                        }
-                    }
-                    currentState.copy(latestOrders = updatedOrders)
-                }
-            }
-        }
-    }
-
-    private fun loadHomeData() {
-        _state.update { it.copy(isLoading = true) }
-        loadPharmacyInfo()
-        countNotifications()
-    }
-
-    private fun countNotifications() {
-        viewModelScope.launch {
-            getUnreadCount()
-                .onSuccess { notificationCount ->
-                    _state.update {
-                        it.copy(notificationsCount = notificationCount)
-                    }
-                }
-        }
-    }
-
-    private fun loadPharmacyInfo() {
-        viewModelScope.launch {
-            getMyPharmacy(forceRefresh = false)
-                .onSuccess { pharmacy ->
-                    loadOrders(pharmacy.id)
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            errorRes = null,
-                            pharmacyInfo = PharmacyUIInfo(
-                                name = pharmacy.name,
-                                address = pharmacy.address ?: "",
-                                pharmacyId = pharmacy.id.toString(),
-                                isOpen = true,
-                            )
-                        )
-                    }
-                }
-                .onError { error ->
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            errorRes = error.toMessageRes()
-                        )
-                    }
-                }
-        }
-    }
-
-    private fun loadOrders(pharmacyId: Long) {
-        viewModelScope.launch {
-            getPharmacyOrdersUseCase(
-                page = 0,
-                size = 3,
-                pharmacyId = pharmacyId,
-                sort = listOf("id,desc")
-            )
-                .onSuccess { page ->
-                    val newOrders = page.content.filter { req ->
-                        req.status == RequestStatusConstants.PENDING ||
-                                req.status == RequestStatusConstants.NEW ||
-                                req.status == RequestStatusConstants.SEARCHING
-                    }
-                    val submitted = submittedOffersManager.submittedRequestIds.value
-                    val latestThree = newOrders.map { req ->
-                        var mappedStatus = when (req.status) {
-                            RequestStatusConstants.PENDING, RequestStatusConstants.NEW, RequestStatusConstants.SEARCHING -> HomeOrderStatus.NEW
-                            RequestStatusConstants.IN_PROGRESS -> HomeOrderStatus.PREPARING
-                            RequestStatusConstants.DELIVERED -> HomeOrderStatus.DELIVERED
-                            else -> HomeOrderStatus.NEW
-                        }
-                        if (submitted.contains(req.id) && mappedStatus == HomeOrderStatus.NEW) {
-                            mappedStatus = HomeOrderStatus.OFFER_SUBMITTED
-                        }
-                        HomeOrderUI(
-                            id = "#${req.id}",
-                            requestId = req.id.toString(),
-                            distanceKm = 0.0, // Distance not available on request
-                            timeAgo = "",
-                            status = mappedStatus
-                        )
-                    }
-
-                    _state.update { currentState ->
-                        currentState.copy(
-                            latestOrders = latestThree,
-                            stats = currentState.stats.copy(
-                                newOrders = page.content.size,
-                            )
-                        )
-                    }
-                }
-        }
+        loadHomeData(userRefresh = false)
     }
 
     fun onIntent(intent: HomeUIIntent) {
         when (intent) {
-            HomeUIIntent.Refresh -> loadHomeData()
-            is HomeUIIntent.OnOrderClicked -> {
-                viewModelScope.launch {
-                    mutableEffect.send(HomeUIEffect.NavigateToOrderDetails(intent.orderId))
-                }
-            }
-
-            HomeUIIntent.OnViewAllOrdersClicked -> {
-                viewModelScope.launch {
-                    mutableEffect.send(HomeUIEffect.NavigateToViewAllOrders)
-                }
-            }
-
-            HomeUIIntent.OnNotificationsClicked -> {
-                viewModelScope.launch {
-                    mutableEffect.send(HomeUIEffect.OpenNotifications)
-                }
-            }
+            HomeUIIntent.Refresh -> loadHomeData(userRefresh = true)
+            is HomeUIIntent.OnOrderClicked -> sendEffect(HomeUIEffect.NavigateToOrderDetails(intent.orderId))
+            HomeUIIntent.OnViewAllOrdersClicked -> sendEffect(HomeUIEffect.NavigateToViewAllOrders)
+            HomeUIIntent.OnNotificationsClicked -> sendEffect(HomeUIEffect.OpenNotifications)
         }
+    }
+
+    private fun loadHomeData(userRefresh: Boolean) {
+        if (loadJob?.isActive == true) return
+        loadJob = viewModelScope.launch {
+            if (userRefresh && mutableState.value.pharmacy != null) {
+                mutableState.update { it.copy(isRefreshing = true, errorRes = null) }
+            } else mutableState.update { it.copy(isLoading = true, errorRes = null) }
+
+            launch {
+                getUnreadCount().onSuccess { count ->
+                    mutableState.update { it.copy(notificationsCount = count) }
+                }
+            }
+            getMyPharmacy(forceRefresh = true)
+                .onSuccess { pharmacy ->
+                    val pharmacy = pharmacy
+                    mutableState.update { it.copy(pharmacy = pharmacy) }
+                    if (pharmacy.isAdmin) loadAdminDashboard() else loadRecentOrders(pharmacy.id)
+
+                }.onError { error ->
+                    mutableState.update { current ->
+                        current.copy(
+                            isLoading = false,
+                            isRefreshing = false,
+                            errorRes = if (current.pharmacy == null) error.toMessageRes() else null,
+                        )
+                    }
+                }
+        }
+    }
+
+    private suspend fun loadAdminDashboard() {
+        getDashboard(DashboardPeriod.LastMonth)
+            .onSuccess { dashboard ->
+                mutableState.update {
+                    it.copy(
+                        dashboard = dashboard,
+                        latestOrders = dashboard.recentOrders,
+                        isLoading = false,
+                        isRefreshing = false,
+                        errorRes = null,
+                    )
+                }
+            }.onError { error ->
+                mutableState.update { current ->
+                    current.copy(
+                        isLoading = false,
+                        isRefreshing = false,
+                        errorRes = if (current.latestOrders.isEmpty()) error.toMessageRes() else null,
+                    )
+                }
+            }
+    }
+
+
+    private suspend fun loadRecentOrders(pharmacyId: Long) {
+
+
+        getPharmacyOrders(pharmacyId, 0, 3, listOf("id,desc"))
+            .onSuccess { orderPage ->
+                mutableState.update {
+                    it.copy(
+                        dashboard = null,
+                        latestOrders = orderPage.content,
+                        isLoading = false,
+                        isRefreshing = false,
+                        errorRes = null,
+                    )
+                }
+            }.onError { error ->
+                mutableState.update { current ->
+                    current.copy(
+                        isLoading = false,
+                        isRefreshing = false,
+                        errorRes = if (current.latestOrders.isEmpty()) error.toMessageRes() else null,
+                    )
+                }
+            }
+
+    }
+
+
+    private fun sendEffect(effect: HomeUIEffect) {
+        viewModelScope.launch { mutableEffect.send(effect) }
     }
 }
