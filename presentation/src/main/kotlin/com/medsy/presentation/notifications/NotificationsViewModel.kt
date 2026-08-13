@@ -35,6 +35,10 @@ class NotificationsViewModel @Inject constructor(
     companion object{
         const val KEY_REQUEST_ID = "requestId"
         const val KEY_ID = "id"
+        const val KEY_ORDER_ID = "orderId"
+        const val KEY_LEGACY_ORDER_ID = "orderID"
+        const val CATEGORY_REQUEST_IN_AREA = "REQUEST_IN_AREA"
+        const val CATEGORY_ORDER_CREATED = "ORDER_CREATED"
     }
 
     fun onIntent(intent: NotificationsUIIntent) {
@@ -105,13 +109,24 @@ class NotificationsViewModel @Inject constructor(
                     }
                 }
 
-                val requestIdStr =
-                    notification.dataPayload[KEY_REQUEST_ID] ?: notification.dataPayload[KEY_ID]
-                val requestId = requestIdStr?.toLongOrNull()
-                if (requestId != null) {
-                    mutableEffect.send(NotificationsUIEffect.NavigateToRequestDetails(requestId))
-                } else {
-                    loadNotifications()
+                when (notification.category.uppercase()) {
+                    CATEGORY_REQUEST_IN_AREA -> {
+                        val requestId = (
+                            notification.dataPayload[KEY_REQUEST_ID] ?: notification.dataPayload[KEY_ID]
+                        )?.toLongOrNull()
+                        if (requestId != null) {
+                            mutableEffect.send(NotificationsUIEffect.NavigateToRequestDetails(requestId))
+                        }
+                    }
+                    CATEGORY_ORDER_CREATED -> {
+                        val orderId = (
+                            notification.dataPayload[KEY_ORDER_ID] ?:
+                                notification.dataPayload[KEY_LEGACY_ORDER_ID]
+                        )?.toLongOrNull()
+                        if (orderId != null) {
+                            mutableEffect.send(NotificationsUIEffect.NavigateToOrderDetails(orderId))
+                        }
+                    }
                 }
             }
         }

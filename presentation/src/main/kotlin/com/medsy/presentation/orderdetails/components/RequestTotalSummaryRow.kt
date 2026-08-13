@@ -23,6 +23,7 @@ import com.medsy.presentation.R
 fun RequestTotalSummaryRow(
     total: Double,
     modifier: Modifier = Modifier,
+    labelRes: Int = R.string.request_details_total,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -42,7 +43,7 @@ fun RequestTotalSummaryRow(
         ) {
             Column {
                 Text(
-                    text = stringResource(R.string.request_details_total),
+                    text = stringResource(labelRes),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

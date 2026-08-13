@@ -14,41 +14,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.medsy.domain.orders.model.PaymentMethod
 import com.medsy.presentation.R
 
-import com.medsy.presentation.orderdetails.model.PaymentMethod
-
 @Composable
-fun PaymentMethodSection(
-    paymentMethod: PaymentMethod,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier = modifier.fillMaxWidth()) {
+fun PaymentMethodSection(paymentMethod: PaymentMethod, modifier: Modifier = Modifier) {
+    Column(modifier.fillMaxWidth()) {
         Text(
-            text = stringResource(R.string.request_details_payment_method),
+            stringResource(R.string.request_details_payment_method),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = 8.dp),
         )
-
         Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            border = BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
-            ),
+            Modifier.fillMaxWidth(),
+            RoundedCornerShape(16.dp),
+            CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)),
         ) {
-            val paymentString = when (paymentMethod) {
-                PaymentMethod.Visa -> stringResource(R.string.requests_payment_visa)
-                PaymentMethod.Mastercard -> stringResource(R.string.requests_payment_mastercard)
-                PaymentMethod.Cash -> stringResource(R.string.requests_payment_cash)
-                PaymentMethod.Unknown -> stringResource(R.string.request_details_payment_unavailable)
-            }
             Text(
-                text = paymentString,
+                stringResource(
+                    when (paymentMethod) {
+                        PaymentMethod.Cash -> R.string.requests_payment_cash
+                        PaymentMethod.Card -> R.string.requests_payment_card
+                        PaymentMethod.Unknown -> R.string.request_details_payment_unavailable
+                    }
+                ),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(16.dp),

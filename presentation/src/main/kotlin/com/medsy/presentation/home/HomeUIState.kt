@@ -1,42 +1,15 @@
 package com.medsy.presentation.home
 
+import com.medsy.domain.dashboard.model.PharmacyDashboard
+import com.medsy.domain.orders.model.PharmacyOrder
+import com.medsy.domain.pharmacy.model.MyPharmacy
+
 data class HomeUIState(
-    val pharmacyInfo: PharmacyUIInfo = PharmacyUIInfo(),
-    val stats: HomeStatsUI = HomeStatsUI(),
-    val latestOrders: List<HomeOrderUI> = emptyList(),
-    val isLoading: Boolean = false,
+    val pharmacy: MyPharmacy? = null,
+    val dashboard: PharmacyDashboard? = null,
+    val latestOrders: List<PharmacyOrder> = emptyList(),
+    val isLoading: Boolean = true,
+    val isRefreshing: Boolean = false,
     val errorRes: Int? = null,
-    val notificationsCount: Int = 0
+    val notificationsCount: Int = 0,
 )
-
-data class PharmacyUIInfo(
-    val name: String = "",
-    val address: String = "",
-    val isOpen: Boolean = false,
-    val closingTime: String = "",
-    val rating: Double = 0.0,
-    val reviewsCount: Int = 0,
-    val pharmacyId: String = ""
-)
-
-data class HomeStatsUI(
-    val newOrders: Int = 0,
-    val inProgress: Int = 0,
-    val deliveredToday: Int = 0,
-    val totalSales: String = "0"
-)
-
-data class HomeOrderUI(
-    val id: String,
-    val requestId: String,
-    val distanceKm: Double,
-    val timeAgo: String,
-    val status: HomeOrderStatus
-)
-
-enum class HomeOrderStatus {
-    NEW,
-    PREPARING,
-    DELIVERED,
-    OFFER_SUBMITTED
-}

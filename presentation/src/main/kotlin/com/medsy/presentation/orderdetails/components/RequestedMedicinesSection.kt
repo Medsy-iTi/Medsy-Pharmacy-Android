@@ -15,52 +15,71 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.medsy.domain.orders.model.OrderItem
+import com.medsy.domain.orders.model.RequestItem
 import com.medsy.presentation.R
-import com.medsy.presentation.orderdetails.model.RequestMedicineItem
+import com.medsy.presentation.orderdetails.SubstituteDraft
 
 @Composable
 fun RequestedMedicinesSection(
-    items: List<RequestMedicineItem>,
+    items: List<RequestItem>,
     selectedItems: Set<Long>,
+    substitutes: Map<Long, SubstituteDraft>,
     onItemCheckedChange: (Long) -> Unit,
     onAddSubstituteClick: (Long) -> Unit,
-    readOnly: Boolean = false,
+    readOnly: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    MedicinesCard(modifier) {
+        items.forEachIndexed { index, item ->
+            val substitute = substitutes[item.id]
+            MedicineRequestItemRow(
+                name = substitute?.productName ?: item.productName,
+                packInfo = listOfNotNull(item.strength, item.packSize, item.form).filter(String::isNotBlank).joinToString(" • "),
+                quantity = item.quantity,
+                price = substitute?.productPrice ?: item.unitPrice,
+                imageUrl = substitute?.productImage ?: item.imageUrl,
+                isChecked = item.id in selectedItems,
+                onCheckedChange = if (readOnly) null else { { onItemCheckedChange(item.id) } },
+                onAddSubstituteClick = if (readOnly) null else { { onAddSubstituteClick(item.id) } },
+            )
+            if (index != items.lastIndex) HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+        }
+    }
+}
+
+@Composable
+fun OrderedMedicinesSection(items: List<OrderItem>, modifier: Modifier = Modifier) {
+    MedicinesCard(modifier) {
+        items.forEachIndexed { index, item ->
+            MedicineRequestItemRow(
+                name = item.productName,
+                packInfo = listOfNotNull(item.strength, item.packSize, item.form).filter(String::isNotBlank).joinToString(" • "),
+                quantity = item.quantity,
+                price = item.unitPrice,
+                imageUrl = item.imageUrl,
+                isChecked = false,
+                onCheckedChange = null,
+            )
+            if (index != items.lastIndex) HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+        }
+    }
+}
+
+@Composable
+private fun MedicinesCard(modifier: Modifier, content: @Composable () -> Unit) {
+    Column(modifier.fillMaxWidth()) {
         Text(
-            text = stringResource(R.string.request_details_requested_medicines),
+            stringResource(R.string.request_details_requested_medicines),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = 8.dp),
         )
-
         Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            border = BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
-            ),
-        ) {
-            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                items.forEachIndexed { index, item ->
-                    val itemIdLong = item.id.toLongOrNull() ?: -1L
-                    MedicineRequestItemRow(
-                        item = item,
-                        isChecked = selectedItems.contains(itemIdLong),
-                        onCheckedChange = if (readOnly) null else { { _: Boolean -> onItemCheckedChange(itemIdLong) } },
-                        onAddSubstituteClick = if (readOnly) null else { { onAddSubstituteClick(itemIdLong) } },
-                    )
-                    if (index != items.lastIndex) {
-                        HorizontalDivider(
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
-                        )
-                    }
-                }
-            }
-        }
+            Modifier.fillMaxWidth(),
+            RoundedCornerShape(16.dp),
+            CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)),
+        ) { Column(Modifier.padding(horizontal = 16.dp)) { content() } }
     }
 }

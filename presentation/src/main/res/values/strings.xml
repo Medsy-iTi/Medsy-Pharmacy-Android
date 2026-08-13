@@ -252,6 +252,8 @@
     <string name="orders_timeline_preparing">Preparing</string>
     <string name="orders_timeline_on_the_way">On the way</string>
     <string name="orders_timeline_delivered">Delivered</string>
+    <string name="orders_timeline_placed">Placed</string>
+    <string name="orders_timeline_ready">Ready</string>
     <string name="orders_empty">No items in this filter.</string>
     <string name="orders_load_error">Could not load orders.</string>
     <string name="orders_customer_pending">Customer details pending</string>
@@ -296,7 +298,10 @@
 
 
     <!--  Requests — filters & search  -->
-    <string name="requests_filter_all">All Orders</string>
+    <string name="requests_filter_all">All</string>
+    <string name="requests_filter_pending">Pending</string>
+    <string name="requests_filter_offer_created">Offer Created</string>
+    <string name="requests_filter_expired">Expired</string>
     <string name="requests_filter_new_format">New (%1$d)</string>
     <string name="requests_filter_in_progress_format">In Progress (%1$d)</string>
     <string name="requests_filter_delivered">Delivered</string>
@@ -304,6 +309,9 @@
     <string name="requests_filter_icon_desc">Filter</string>
     <string name="requests_search_icon_desc">Search</string>
     <string name="requests_status_offer_submitted">Offer Submitted</string>
+    <string name="requests_status_pending">Can offer</string>
+    <string name="requests_status_offer_created">Offer created</string>
+    <string name="requests_status_unavailable">Unavailable</string>
     <!--  Requests — card  -->
     <string name="requests_status_in_progress">In Progress</string>
     <string name="requests_action_prepare">Prepare order</string>
@@ -330,8 +338,12 @@
     <string name="request_details_view_payment_summary">View payment summary</string>
     <string name="request_details_reject">Reject order</string>
     <string name="request_details_contact_customer">Contact customer</string>
-    <string name="request_details_accept">Accept Order</string>
+    <string name="request_details_accept">Send Offer</string>
     <string name="request_details_accepted_message">Order accepted</string>
+    <string name="request_details_offer_submitted_message">Offer submitted successfully</string>
+    <string name="request_details_offer_already_submitted">An offer has already been submitted for this request</string>
+    <string name="request_details_request_expired">This request has expired</string>
+    <string name="request_details_request_unavailable">This request is unavailable for offers</string>
     <string name="request_details_rejected_message">Order rejected</string>
     <string name="request_details_no_prescription">No prescription sent</string>
     <string name="request_details_payment_method">Payment method</string>
@@ -428,4 +440,37 @@
     <string name="notification_default_body">You have a new update</string>
     <string name="notification_channel_orders_name">Orders Channel</string>
     <string name="notification_channel_orders_description">Notifications related to new requests and orders</string>
+    <string name="orders_filter_waiting_for_patient">Waiting for patient</string>
+    <string name="orders_filter_completed">Completed</string>
+    <string name="orders_status_pending">Waiting for patient</string>
+    <string name="orders_status_pending_payment">Pending payment</string>
+    <string name="orders_status_preparing">Preparing</string>
+    <string name="orders_status_ready_for_pickup">Ready for pickup</string>
+    <string name="orders_status_ready_for_delivery">Ready for delivery</string>
+    <string name="orders_status_out_for_delivery">Out for delivery</string>
+    <string name="orders_status_delivered">Delivered</string>
+    <string name="orders_status_cancelled">Cancelled</string>
+    <string name="orders_status_unknown">Status unavailable</string>
+    <string name="requests_payment_card">Card</string>
+    <string name="requests_payment_unknown">Unavailable</string>
+    <string name="request_details_send_offer">Send offer</string>
+    <string name="request_details_offer_subtotal">Offer subtotal</string>
+    <string name="request_details_load_error">Couldn’t load this request</string>
+    <string name="order_details_waiting_for_patient">Waiting for the patient to complete fulfillment or payment. No pharmacy action is required yet.</string>
+    <string name="order_details_mark_ready_action">Mark order as ready</string>
+    <string name="order_details_mark_ready_title">Mark this order as ready?</string>
+    <string name="order_details_mark_ready_message">Confirm that all medicines are prepared. The backend will choose the correct ready status for pickup or delivery.</string>
+    <string name="order_details_mark_ready_confirm">Mark ready</string>
+    <string name="order_details_mark_ready_cancel">Not yet</string>
+    <string name="order_details_mark_ready_success">Order status refreshed</string>
+    <string name="order_details_refresh_failed">The action completed, but the latest order status could not be loaded. Pull to refresh.</string>
+    <string name="home_dashboard_last_month">Last month</string>
+    <string name="home_stat_requests_received">Requests received</string>
+    <string name="home_stat_offers_created">Offers created</string>
+    <string name="home_stat_total_orders">Total orders</string>
+    <string name="home_stat_total_order_value">Total order value</string>
+    <string name="home_stat_value_egp">%1$.2f EGP</string>
+    <string name="home_notifications_description">Notifications</string>
+    <string name="notification_order_created_title">New order created</string>
+    <string name="notification_order_created_body">A patient accepted an offer. Open the order to review its status.</string>
 </resources>

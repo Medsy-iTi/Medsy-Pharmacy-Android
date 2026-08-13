@@ -33,6 +33,7 @@ class FCMTokenService : FirebaseMessagingService() {
     companion object {
         const val ORDERS_CHANNEL_ID = "orders_channel"
         const val EXTRA_REQUEST_ID = "extra_request_id"
+        const val EXTRA_ORDER_ID = "extra_order_id"
         const val EXTRA_RECIPIENT_ID = "extra_recipient_id"
 
         const val KEY_CATEGORY = "category"
@@ -40,13 +41,17 @@ class FCMTokenService : FirebaseMessagingService() {
         const val KEY_BODY = "body"
         const val KEY_REQUEST_ID = "requestId"
         const val KEY_ID = "id"
+        const val KEY_ORDER_ID = "orderId"
+        const val KEY_LEGACY_ORDER_ID = "orderID"
         const val KEY_RECIPIENT_ID = "recipientId"
+        private const val CATEGORY_REQUEST_IN_AREA = "REQUEST_IN_AREA"
+        private const val CATEGORY_ORDER_CREATED = "ORDER_CREATED"
 
     }
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d("FCMTokenService", "New FCM Token received: $token")
+        Log.d("FCMTokenService", "New FCM token received")
         scope.launch {
             fcmTokenManager.registerDeviceToken()
         }
@@ -59,37 +64,50 @@ class FCMTokenService : FirebaseMessagingService() {
         val rawTitle = message.notification?.title
             ?: message.data[KEY_TITLE]
             ?: getString(R.string.notification_default_title)
-        val rawBody = message.notification?.body 
+        val rawBody = message.notification?.body
             ?: message.data[KEY_BODY]
             ?: getString(R.string.notification_default_body)
 
-        val category = message.data[KEY_CATEGORY] ?: ""
+        val category = message.data[KEY_CATEGORY]?.uppercase().orEmpty()
         val title = NotificationLocalizer.getLocalizedTitle(this, category, rawTitle)
         val body = NotificationLocalizer.getLocalizedBody(this, category, rawBody)
 
-        val requestIdStr = message.data[KEY_REQUEST_ID] ?: message.data[KEY_ID]
-        val requestId = requestIdStr?.toLongOrNull()
+        val requestId = if (category == CATEGORY_REQUEST_IN_AREA) {
+            (message.data[KEY_REQUEST_ID] ?: message.data[KEY_ID])?.toLongOrNull()
+        } else null
+        val orderId = if (category == CATEGORY_ORDER_CREATED) {
+            (message.data[KEY_ORDER_ID] ?: message.data[KEY_LEGACY_ORDER_ID])?.toLongOrNull()
+        } else null
 
         val recipientIdStr = message.data[KEY_RECIPIENT_ID]
         val recipientId = recipientIdStr?.toLongOrNull()
 
-        showNotification(title, body, requestId, recipientId)
+        showNotification(title, body, requestId, orderId, recipientId)
     }
 
-    private fun showNotification(title: String, body: String, requestId: Long?, recipientId: Long?) {
+    private fun showNotification(
+        title: String,
+        body: String,
+        requestId: Long?,
+        orderId: Long?,
+        recipientId: Long?,
+    ) {
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             if (requestId != null) {
                 putExtra(EXTRA_REQUEST_ID, requestId)
+            }
+            if (orderId != null) {
+                putExtra(EXTRA_ORDER_ID, orderId)
             }
             if (recipientId != null) {
                 putExtra(EXTRA_RECIPIENT_ID, recipientId)
             }
         }
         val pendingIntent = PendingIntent.getActivity(
-            this, 
-            requestId?.hashCode() ?: 0, 
-            intent, 
+            this,
+            requestId?.hashCode() ?: orderId?.hashCode() ?: 0,
+            intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -115,11 +133,15 @@ class FCMTokenService : FirebaseMessagingService() {
             .setAutoCancel(true)
             .build()
 
-        manager.notify(requestId?.toInt() ?: System.currentTimeMillis().toInt(), notification)
+        manager.notify(
+            requestId?.toInt() ?: orderId?.toInt() ?: System.currentTimeMillis().toInt(),
+            notification
+        )
     }
 
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
     }
+
 }

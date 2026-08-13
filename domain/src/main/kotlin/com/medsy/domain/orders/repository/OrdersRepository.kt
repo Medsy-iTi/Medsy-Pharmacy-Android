@@ -2,31 +2,36 @@ package com.medsy.domain.orders.repository
 
 import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
-import com.medsy.domain.orders.model.PharmacyRequestDomain
-import com.medsy.domain.orders.model.PharmacyRequestPageDomain
-import com.medsy.domain.orders.model.PharmacyOrderDomain
-import com.medsy.domain.orders.model.PharmacyOrderPageDomain
+import com.medsy.domain.common.EmptyMedsyResult
+import com.medsy.domain.orders.model.PharmacyRequest
+import com.medsy.domain.orders.model.PharmacyRequestPage
+import com.medsy.domain.orders.model.PharmacyRequestAssignmentStatus
+import com.medsy.domain.orders.model.PharmacyOrder
+import com.medsy.domain.orders.model.PharmacyOrderPage
 
 interface OrdersRepository {
 
     suspend fun getCurrentPharmacyRequests(
         page: Int,
         size: Int,
-        sort: List<String>?
-    ): MedsyResult<PharmacyRequestPageDomain, MedsyError.Remote>
+        sort: List<String>?,
+        assignmentStatus: PharmacyRequestAssignmentStatus? = null,
+    ): MedsyResult<PharmacyRequestPage, MedsyError.Remote>
 
-    suspend fun getRequestDetails(requestId: Long): MedsyResult<PharmacyRequestDomain, MedsyError.Remote>
+    suspend fun getRequestDetails(requestId: Long): MedsyResult<PharmacyRequest, MedsyError.Remote>
 
     suspend fun getPharmacyOrders(
         pharmacyId: Long,
         page: Int,
         size: Int,
         sort: List<String>?,
-    ): MedsyResult<PharmacyOrderPageDomain, MedsyError.Remote>
+    ): MedsyResult<PharmacyOrderPage, MedsyError.Remote>
 
-    suspend fun getOrderDetails(orderId: Long): MedsyResult<PharmacyOrderDomain, MedsyError.Remote>
+    suspend fun getOrderDetails(orderId: Long): MedsyResult<PharmacyOrder, MedsyError.Remote>
 
-    fun getCachedRequest(requestId: Long): PharmacyRequestDomain?
+    suspend fun markOrderReady(orderId: Long): EmptyMedsyResult<MedsyError.Remote>
 
-    fun getCachedOrder(orderId: Long): PharmacyOrderDomain?
+    fun getCachedRequest(requestId: Long): PharmacyRequest?
+
+    fun getCachedOrder(orderId: Long): PharmacyOrder?
 }

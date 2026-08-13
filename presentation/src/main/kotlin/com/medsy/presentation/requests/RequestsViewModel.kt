@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medsy.domain.common.onError
 import com.medsy.domain.common.onSuccess
-import com.medsy.domain.orders.model.PharmacyRequestDomain
-import com.medsy.domain.orders.model.RequestStatusConstants
+import com.medsy.domain.orders.model.PharmacyRequest
+import com.medsy.domain.orders.model.PharmacyRequestAssignmentStatus
 import com.medsy.domain.orders.usecase.GetCurrentPharmacyRequestsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,97 +17,101 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Duration
-import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
 class RequestsViewModel @Inject constructor(
     private val getCurrentPharmacyRequestsUseCase: GetCurrentPharmacyRequestsUseCase,
-    private val submittedOffersManager: SubmittedOffersManager,
 ) : ViewModel() {
     private val mutableState = MutableStateFlow(RequestsUIState())
     val state = mutableState
-        .onStart { loadRequests(refresh = true) }
+        .onStart { ensureFilterLoaded(mutableState.value.selectedFilter) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), RequestsUIState())
 
     private val mutableEffect = Channel<RequestsUIEffect>(Channel.BUFFERED)
     val effect = mutableEffect.receiveAsFlow()
-
-    private var nextPage = 0
-    private var reachedLastPage = false
-
-    init {
-        viewModelScope.launch {
-            submittedOffersManager.submittedRequestIds.collect { answeredIds ->
-                mutableState.update { current ->
-                    current.copy(requests = current.requests.filterNot { it.id in answeredIds })
-                }
-            }
-        }
-    }
+    private val loadingJobs = mutableMapOf<RequestsFilter, Job>()
 
     fun onIntent(intent: RequestsUIIntent) {
         when (intent) {
             is RequestsUIIntent.SearchQueryChanged -> mutableState.update { it.copy(searchQuery = intent.query) }
-            is RequestsUIIntent.RequestClicked -> sendEffect(
-                RequestsUIEffect.NavigateToRequestDetails(
-                    intent.requestId
-                )
-            )
-
-            RequestsUIIntent.Refresh,
-            RequestsUIIntent.Retry -> loadRequests(refresh = true)
-
-            RequestsUIIntent.LoadMore -> loadRequests(refresh = false)
+            is RequestsUIIntent.FilterSelected -> selectFilter(intent.filter)
+            is RequestsUIIntent.RequestClicked -> sendEffect(RequestsUIEffect.NavigateToRequestDetails(intent.requestId))
+            RequestsUIIntent.Refresh -> loadRequests(mutableState.value.selectedFilter, true, true)
+            RequestsUIIntent.Retry -> loadRequests(mutableState.value.selectedFilter, true, false)
+            RequestsUIIntent.LoadMore -> loadRequests(mutableState.value.selectedFilter, false, false)
         }
     }
 
-    private fun loadRequests(refresh: Boolean) {
-        if (!refresh && (mutableState.value.isLoadingMore || reachedLastPage)) return
-        viewModelScope.launch {
-            val page = if (refresh) 0 else nextPage
-            if (refresh) {
-                mutableState.update { it.copy(isLoading = true, hasError = false) }
-            } else {
-                mutableState.update { it.copy(isLoadingMore = true) }
+    private fun selectFilter(filter: RequestsFilter) {
+        mutableState.update { it.copy(selectedFilter = filter) }
+        ensureFilterLoaded(filter)
+    }
+
+    private fun ensureFilterLoaded(filter: RequestsFilter) {
+        val filterState = mutableState.value.filterStates[filter]
+        if (filterState?.hasLoaded != true && filterState?.isLoading != true) {
+            loadRequests(filter, refresh = true, userRefresh = false)
+        }
+    }
+
+    private fun loadRequests(filter: RequestsFilter, refresh: Boolean, userRefresh: Boolean) {
+        val currentFilterState = mutableState.value.filterStates[filter] ?: RequestsFilterState()
+        if (!refresh && (currentFilterState.isLoadingMore || !currentFilterState.canLoadMore)) return
+        if (userRefresh && mutableState.value.isRefreshing) return
+
+        loadingJobs[filter]?.cancel()
+        loadingJobs[filter] = viewModelScope.launch {
+            val page = if (refresh) 0 else currentFilterState.nextPage
+            if (userRefresh) mutableState.update { it.copy(isRefreshing = true) }
+            updateFilterState(filter) { current ->
+                when {
+                    !refresh -> current.copy(isLoadingMore = true, hasError = false)
+                    current.hasLoaded -> current.copy(hasError = false)
+                    else -> current.copy(isLoading = true, isLoadingMore = false, hasError = false)
+                }
             }
 
-            getCurrentPharmacyRequestsUseCase(page, PAGE_SIZE, null)
-                .onSuccess { response ->
-                    val answeredIds = submittedOffersManager.submittedRequestIds.value
-                    val incoming = response.content
-                        .filter {
-                            it.status.equals(
-                                RequestStatusConstants.SEARCHING,
-                                ignoreCase = true
-                            )
-                        }
-                        .filterNot { it.id in answeredIds }
-                        .map(PharmacyRequestDomain::toWorkItem)
-                    reachedLastPage = response.last
-                    nextPage = response.pageNumber + 1
-                    mutableState.update { current ->
-                        val combined =
-                            if (refresh) incoming else (current.requests + incoming).distinctBy { it.id }
-                        current.copy(
-                            isLoading = false,
-                            isLoadingMore = false,
-                            hasError = false,
-                            canLoadMore = !reachedLastPage,
-                            requests = combined,
-                        )
-                    }
+            getCurrentPharmacyRequestsUseCase(
+                page = page,
+                size = PAGE_SIZE,
+                sort = listOf("id,desc"),
+                assignmentStatus = filter.assignmentStatus,
+            ).onSuccess { response ->
+                updateFilterState(filter) { current ->
+                    val combined = if (refresh) response.content
+                    else (current.requests + response.content).distinctBy(PharmacyRequest::id)
+                    current.copy(
+                        requests = combined.sortedByDescending(PharmacyRequest::id),
+                        nextPage = response.pageNumber + 1,
+                        canLoadMore = !response.last,
+                        hasLoaded = true,
+                        isLoading = false,
+                        isLoadingMore = false,
+                        hasError = false,
+                    )
                 }
-                .onError {
-                    mutableState.update { current ->
-                        current.copy(
-                            isLoading = false,
-                            isLoadingMore = false,
-                            hasError = current.requests.isEmpty(),
-                        )
-                    }
+            }.onError {
+                updateFilterState(filter) { current ->
+                    current.copy(
+                        hasLoaded = true,
+                        isLoading = false,
+                        isLoadingMore = false,
+                        hasError = current.requests.isEmpty(),
+                    )
                 }
+            }
+            mutableState.update { it.copy(isRefreshing = false) }
+        }
+    }
+
+    private fun updateFilterState(
+        filter: RequestsFilter,
+        transform: (RequestsFilterState) -> RequestsFilterState,
+    ) {
+        mutableState.update { state ->
+            val current = state.filterStates[filter] ?: RequestsFilterState()
+            state.copy(filterStates = state.filterStates + (filter to transform(current)))
         }
     }
 
@@ -114,32 +119,13 @@ class RequestsViewModel @Inject constructor(
         viewModelScope.launch { mutableEffect.send(effect) }
     }
 
-    private companion object {
-        const val PAGE_SIZE = 20
+    private companion object { const val PAGE_SIZE = 20 }
+}
+
+private val RequestsFilter.assignmentStatus: PharmacyRequestAssignmentStatus?
+    get() = when (this) {
+        RequestsFilter.All -> null
+        RequestsFilter.Pending -> PharmacyRequestAssignmentStatus.Pending
+        RequestsFilter.OfferCreated -> PharmacyRequestAssignmentStatus.OfferCreated
+        RequestsFilter.Expired -> PharmacyRequestAssignmentStatus.Expired
     }
-}
-
-internal fun calculateMinutesAgoOrNull(createdAt: String?): Int? {
-    if (createdAt.isNullOrBlank() || !createdAt.contains('T')) return null
-    return runCatching {
-        val normalized = if (createdAt.endsWith("Z")) createdAt else "${createdAt}Z"
-        Duration.between(Instant.parse(normalized), Instant.now()).toMinutes().coerceAtLeast(0)
-            .toInt()
-    }.getOrNull()
-}
-
-private fun PharmacyRequestDomain.toWorkItem() = PharmacyWorkItem(
-    id = id,
-    displayId = id.toString(),
-    source = PharmacyWorkSource.Request,
-    status = PharmacyWorkStatus.Searching,
-    createdAt = createdAt,
-    minutesAgo = calculateMinutesAgoOrNull(createdAt),
-    customerName = customerName,
-    customerId = customerId,
-    customerPhone = customerPhone,
-    customerAddress = deliveryAddress,
-    productImages = items.map { it.imageUrl },
-    total = items.sumOf { it.unitPrice * it.quantity },
-    paymentMethod = PaymentMethod.fromApiValue(paymentMethod),
-)

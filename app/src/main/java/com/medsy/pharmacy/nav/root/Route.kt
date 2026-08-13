@@ -50,9 +50,6 @@ sealed interface Route : NavKey {
     data class RequestDetails(val requestId: Long) : Route
 
     @Serializable
-    data class OfferDetails(val offerId: Long) : Route
-
-    @Serializable
     data class OrderDetails(val orderId: Long) : Route
 
     @Serializable

@@ -37,7 +37,6 @@ fun NestedNavDisplay(
     navigateBack: () -> Unit,
     openLogin: () -> Unit,
     openRequestDetails: (Long) -> Unit,
-    openOfferDetails: (Long) -> Unit,
     openOrderDetails: (Long) -> Unit,
     openInvitePharmacist: () -> Unit,
     openPharmacistsList: () -> Unit,
@@ -135,8 +134,7 @@ fun NestedNavDisplay(
                             backStack.push(Route.NestedNav.Orders)
                         },
                         onOrderClick = { orderId ->
-                            val idLong = orderId.removePrefix("#").toLongOrNull() ?: -1L
-                            openOrderDetails(idLong)
+                            openOrderDetails(orderId)
                         }
                     )
                 }
@@ -147,7 +145,6 @@ fun NestedNavDisplay(
                 }
                 entry<Route.NestedNav.Orders> {
                     OrdersRoot(
-                        onOfferClick = openOfferDetails,
                         onOrderClick = openOrderDetails,
                     )
                 }

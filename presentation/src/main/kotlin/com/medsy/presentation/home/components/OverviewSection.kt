@@ -1,11 +1,7 @@
 package com.medsy.presentation.home.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBalanceWallet
@@ -16,66 +12,90 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.medsy.designsystem.ui.theme.extendedColors
+import com.medsy.domain.dashboard.model.PharmacyDashboard
 import com.medsy.presentation.R
-import com.medsy.presentation.home.HomeStatsUI
 
 @Composable
-fun OverviewSection(stats: HomeStatsUI) {
+fun OverviewSection(dashboard: PharmacyDashboard) {
     Column {
         Text(
-            text = stringResource(R.string.home_overview_title),
+            stringResource(R.string.home_overview_title),
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            stringResource(R.string.home_dashboard_last_month),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 6.dp),
-            textAlign = TextAlign.Center
+                .padding(bottom = 8.dp),
+            textAlign = TextAlign.Center,
         )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
+        EqualSizeStatisticsGrid {
             StatCard(
-                modifier = Modifier.weight(1f),
-                title = stringResource(R.string.home_stat_new_orders),
-                value = stats.newOrders.toString(),
+                title = stringResource(R.string.home_stat_requests_received),
+                value = dashboard.requestsReceived.toString(),
                 icon = Icons.Outlined.ShoppingBag,
                 containerColor = MaterialTheme.extendedColors.blueContent
             )
             StatCard(
-                modifier = Modifier.weight(1f),
-                title = stringResource(R.string.home_stat_in_progress),
-                value = stats.inProgress.toString(),
+                title = stringResource(R.string.home_stat_offers_created),
+                value = dashboard.offersCreated.toString(),
                 icon = Icons.Outlined.PendingActions,
                 containerColor = MaterialTheme.extendedColors.purpleContent
             )
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
             StatCard(
-                modifier = Modifier.weight(1f),
-                title = stringResource(R.string.home_stat_delivered_today),
-                value = stats.deliveredToday.toString(),
+                title = stringResource(R.string.home_stat_total_orders),
+                value = dashboard.totalOrders.toString(),
                 icon = Icons.Outlined.LocalShipping,
                 containerColor = MaterialTheme.extendedColors.prescriptionSuccessContent
             )
             StatCard(
-                modifier = Modifier.weight(1f),
-                title = stringResource(R.string.home_stat_total_sales),
-                value = stats.totalSales,
+                title = stringResource(R.string.home_stat_total_order_value),
+                value = stringResource(R.string.home_stat_value_egp, dashboard.totalOrderValue),
                 icon = Icons.Outlined.AccountBalanceWallet,
                 containerColor = MaterialTheme.extendedColors.orangeContent
             )
+        }
+    }
+}
+
+@Composable
+private fun EqualSizeStatisticsGrid(content: @Composable () -> Unit) {
+    val horizontalSpacing = 12.dp
+    val verticalSpacing = 12.dp
+    Layout(
+        content = content,
+        modifier = Modifier.fillMaxWidth(),
+    ) { measurables, constraints ->
+        val horizontalSpacingPx = horizontalSpacing.roundToPx()
+        val verticalSpacingPx = verticalSpacing.roundToPx()
+        val cardWidth = (constraints.maxWidth - horizontalSpacingPx).coerceAtLeast(0) / 2
+        val cardHeight = measurables.maxOfOrNull { it.minIntrinsicHeight(cardWidth) } ?: 0
+        val cardConstraints = Constraints.fixed(cardWidth, cardHeight)
+        val placeables = measurables.map { it.measure(cardConstraints) }
+        val rowCount = (placeables.size + 1) / 2
+        val gridHeight =
+            (rowCount * cardHeight) + ((rowCount - 1).coerceAtLeast(0) * verticalSpacingPx)
+
+        layout(constraints.maxWidth, gridHeight) {
+            placeables.forEachIndexed { index, placeable ->
+                val column = index % 2
+                val row = index / 2
+                placeable.placeRelative(
+                    x = column * (cardWidth + horizontalSpacingPx),
+                    y = row * (cardHeight + verticalSpacingPx),
+                )
+            }
         }
     }
 }
