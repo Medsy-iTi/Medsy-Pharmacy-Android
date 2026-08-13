@@ -6,7 +6,10 @@ import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
 import com.medsy.domain.common.onError
 import com.medsy.domain.common.onSuccess
+import com.medsy.domain.orders.model.PharmacyOrderStatus
 import com.medsy.domain.orders.usecase.GetPharmacyOrderDetailsUseCase
+import com.medsy.domain.orders.usecase.MarkOrderDeliveredUseCase
+import com.medsy.domain.orders.usecase.MarkOrderOutForDeliveryUseCase
 import com.medsy.domain.orders.usecase.MarkOrderReadyUseCase
 import com.medsy.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,13 +25,15 @@ import javax.inject.Inject
 class OrderDetailsViewModel @Inject constructor(
     private val getOrderDetails: GetPharmacyOrderDetailsUseCase,
     private val markOrderReady: MarkOrderReadyUseCase,
+    private val markOrderOutForDelivery: MarkOrderOutForDeliveryUseCase,
+    private val markOrderDelivered: MarkOrderDeliveredUseCase,
 ) : ViewModel() {
     val state = MutableStateFlow(OrderDetailsUIState())
     private val mutableEffect = Channel<OrderDetailsUIEffect>(Channel.BUFFERED)
     val effect = mutableEffect.receiveAsFlow()
     private var orderId: Long? = null
     private var loadJob: Job? = null
-    private var readySubmissionInFlight = false
+    private var statusSubmissionInFlight = false
 
     fun onIntent(intent: OrderDetailsUIIntent) {
         when (intent) {
@@ -36,22 +41,32 @@ class OrderDetailsViewModel @Inject constructor(
                 orderId = intent.orderId
                 load(intent.orderId, forceRefresh = false, userRefresh = false)
             }
-            OrderDetailsUIIntent.Refresh -> orderId?.let { load(it, true, true) }
-            OrderDetailsUIIntent.Retry -> orderId?.let { load(it, true, false) }
+
+            OrderDetailsUIIntent.Refresh -> orderId?.let { load(it, true, userRefresh = true) }
+
+            OrderDetailsUIIntent.Retry -> orderId?.let { load(it, true, userRefresh = false) }
+
             OrderDetailsUIIntent.BackClicked -> sendEffect(OrderDetailsUIEffect.NavigateBack)
+
             OrderDetailsUIIntent.CallCustomerClicked -> state.value.order?.customerPhone
-                ?.takeIf(String::isNotBlank)?.let { sendEffect(OrderDetailsUIEffect.DialPhoneNumber(it)) }
+                ?.takeIf(String::isNotBlank)
+                ?.let { sendEffect(OrderDetailsUIEffect.DialPhoneNumber(it)) }
+
             OrderDetailsUIIntent.OpenLocationClicked -> state.value.order?.let { order ->
                 val latitude = order.deliveryLatitude ?: return@let
                 val longitude = order.deliveryLongitude ?: return@let
                 sendEffect(OrderDetailsUIEffect.OpenLocation(latitude, longitude))
             }
-            OrderDetailsUIIntent.MarkReadyClicked -> if (
-                state.value.order?.status?.canMarkReady == true &&
-                    !state.value.isMarkingReady && !state.value.isReadyActionBlocked
-            ) state.update { it.copy(showReadyConfirmation = true) }
-            OrderDetailsUIIntent.DismissReadyConfirmation -> state.update { it.copy(showReadyConfirmation = false) }
-            OrderDetailsUIIntent.ConfirmMarkReady -> submitReady()
+
+            OrderDetailsUIIntent.StatusActionClicked -> if (
+                state.value.order?.status?.canAdvanceManually == true &&
+                !state.value.isUpdatingStatus && !state.value.isStatusActionBlocked
+            ) state.update { it.copy(showStatusConfirmation = true) }
+
+            OrderDetailsUIIntent.DismissStatusConfirmation ->
+                state.update { it.copy(showStatusConfirmation = false) }
+
+            OrderDetailsUIIntent.ConfirmStatusAction -> submitStatusAction()
         }
     }
 
@@ -60,7 +75,12 @@ class OrderDetailsViewModel @Inject constructor(
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
             if (userRefresh) state.update { it.copy(isRefreshing = true) }
-            else if (state.value.order == null) state.update { it.copy(isLoading = true, hasError = false) }
+            else if (state.value.order == null) state.update {
+                it.copy(
+                    isLoading = true,
+                    hasError = false
+                )
+            }
             getOrderDetails(id, forceRefresh).onSuccess { order ->
                 state.update {
                     it.copy(
@@ -68,8 +88,8 @@ class OrderDetailsViewModel @Inject constructor(
                         isRefreshing = false,
                         hasError = false,
                         order = order,
-                        showReadyConfirmation = false,
-                        isReadyActionBlocked = false,
+                        showStatusConfirmation = false,
+                        isStatusActionBlocked = false,
                     )
                 }
             }.onError {
@@ -84,31 +104,46 @@ class OrderDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun submitReady() {
+    private fun submitStatusAction() {
         val order = state.value.order ?: return
-        if (!order.status.canMarkReady || readySubmissionInFlight || state.value.isReadyActionBlocked) return
-        readySubmissionInFlight = true
+        if (!order.status.canAdvanceManually || statusSubmissionInFlight || state.value.isStatusActionBlocked) return
+        statusSubmissionInFlight = true
         viewModelScope.launch {
             try {
-                state.update { it.copy(showReadyConfirmation = false, isMarkingReady = true) }
-                when (val result = markOrderReady(order.id)) {
-                    is MedsyResult.Success -> {
-                        state.update { it.copy(isReadyActionBlocked = true) }
+                state.update { it.copy(showStatusConfirmation = false, isUpdatingStatus = true) }
+                val result = when (order.status) {
+                    PharmacyOrderStatus.Preparing -> markOrderReady(
+                        order.id
+                    )
+
+                    PharmacyOrderStatus.ReadyForDelivery ->
+                        markOrderOutForDelivery(order.id)
+
+                    PharmacyOrderStatus.ReadyForPickup,
+                    PharmacyOrderStatus.OutForDelivery ->
+                        markOrderDelivered(order.id)
+
+                    else -> return@launch
+                }
+                result
+                    .onSuccess {
+                        state.update { it.copy(isStatusActionBlocked = true) }
                         if (reloadAuthoritativeOrder(order.id)) {
-                            sendEffect(OrderDetailsUIEffect.ShowMessage(R.string.order_details_mark_ready_success))
+                            sendEffect(OrderDetailsUIEffect.ShowMessage(R.string.order_details_status_update_success))
                         }
                     }
-                    is MedsyResult.Error -> {
-                        val error = result.error
-                        if (error is MedsyError.Remote.Http && error.statusCode == HTTP_BAD_REQUEST) {
-                            state.update { it.copy(isReadyActionBlocked = true) }
+                    .onError { error ->
+                        val error = error
+                        if (error is MedsyError.Remote.Http) {
+                            state.update { it.copy(isStatusActionBlocked = true) }
                             reloadAuthoritativeOrder(order.id)
                         } else sendEffect(OrderDetailsUIEffect.ShowMessage(R.string.error_generic))
+
                     }
-                }
+
             } finally {
-                readySubmissionInFlight = false
-                state.update { it.copy(isMarkingReady = false) }
+                statusSubmissionInFlight = false
+                state.update { it.copy(isUpdatingStatus = false) }
             }
         }
     }
@@ -120,12 +155,13 @@ class OrderDetailsViewModel @Inject constructor(
                     it.copy(
                         order = result.data,
                         hasError = false,
-                        showReadyConfirmation = false,
-                        isReadyActionBlocked = false,
+                        showStatusConfirmation = false,
+                        isStatusActionBlocked = false,
                     )
                 }
                 true
             }
+
             is MedsyResult.Error -> {
                 sendEffect(OrderDetailsUIEffect.ShowMessage(R.string.order_details_refresh_failed))
                 false
@@ -136,5 +172,4 @@ class OrderDetailsViewModel @Inject constructor(
         viewModelScope.launch { mutableEffect.send(effect) }
     }
 
-    private companion object { const val HTTP_BAD_REQUEST = 400 }
 }

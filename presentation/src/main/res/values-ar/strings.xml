@@ -461,6 +461,17 @@
     <string name="order_details_mark_ready_confirm">تحديد كجاهز</string>
     <string name="order_details_mark_ready_cancel">ليس بعد</string>
     <string name="order_details_mark_ready_success">تم تحديث حالة الطلب</string>
+    <string name="order_details_start_delivery_action">بدء التوصيل</string>
+    <string name="order_details_start_delivery_title">بدء توصيل هذا الطلب؟</string>
+    <string name="order_details_start_delivery_message">أكد أن الطلب غادر الصيدلية وهو الآن في طريقه للتوصيل.</string>
+    <string name="order_details_mark_collected_action">تحديد كمُستلم</string>
+    <string name="order_details_mark_collected_title">هل تم استلام الطلب؟</string>
+    <string name="order_details_mark_collected_message">أكد أن المريض استلم هذا الطلب من الصيدلية.</string>
+    <string name="order_details_mark_delivered_action">تحديد كمُسلّم</string>
+    <string name="order_details_mark_delivered_title">هل تم توصيل الطلب؟</string>
+    <string name="order_details_mark_delivered_message">أكد أن هذا الطلب تم توصيله إلى المريض.</string>
+    <string name="order_details_status_action_cancel">ليس بعد</string>
+    <string name="order_details_status_update_success">تم تحديث حالة الطلب</string>
     <string name="order_details_refresh_failed">تم تنفيذ الإجراء، لكن تعذر تحميل أحدث حالة للطلب. اسحب للتحديث.</string>
     <string name="home_dashboard_last_month">الشهر الماضي</string>
     <string name="home_stat_requests_received">الطلبات المستلمة</string>

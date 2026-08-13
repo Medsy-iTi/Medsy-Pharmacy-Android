@@ -121,6 +121,23 @@ enum class PharmacyOrderStatus {
     val canMarkReady: Boolean
         get() = this == Preparing
 
+    val canAdvanceManually: Boolean
+        get() = this == Preparing || this == ReadyForPickup ||
+            this == ReadyForDelivery || this == OutForDelivery
+
+    val apiValue: String?
+        get() = when (this) {
+            Pending -> "PENDING"
+            PendingPayment -> "PENDING_PAYMENT"
+            Preparing -> "PREPARING"
+            ReadyForPickup -> "READY_FOR_PICKUP"
+            ReadyForDelivery -> "READY_FOR_DELIVERY"
+            OutForDelivery -> "OUT_FOR_DELIVERY"
+            Delivered -> "DELIVERED"
+            Cancelled -> "CANCELLED"
+            Unknown -> null
+        }
+
     companion object {
         fun fromApiValue(value: String?): PharmacyOrderStatus = when (value?.uppercase()) {
             "PENDING" -> Pending

@@ -33,6 +33,7 @@ interface ApiService{
         @Query("page") page: Int,
         @Query("size") size: Int,
         @Query("sort") sort: List<String>? = null,
+        @Query("status") status: String? = null,
     ): Response<ApiResponse<PharmacyOrderPageDto>>
 
     @GET("api/v1/orders/{orderId}")
@@ -42,6 +43,16 @@ interface ApiService{
 
     @PATCH("api/v1/pharmacists/orders/{orderId}/ready")
     suspend fun markOrderReady(
+        @Path("orderId") orderId: Long,
+    ): Response<ApiResponse<Any>>
+
+    @PATCH("api/v1/pharmacists/orders/{orderId}/out-for-delivery")
+    suspend fun markOrderOutForDelivery(
+        @Path("orderId") orderId: Long,
+    ): Response<ApiResponse<Any>>
+
+    @PATCH("api/v1/pharmacists/orders/{orderId}/delivered")
+    suspend fun markOrderDelivered(
         @Path("orderId") orderId: Long,
     ): Response<ApiResponse<Any>>
 

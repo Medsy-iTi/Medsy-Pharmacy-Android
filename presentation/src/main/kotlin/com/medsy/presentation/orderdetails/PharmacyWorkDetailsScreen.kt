@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.medsy.designsystem.components.MedsyButton
 import com.medsy.domain.orders.model.PharmacyOrder
+import com.medsy.domain.orders.model.PharmacyOrderStatus
 import com.medsy.domain.orders.model.PharmacyRequest
 import com.medsy.presentation.R
 import com.medsy.presentation.orderdetails.components.CustomerNotesSection
@@ -126,28 +127,29 @@ fun PharmacyWorkDetailsScreen(
 fun PharmacyWorkDetailsScreen(
     order: PharmacyOrder,
     isRefreshing: Boolean,
-    isMarkingReady: Boolean,
-    isReadyActionBlocked: Boolean,
-    showReadyConfirmation: Boolean,
+    isUpdatingStatus: Boolean,
+    isStatusActionBlocked: Boolean,
+    showStatusConfirmation: Boolean,
     onBack: () -> Unit,
     onRefresh: () -> Unit,
     onCall: () -> Unit,
     onLocation: () -> Unit,
-    onMarkReady: () -> Unit,
-    onConfirmReady: () -> Unit,
-    onDismissReady: () -> Unit,
+    onStatusAction: () -> Unit,
+    onConfirmStatus: () -> Unit,
+    onDismissStatus: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (showReadyConfirmation) {
+    val actionLabelRes = order.status.actionLabelRes()
+    if (showStatusConfirmation && actionLabelRes != null) {
         AlertDialog(
-            onDismissRequest = onDismissReady,
-            title = { Text(stringResource(R.string.order_details_mark_ready_title)) },
-            text = { Text(stringResource(R.string.order_details_mark_ready_message)) },
+            onDismissRequest = onDismissStatus,
+            title = { Text(stringResource(order.status.actionTitleRes())) },
+            text = { Text(stringResource(order.status.actionMessageRes())) },
             confirmButton = {
-                TextButton(onClick = onConfirmReady) { Text(stringResource(R.string.order_details_mark_ready_confirm)) }
+                TextButton(onClick = onConfirmStatus) { Text(stringResource(actionLabelRes)) }
             },
             dismissButton = {
-                TextButton(onClick = onDismissReady) { Text(stringResource(R.string.order_details_mark_ready_cancel)) }
+                TextButton(onClick = onDismissStatus) { Text(stringResource(R.string.order_details_status_action_cancel)) }
             },
         )
     }
@@ -156,11 +158,11 @@ fun PharmacyWorkDetailsScreen(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
         onBack = onBack,
-        bottomBar = if (order.status.canMarkReady && !isReadyActionBlocked) {
+        bottomBar = if (actionLabelRes != null && !isStatusActionBlocked) {
             {
                 Box(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface).padding(16.dp)) {
-                    MedsyButton(onClick = onMarkReady, isLoading = isMarkingReady) {
-                        Text(stringResource(R.string.order_details_mark_ready_action))
+                    MedsyButton(onClick = onStatusAction, isLoading = isUpdatingStatus) {
+                        Text(stringResource(actionLabelRes))
                     }
                 }
             }
@@ -195,6 +197,30 @@ fun PharmacyWorkDetailsScreen(
             totalLabelRes = R.string.request_details_total,
         )
     }
+}
+
+private fun PharmacyOrderStatus.actionLabelRes(): Int? = when (this) {
+    PharmacyOrderStatus.Preparing -> R.string.order_details_mark_ready_action
+    PharmacyOrderStatus.ReadyForDelivery -> R.string.order_details_start_delivery_action
+    PharmacyOrderStatus.ReadyForPickup -> R.string.order_details_mark_collected_action
+    PharmacyOrderStatus.OutForDelivery -> R.string.order_details_mark_delivered_action
+    else -> null
+}
+
+private fun PharmacyOrderStatus.actionTitleRes(): Int = when (this) {
+    PharmacyOrderStatus.Preparing -> R.string.order_details_mark_ready_title
+    PharmacyOrderStatus.ReadyForDelivery -> R.string.order_details_start_delivery_title
+    PharmacyOrderStatus.ReadyForPickup -> R.string.order_details_mark_collected_title
+    PharmacyOrderStatus.OutForDelivery -> R.string.order_details_mark_delivered_title
+    else -> R.string.order_details_title
+}
+
+private fun PharmacyOrderStatus.actionMessageRes(): Int = when (this) {
+    PharmacyOrderStatus.Preparing -> R.string.order_details_mark_ready_message
+    PharmacyOrderStatus.ReadyForDelivery -> R.string.order_details_start_delivery_message
+    PharmacyOrderStatus.ReadyForPickup -> R.string.order_details_mark_collected_message
+    PharmacyOrderStatus.OutForDelivery -> R.string.order_details_mark_delivered_message
+    else -> R.string.order_details_title
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

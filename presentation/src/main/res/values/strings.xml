@@ -463,6 +463,17 @@
     <string name="order_details_mark_ready_confirm">Mark ready</string>
     <string name="order_details_mark_ready_cancel">Not yet</string>
     <string name="order_details_mark_ready_success">Order status refreshed</string>
+    <string name="order_details_start_delivery_action">Start delivery</string>
+    <string name="order_details_start_delivery_title">Start this delivery?</string>
+    <string name="order_details_start_delivery_message">Confirm that the order has left the pharmacy and is now out for delivery.</string>
+    <string name="order_details_mark_collected_action">Mark as collected</string>
+    <string name="order_details_mark_collected_title">Has the order been collected?</string>
+    <string name="order_details_mark_collected_message">Confirm that the patient has collected this order from the pharmacy.</string>
+    <string name="order_details_mark_delivered_action">Mark as delivered</string>
+    <string name="order_details_mark_delivered_title">Has the order been delivered?</string>
+    <string name="order_details_mark_delivered_message">Confirm that this order was delivered to the patient.</string>
+    <string name="order_details_status_action_cancel">Not yet</string>
+    <string name="order_details_status_update_success">Order status updated</string>
     <string name="order_details_refresh_failed">The action completed, but the latest order status could not be loaded. Pull to refresh.</string>
     <string name="home_dashboard_last_month">Last month</string>
     <string name="home_stat_requests_received">Requests received</string>

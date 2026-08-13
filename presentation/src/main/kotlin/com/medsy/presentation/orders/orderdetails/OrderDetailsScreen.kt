@@ -77,16 +77,16 @@ fun OrderDetailsScreen(
             PharmacyWorkDetailsScreen(
                 order = order,
                 isRefreshing = state.isRefreshing,
-                isMarkingReady = state.isMarkingReady,
-                isReadyActionBlocked = state.isReadyActionBlocked,
-                showReadyConfirmation = state.showReadyConfirmation,
+                isUpdatingStatus = state.isUpdatingStatus,
+                isStatusActionBlocked = state.isStatusActionBlocked,
+                showStatusConfirmation = state.showStatusConfirmation,
                 onBack = { onIntent(OrderDetailsUIIntent.BackClicked) },
                 onRefresh = { onIntent(OrderDetailsUIIntent.Refresh) },
                 onCall = { onIntent(OrderDetailsUIIntent.CallCustomerClicked) },
                 onLocation = { onIntent(OrderDetailsUIIntent.OpenLocationClicked) },
-                onMarkReady = { onIntent(OrderDetailsUIIntent.MarkReadyClicked) },
-                onConfirmReady = { onIntent(OrderDetailsUIIntent.ConfirmMarkReady) },
-                onDismissReady = { onIntent(OrderDetailsUIIntent.DismissReadyConfirmation) },
+                onStatusAction = { onIntent(OrderDetailsUIIntent.StatusActionClicked) },
+                onConfirmStatus = { onIntent(OrderDetailsUIIntent.ConfirmStatusAction) },
+                onDismissStatus = { onIntent(OrderDetailsUIIntent.DismissStatusConfirmation) },
             )
             MedsySnackbarHost(snackbarHostState, Modifier.align(Alignment.BottomCenter))
         }

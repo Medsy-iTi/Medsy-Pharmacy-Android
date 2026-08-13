@@ -39,10 +39,22 @@ class OrdersViewModel @Inject constructor(
     fun onIntent(intent: OrdersUIIntent) {
         when (intent) {
             is OrdersUIIntent.SearchQueryChanged -> mutableState.update { it.copy(searchQuery = intent.query) }
-            is OrdersUIIntent.FilterSelected -> mutableState.update { it.copy(selectedFilter = intent.filter) }
-            is OrdersUIIntent.OrderClicked -> sendEffect(OrdersUIEffect.NavigateToOrderDetails(intent.orderId))
+
+            is OrdersUIIntent.FilterSelected -> if (intent.filter != mutableState.value.selectedFilter) {
+                mutableState.update { it.copy(selectedFilter = intent.filter) }
+                loadOrders(refresh = true, userRefresh = false)
+            }
+
+            is OrdersUIIntent.OrderClicked -> sendEffect(
+                OrdersUIEffect.NavigateToOrderDetails(
+                    intent.orderId
+                )
+            )
+
             OrdersUIIntent.Refresh -> loadOrders(refresh = true, userRefresh = true)
+
             OrdersUIIntent.Retry -> loadOrders(refresh = true, userRefresh = false)
+
             OrdersUIIntent.LoadMore -> loadOrders(refresh = false, userRefresh = false)
         }
     }
@@ -54,24 +66,37 @@ class OrdersViewModel @Inject constructor(
         loadingJob?.cancel()
         loadingJob = viewModelScope.launch {
             if (userRefresh) mutableState.update { it.copy(isRefreshing = true) }
-            else if (refresh && state.orders.isEmpty()) mutableState.update { it.copy(isLoading = true, hasError = false) }
+            else if (refresh && state.orders.isEmpty()) mutableState.update {
+                it.copy(
+                    isLoading = true,
+                    hasError = false
+                )
+            }
             else if (!refresh) mutableState.update { it.copy(isLoadingMore = true) }
 
             val id = resolvePharmacyId()
             if (id == null) {
-                mutableState.update { it.copy(isLoading = false, isRefreshing = false, isLoadingMore = false, hasError = it.orders.isEmpty()) }
+                mutableState.update {
+                    it.copy(
+                        isLoading = false,
+                        isRefreshing = false,
+                        isLoadingMore = false,
+                        hasError = it.orders.isEmpty()
+                    )
+                }
                 return@launch
             }
             getPharmacyOrdersUseCase(
                 pharmacyId = id,
                 page = if (refresh) 0 else nextPage,
-                size = PAGE_SIZE,
-                sort = listOf("id,desc"),
+                statuses = mutableState.value.selectedFilter.statuses,
             ).onSuccess { page ->
                 nextPage = page.pageNumber + 1
                 mutableState.update { current ->
                     current.copy(
-                        orders = if (refresh) page.content else (current.orders + page.content).distinctBy(PharmacyOrder::id),
+                        orders = if (refresh) page.content else (current.orders + page.content).distinctBy(
+                            PharmacyOrder::id
+                        ),
                         canLoadMore = !page.last,
                         isLoading = false,
                         isRefreshing = false,
@@ -104,5 +129,4 @@ class OrdersViewModel @Inject constructor(
         viewModelScope.launch { mutableEffect.send(effect) }
     }
 
-    private companion object { const val PAGE_SIZE = 20 }
 }
