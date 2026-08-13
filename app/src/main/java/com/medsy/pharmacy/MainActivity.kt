@@ -39,10 +39,13 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val state by viewModel.state.collectAsStateWithLifecycle()
             val pendingRequestId by viewModel.pendingRequestId.collectAsStateWithLifecycle()
+            val pendingOrderId by viewModel.pendingOrderId.collectAsStateWithLifecycle()
             MedsyTheme(darkTheme = isDarkTheme(state.themeMode)) {
                 RootNavDisplay(
                     pendingRequestId = pendingRequestId,
-                    onPendingRequestConsumed = viewModel::consumePendingRequestId
+                    pendingOrderId = pendingOrderId,
+                    onPendingRequestConsumed = viewModel::consumePendingRequestId,
+                    onPendingOrderConsumed = viewModel::consumePendingOrderId,
                 )
             }
         }

@@ -58,7 +58,8 @@ import com.medsy.presentation.notifications.components.NotificationItem
 @Composable
 fun NotificationsRoot(
     onNavigateBack: () -> Unit,
-    onNotificationClick: (Long) -> Unit,
+    onRequestNotificationClick: (Long) -> Unit,
+    onOrderNotificationClick: (Long) -> Unit,
     viewModel: NotificationsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -68,7 +69,8 @@ fun NotificationsRoot(
         viewModel.effect.collect { effect ->
             when (effect) {
                 NotificationsUIEffect.NavigateBack -> onNavigateBack()
-                is NotificationsUIEffect.NavigateToRequestDetails -> onNotificationClick(effect.requestId)
+                is NotificationsUIEffect.NavigateToRequestDetails -> onRequestNotificationClick(effect.requestId)
+                is NotificationsUIEffect.NavigateToOrderDetails -> onOrderNotificationClick(effect.orderId)
                 is NotificationsUIEffect.ShowMessage -> {
                     Toast.makeText(context, effect.messageRes, android.widget.Toast.LENGTH_SHORT).show()                }
             }

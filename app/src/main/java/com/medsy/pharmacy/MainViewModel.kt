@@ -43,19 +43,32 @@ class MainViewModel @Inject constructor(
 
     private val _pendingRequestId = MutableStateFlow<Long?>(null)
     val pendingRequestId = _pendingRequestId.asStateFlow()
+    private val _pendingOrderId = MutableStateFlow<Long?>(null)
+    val pendingOrderId = _pendingOrderId.asStateFlow()
 
     fun consumePendingRequestId() {
         _pendingRequestId.value = null
     }
 
+    fun consumePendingOrderId() {
+        _pendingOrderId.value = null
+    }
+
     fun handleNotificationIntent(intent: android.content.Intent) {
         var requestId = intent.getLongExtra(FCMTokenService.EXTRA_REQUEST_ID, -1L)
+        var orderId = intent.getLongExtra(FCMTokenService.EXTRA_ORDER_ID, -1L)
         var recipientId = intent.getLongExtra(FCMTokenService.EXTRA_RECIPIENT_ID, -1L)
 
         if (requestId == -1L) {
             val requestIdStr = intent.getStringExtra(FCMTokenService.KEY_REQUEST_ID)
                 ?: intent.getStringExtra(FCMTokenService.KEY_ID)
             requestId = requestIdStr?.toLongOrNull() ?: -1L
+        }
+
+        if (orderId == -1L) {
+            val orderIdString = intent.getStringExtra(FCMTokenService.KEY_ORDER_ID)
+                ?: intent.getStringExtra(FCMTokenService.KEY_LEGACY_ORDER_ID)
+            orderId = orderIdString?.toLongOrNull() ?: -1L
         }
 
         if (recipientId == -1L) {
@@ -65,13 +78,15 @@ class MainViewModel @Inject constructor(
 
         if (requestId != -1L) {
             _pendingRequestId.value = requestId
-            Log.d("MainViewModel", "Parsed pendingRequestId from notification: $requestId")
+        }
+
+        if (orderId != -1L) {
+            _pendingOrderId.value = orderId
         }
 
         if (recipientId != -1L) {
             viewModelScope.launch {
                 markNotificationAsRead(recipientId)
-                Log.d("MainViewModel", "Marked notification as read: $recipientId")
             }
         }
     }
