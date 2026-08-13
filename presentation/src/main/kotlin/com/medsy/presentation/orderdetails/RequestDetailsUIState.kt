@@ -21,4 +21,12 @@ data class RequestDetailsUIState(
 ) {
     val canCreateOffer: Boolean
         get() = request?.assignmentStatus == PharmacyRequestAssignmentStatus.Pending
+
+    val offerSubtotal: Double
+        get() = request?.items
+            ?.filter { it.id in selectedItems }
+            ?.sumOf { item ->
+                (substitutes[item.id]?.productPrice ?: item.unitPrice) * item.quantity
+            }
+            ?: 0.0
 }

@@ -27,7 +27,6 @@ import com.medsy.designsystem.components.MedsyButton
 import com.medsy.designsystem.components.MedsySnackbarHost
 import com.medsy.designsystem.components.showSuccess
 import com.medsy.presentation.R
-import com.medsy.presentation.orderdetails.PharmacyWorkDetailsScreen
 import com.medsy.presentation.orderdetails.components.RequestDetailsShimmer
 
 @Composable
@@ -74,7 +73,7 @@ fun OrderDetailsScreen(
     val order = state.order
     if (order != null) {
         Box(Modifier.fillMaxSize()) {
-            PharmacyWorkDetailsScreen(
+            OrderDetailsContent(
                 order = order,
                 isRefreshing = state.isRefreshing,
                 isUpdatingStatus = state.isUpdatingStatus,
