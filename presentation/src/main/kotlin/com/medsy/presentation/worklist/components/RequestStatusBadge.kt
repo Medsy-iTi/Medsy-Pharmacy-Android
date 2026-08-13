@@ -15,14 +15,44 @@ import androidx.compose.ui.unit.dp
 import com.medsy.designsystem.ui.theme.extendedColors
 import com.medsy.domain.orders.model.PharmacyOrderStatus
 import com.medsy.domain.orders.model.PharmacyRequestAssignmentStatus
+import com.medsy.domain.orders.model.PharmacyRequestStatus
 import com.medsy.presentation.R
 
 @Composable
 fun RequestStatusBadge(
-    status: PharmacyRequestAssignmentStatus,
+    requestStatus: PharmacyRequestStatus,
+    assignmentStatus: PharmacyRequestAssignmentStatus,
     modifier: Modifier = Modifier,
 ) {
-    val values = when (status) {
+    val values = when (requestStatus) {
+        PharmacyRequestStatus.Completed -> StatusBadgeValues(
+            MaterialTheme.extendedColors.greenContainer,
+            MaterialTheme.extendedColors.greenContent,
+            R.string.requests_status_completed,
+        )
+        PharmacyRequestStatus.Cancelled -> StatusBadgeValues(
+            MaterialTheme.extendedColors.redContainer,
+            MaterialTheme.extendedColors.redContent,
+            R.string.requests_status_cancelled,
+        )
+        PharmacyRequestStatus.Expired -> StatusBadgeValues(
+            MaterialTheme.extendedColors.redContainer,
+            MaterialTheme.extendedColors.redContent,
+            R.string.requests_status_expired,
+        )
+        PharmacyRequestStatus.Unknown -> StatusBadgeValues(
+            MaterialTheme.colorScheme.surfaceVariant,
+            MaterialTheme.colorScheme.onSurfaceVariant,
+            R.string.requests_status_unavailable,
+        )
+        PharmacyRequestStatus.Searching -> assignmentStatus.toSearchingRequestBadgeValues()
+    }
+    StatusBadge(values, modifier)
+}
+
+@Composable
+private fun PharmacyRequestAssignmentStatus.toSearchingRequestBadgeValues(): StatusBadgeValues =
+    when (this) {
         PharmacyRequestAssignmentStatus.Pending -> StatusBadgeValues(
             MaterialTheme.extendedColors.blueContainer,
             MaterialTheme.extendedColors.blueContent,
@@ -44,8 +74,6 @@ fun RequestStatusBadge(
             R.string.requests_status_unavailable,
         )
     }
-    StatusBadge(values, modifier)
-}
 
 @Composable
 fun OrderStatusBadge(

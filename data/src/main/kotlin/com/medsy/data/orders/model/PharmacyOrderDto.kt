@@ -36,6 +36,7 @@ data class PharmacyOrderDto(
     val createdAt: String? = null,
     val status: String? = null,
     val paymentMethod: String? = null,
+    val fulfillmentMethod: String? = null,
     val items: List<PharmacyOrderItemDto> = emptyList(),
 )
 

@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material.icons.outlined.LocalShipping
-import androidx.compose.material.icons.outlined.ShoppingBag
 import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.material3.Card
@@ -39,22 +38,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.medsy.designsystem.ui.theme.extendedColors
+import com.medsy.domain.orders.model.OrderFulfillmentMethod
 import com.medsy.domain.orders.model.PharmacyOrderStatus
 import com.medsy.presentation.R
 
 @Composable
-fun OrderStatusTimeline(status: PharmacyOrderStatus, modifier: Modifier = Modifier) {
-    val label = when (status) {
-        PharmacyOrderStatus.Pending -> R.string.orders_status_pending
-        PharmacyOrderStatus.PendingPayment -> R.string.orders_status_pending_payment
-        PharmacyOrderStatus.Preparing -> R.string.orders_status_preparing
-        PharmacyOrderStatus.ReadyForPickup -> R.string.orders_status_ready_for_pickup
-        PharmacyOrderStatus.ReadyForDelivery -> R.string.orders_status_ready_for_delivery
-        PharmacyOrderStatus.OutForDelivery -> R.string.orders_status_out_for_delivery
-        PharmacyOrderStatus.Delivered -> R.string.orders_status_delivered
-        PharmacyOrderStatus.Cancelled -> R.string.orders_status_cancelled
-        PharmacyOrderStatus.Unknown -> R.string.orders_status_unknown
-    }
+fun OrderStatusTimeline(
+    status: PharmacyOrderStatus,
+    fulfillmentMethod: OrderFulfillmentMethod,
+    modifier: Modifier = Modifier,
+) {
+    val timeline = status.toTimelineModel(fulfillmentMethod)
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -63,10 +57,10 @@ fun OrderStatusTimeline(status: PharmacyOrderStatus, modifier: Modifier = Modifi
     ) {
         Column(Modifier.padding(16.dp)) {
             Text(
-                stringResource(label),
+                stringResource(timeline.titleRes),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = if (status == PharmacyOrderStatus.Cancelled) {
+                color = if (timeline.isError) {
                     MaterialTheme.colorScheme.error
                 } else {
                     MaterialTheme.colorScheme.primary
@@ -76,45 +70,13 @@ fun OrderStatusTimeline(status: PharmacyOrderStatus, modifier: Modifier = Modifi
                 modifier = Modifier.padding(vertical = 16.dp),
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
             )
-            PharmacyOrderStatusStepper(status)
+            PharmacyOrderStatusStepper(timeline.steps())
         }
     }
 }
 
 @Composable
-private fun PharmacyOrderStatusStepper(status: PharmacyOrderStatus) {
-    val cancelled = status == PharmacyOrderStatus.Cancelled
-    val steps = if (cancelled) {
-        listOf(
-            TimelineStep(R.string.orders_timeline_placed, Icons.Outlined.ShoppingBag),
-            TimelineStep(R.string.orders_status_cancelled, Icons.Default.Close),
-        )
-    } else {
-        listOf(
-            TimelineStep(R.string.orders_timeline_placed, Icons.Outlined.ShoppingBag),
-            TimelineStep(R.string.orders_timeline_preparing, Icons.Outlined.Inventory2),
-            TimelineStep(
-                R.string.orders_timeline_ready,
-                when (status) {
-                    PharmacyOrderStatus.ReadyForPickup -> Icons.Outlined.Storefront
-                    PharmacyOrderStatus.ReadyForDelivery,
-                    PharmacyOrderStatus.OutForDelivery -> Icons.Outlined.LocalShipping
-                    else -> Icons.Outlined.Inventory2
-                },
-            ),
-            TimelineStep(R.string.orders_timeline_delivered, Icons.Outlined.TaskAlt),
-        )
-    }
-    val currentStep = when (status) {
-        PharmacyOrderStatus.Pending, PharmacyOrderStatus.PendingPayment -> 0
-        PharmacyOrderStatus.Preparing -> 1
-        PharmacyOrderStatus.ReadyForPickup,
-        PharmacyOrderStatus.ReadyForDelivery,
-        PharmacyOrderStatus.OutForDelivery -> 2
-        PharmacyOrderStatus.Delivered -> 3
-        PharmacyOrderStatus.Cancelled -> 1
-        PharmacyOrderStatus.Unknown -> null
-    }
+private fun PharmacyOrderStatusStepper(steps: List<TimelineStep>) {
     val successColor = MaterialTheme.extendedColors.success
     val activeColor = MaterialTheme.extendedColors.orangeContent
     val errorColor = MaterialTheme.colorScheme.error
@@ -131,11 +93,11 @@ private fun PharmacyOrderStatusStepper(status: PharmacyOrderStatus) {
                 }
                 for (index in 0 until centers.lastIndex) {
                     val destinationIndex = index + 1
-                    val lineColor = when {
-                        cancelled && destinationIndex == 1 -> errorColor
-                        currentStep != null && destinationIndex <= currentStep -> successColor
-                        currentStep != null && destinationIndex == currentStep + 1 -> activeColor
-                        else -> connectorColor
+                    val lineColor = when (steps[destinationIndex].state) {
+                        TimelineStepState.Completed -> successColor
+                        TimelineStepState.Active -> activeColor
+                        TimelineStepState.Error -> errorColor
+                        TimelineStepState.Upcoming -> connectorColor
                     }
                     drawLine(
                         color = lineColor,
@@ -147,32 +109,29 @@ private fun PharmacyOrderStatusStepper(status: PharmacyOrderStatus) {
             }
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            steps.forEachIndexed { index, step ->
-                val reached = currentStep != null && index <= currentStep
-                val next = currentStep != null && index == currentStep + 1
-                val cancelledStep = cancelled && index == 1
-                val color = when {
-                    cancelledStep -> MaterialTheme.colorScheme.error
-                    reached -> successColor
-                    next -> activeColor
-                    else -> futureColor
+            steps.forEach { step ->
+                val color = when (step.state) {
+                    TimelineStepState.Completed -> successColor
+                    TimelineStepState.Active -> activeColor
+                    TimelineStepState.Error -> errorColor
+                    TimelineStepState.Upcoming -> futureColor
                 }
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                     Box(
                         modifier = Modifier.size(28.dp).clip(CircleShape)
                             .background(
-                                when {
-                                    cancelledStep -> MaterialTheme.extendedColors.redContainer
-                                    reached -> MaterialTheme.extendedColors.greenContainer
-                                    next -> MaterialTheme.extendedColors.orangeContainer
-                                    else -> MaterialTheme.colorScheme.surface
+                                when (step.state) {
+                                    TimelineStepState.Completed -> MaterialTheme.extendedColors.greenContainer
+                                    TimelineStepState.Active -> MaterialTheme.extendedColors.orangeContainer
+                                    TimelineStepState.Error -> MaterialTheme.extendedColors.redContainer
+                                    TimelineStepState.Upcoming -> MaterialTheme.colorScheme.surface
                                 },
                             )
                             .border(2.dp, color, CircleShape),
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            imageVector = if (cancelledStep) Icons.Default.Close else step.icon,
+                            imageVector = step.icon,
                             contentDescription = null,
                             tint = color,
                             modifier = Modifier.size(15.dp),
@@ -181,10 +140,14 @@ private fun PharmacyOrderStatusStepper(status: PharmacyOrderStatus) {
                     Text(
                         stringResource(step.labelRes),
                         style = MaterialTheme.typography.labelSmall,
-                        fontWeight = if (reached || next) FontWeight.Bold else FontWeight.Medium,
+                        fontWeight = if (step.state == TimelineStepState.Upcoming) {
+                            FontWeight.Medium
+                        } else {
+                            FontWeight.Bold
+                        },
                         color = color,
                         modifier = Modifier.padding(top = 8.dp),
-                        maxLines = 1,
+                        maxLines = 2,
                         textAlign = TextAlign.Center,
                     )
                 }
@@ -196,4 +159,162 @@ private fun PharmacyOrderStatusStepper(status: PharmacyOrderStatus) {
 private data class TimelineStep(
     val labelRes: Int,
     val icon: ImageVector,
+    val state: TimelineStepState,
+)
+
+private enum class TimelineStepState {
+    Completed,
+    Active,
+    Upcoming,
+    Error,
+}
+
+private enum class TimelinePhase(
+    val labelRes: Int,
+    val icon: ImageVector,
+) {
+    Preparing(R.string.orders_timeline_preparing, Icons.Outlined.Inventory2),
+    Ready(R.string.orders_timeline_ready, Icons.Outlined.Inventory2),
+    OnTheWay(R.string.orders_timeline_on_the_way, Icons.Outlined.LocalShipping),
+    Delivered(R.string.orders_timeline_delivered, Icons.Outlined.TaskAlt),
+    WaitingForCustomer(R.string.orders_timeline_waiting_for_customer, Icons.Outlined.Storefront),
+    Collected(R.string.orders_timeline_collected, Icons.Outlined.TaskAlt),
+}
+
+private val deliveryPhases = listOf(
+    TimelinePhase.Preparing,
+    TimelinePhase.Ready,
+    TimelinePhase.OnTheWay,
+    TimelinePhase.Delivered,
+)
+
+private val pickupPhases = listOf(
+    TimelinePhase.Preparing,
+    TimelinePhase.Ready,
+    TimelinePhase.WaitingForCustomer,
+    TimelinePhase.Collected,
+)
+
+private sealed interface OrderTimelineModel {
+    val titleRes: Int
+    val isError: Boolean
+
+    data class Progress(
+        override val titleRes: Int,
+        val phases: List<TimelinePhase>,
+        val currentPhase: TimelinePhase,
+        val isComplete: Boolean = false,
+    ) : OrderTimelineModel {
+        override val isError: Boolean = false
+    }
+
+    data class Inactive(
+        override val titleRes: Int,
+        val phases: List<TimelinePhase>,
+    ) : OrderTimelineModel {
+        override val isError: Boolean = false
+    }
+
+    data object Cancelled : OrderTimelineModel {
+        override val titleRes: Int = R.string.orders_status_cancelled
+        override val isError: Boolean = true
+    }
+}
+
+private fun PharmacyOrderStatus.toTimelineModel(
+    fulfillmentMethod: OrderFulfillmentMethod,
+): OrderTimelineModel {
+    val phases = fulfillmentMethod.timelinePhases()
+    return when (this) {
+        PharmacyOrderStatus.Pending -> OrderTimelineModel.Progress(
+            titleRes = R.string.orders_status_pending,
+            phases = phases,
+            currentPhase = TimelinePhase.Preparing,
+        )
+        PharmacyOrderStatus.PendingPayment -> OrderTimelineModel.Progress(
+            titleRes = R.string.orders_status_pending_payment,
+            phases = phases,
+            currentPhase = TimelinePhase.Preparing,
+        )
+        PharmacyOrderStatus.Preparing -> OrderTimelineModel.Progress(
+            titleRes = R.string.orders_status_preparing,
+            phases = phases,
+            currentPhase = TimelinePhase.Preparing,
+        )
+        PharmacyOrderStatus.ReadyForPickup -> if (fulfillmentMethod == OrderFulfillmentMethod.Pickup) {
+            OrderTimelineModel.Progress(
+                titleRes = R.string.orders_status_ready_for_pickup,
+                phases = phases,
+                currentPhase = TimelinePhase.WaitingForCustomer,
+            )
+        } else {
+            OrderTimelineModel.Inactive(R.string.orders_status_ready_for_pickup, phases)
+        }
+        PharmacyOrderStatus.ReadyForDelivery -> if (fulfillmentMethod == OrderFulfillmentMethod.Delivery) {
+            OrderTimelineModel.Progress(
+                titleRes = R.string.orders_status_ready_for_delivery,
+                phases = phases,
+                currentPhase = TimelinePhase.Ready,
+            )
+        } else {
+            OrderTimelineModel.Inactive(R.string.orders_status_ready_for_delivery, phases)
+        }
+        PharmacyOrderStatus.OutForDelivery -> if (fulfillmentMethod == OrderFulfillmentMethod.Delivery) {
+            OrderTimelineModel.Progress(
+                titleRes = R.string.orders_status_out_for_delivery,
+                phases = phases,
+                currentPhase = TimelinePhase.OnTheWay,
+            )
+        } else {
+            OrderTimelineModel.Inactive(R.string.orders_status_out_for_delivery, phases)
+        }
+        PharmacyOrderStatus.Delivered -> OrderTimelineModel.Progress(
+            titleRes = R.string.orders_status_delivered,
+            phases = phases,
+            currentPhase = phases.last(),
+            isComplete = true,
+        )
+        PharmacyOrderStatus.Cancelled -> OrderTimelineModel.Cancelled
+        PharmacyOrderStatus.Unknown -> OrderTimelineModel.Inactive(
+            titleRes = R.string.orders_status_unknown,
+            phases = phases,
+        )
+    }
+}
+
+private fun OrderFulfillmentMethod.timelinePhases(): List<TimelinePhase> = when (this) {
+    OrderFulfillmentMethod.Pickup -> pickupPhases
+    OrderFulfillmentMethod.Delivery,
+    OrderFulfillmentMethod.Unknown -> deliveryPhases
+}
+
+private fun OrderTimelineModel.steps(): List<TimelineStep> = when (this) {
+    OrderTimelineModel.Cancelled -> listOf(
+        TimelineStep(
+            labelRes = R.string.orders_status_cancelled,
+            icon = Icons.Default.Close,
+            state = TimelineStepState.Error,
+        ),
+    )
+    is OrderTimelineModel.Inactive -> phases.map { phase ->
+        phase.toTimelineStep(TimelineStepState.Upcoming)
+    }
+    is OrderTimelineModel.Progress -> phases.map { phase ->
+        val currentPhaseIndex = phases.indexOf(currentPhase)
+        val phaseIndex = phases.indexOf(phase)
+        val state = when {
+            isComplete || phaseIndex < currentPhaseIndex -> TimelineStepState.Completed
+            phase == currentPhase -> TimelineStepState.Active
+            else -> TimelineStepState.Upcoming
+        }
+        phase.toTimelineStep(state)
+    }
+}
+
+private fun TimelinePhase.toTimelineStep(
+    state: TimelineStepState,
+): TimelineStep = TimelineStep(
+    labelRes = labelRes,
+    icon = icon,
+    state = state,
 )

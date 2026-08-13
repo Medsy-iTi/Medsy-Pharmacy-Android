@@ -38,7 +38,7 @@ internal fun OrderDetailsContent(
     onDismissStatus: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val statusAction = order.status.toOrderStatusActionUi()
+    val statusAction = order.statusTransition()?.toOrderStatusActionUi()
 
     if (showStatusConfirmation && statusAction != null) {
         OrderStatusConfirmationDialog(
@@ -74,7 +74,11 @@ internal fun OrderDetailsContent(
         },
         modifier = modifier,
     ) {
-        OrderStatusTimeline(order.status, Modifier.padding(top = 16.dp))
+        OrderStatusTimeline(
+            status = order.status,
+            fulfillmentMethod = order.effectiveFulfillmentMethod,
+            modifier = Modifier.padding(top = 16.dp),
+        )
         if (order.status.isWaitingForPatient) {
             Text(
                 text = stringResource(R.string.order_details_waiting_for_patient),

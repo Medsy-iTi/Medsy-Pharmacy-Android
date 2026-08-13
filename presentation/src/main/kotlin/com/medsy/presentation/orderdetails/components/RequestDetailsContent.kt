@@ -46,8 +46,9 @@ internal fun RequestDetailsContent(
         modifier = modifier,
     ) {
         if (!canCreateOffer) {
-            RequestAssignmentStatusCard(
-                status = request.assignmentStatus,
+            RequestStatusCard(
+                requestStatus = request.requestStatus,
+                assignmentStatus = request.assignmentStatus,
                 modifier = Modifier.padding(top = 16.dp),
             )
         }

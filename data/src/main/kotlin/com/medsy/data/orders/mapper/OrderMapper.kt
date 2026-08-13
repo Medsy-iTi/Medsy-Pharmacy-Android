@@ -7,6 +7,7 @@ import com.medsy.data.orders.model.PharmacyOrderDto
 import com.medsy.data.orders.model.PharmacyOrderItemDto
 import com.medsy.data.orders.model.PharmacyOrderPageDto
 import com.medsy.data.orders.model.RequestItemDto
+import com.medsy.domain.orders.model.OrderFulfillmentMethod
 import com.medsy.domain.orders.model.OrderItem
 import com.medsy.domain.orders.model.PaymentMethod
 import com.medsy.domain.orders.model.PharmacyOrder
@@ -15,6 +16,7 @@ import com.medsy.domain.orders.model.PharmacyOrderStatus
 import com.medsy.domain.orders.model.PharmacyRequest
 import com.medsy.domain.orders.model.PharmacyRequestAssignmentStatus
 import com.medsy.domain.orders.model.PharmacyRequestPage
+import com.medsy.domain.orders.model.PharmacyRequestStatus
 import com.medsy.domain.orders.model.RequestItem
 
 fun PharmacyRequestPageDto.toDomain(): PharmacyRequestPage {
@@ -36,7 +38,7 @@ fun PharmacyRequestAssignmentDto.toDomain(): PharmacyRequest {
         deliveryLatitude = medicineRequest.deliveryLatitude,
         deliveryLongitude = medicineRequest.deliveryLongitude,
         deliveryAddress = medicineRequest.deliveryAddress,
-        requestStatus = medicineRequest.status,
+        requestStatus = PharmacyRequestStatus.fromApiValue(medicineRequest.status),
         assignmentStatus = PharmacyRequestAssignmentStatus.fromApiValue(assignmentStatus),
         distanceKm = distanceKm,
         createdAt = medicineRequest.createdAt,
@@ -89,6 +91,7 @@ fun PharmacyOrderDto.toDomain(): PharmacyOrder = PharmacyOrder(
     createdAt = createdAt,
     status = PharmacyOrderStatus.fromApiValue(status),
     paymentMethod = PaymentMethod.fromApiValue(paymentMethod),
+    fulfillmentMethod = OrderFulfillmentMethod.fromApiValue(fulfillmentMethod),
     items = items.map(PharmacyOrderItemDto::toDomain),
 )
 

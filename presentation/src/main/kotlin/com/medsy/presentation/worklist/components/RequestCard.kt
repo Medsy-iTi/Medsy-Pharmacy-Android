@@ -27,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.medsy.designsystem.components.MedsyButton
 import com.medsy.domain.orders.model.PaymentMethod
 import com.medsy.domain.orders.model.PharmacyOrder
 import com.medsy.domain.orders.model.PharmacyRequest
@@ -53,7 +52,12 @@ fun PharmacyRequestCard(
         productImages = request.items.map { it.imageUrl },
         total = request.items.sumOf { it.unitPrice * it.quantity },
         paymentMethod = request.paymentMethod,
-        trailing = { RequestStatusBadge(request.assignmentStatus) },
+        trailing = {
+            RequestStatusBadge(
+                requestStatus = request.requestStatus,
+                assignmentStatus = request.assignmentStatus,
+            )
+        },
         timeLabel = request.createdAt.minutesAgoLabel(),
         onClick = onClick,
         modifier = modifier,
@@ -98,6 +102,7 @@ private fun PharmacyWorkCardLayout(
     modifier: Modifier,
 ) {
     Card(
+        onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -182,9 +187,6 @@ private fun PharmacyWorkCardLayout(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-            }
-            MedsyButton(onClick = onClick, modifier = Modifier.padding(top = 14.dp)) {
-                Text(stringResource(R.string.view_order_details), style = MaterialTheme.typography.titleMedium)
             }
         }
     }

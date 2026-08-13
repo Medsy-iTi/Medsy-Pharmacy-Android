@@ -6,7 +6,6 @@ import com.medsy.domain.common.MedsyError
 import com.medsy.domain.common.MedsyResult
 import com.medsy.domain.common.onError
 import com.medsy.domain.common.onSuccess
-import com.medsy.domain.orders.model.PharmacyOrderStatus
 import com.medsy.domain.orders.usecase.GetPharmacyOrderDetailsUseCase
 import com.medsy.domain.orders.usecase.MarkOrderDeliveredUseCase
 import com.medsy.domain.orders.usecase.MarkOrderOutForDeliveryUseCase
@@ -59,7 +58,7 @@ class OrderDetailsViewModel @Inject constructor(
             }
 
             OrderDetailsUIIntent.StatusActionClicked -> if (
-                state.value.order?.status?.canAdvanceManually == true &&
+                state.value.order?.statusTransition() != null &&
                 !state.value.isUpdatingStatus && !state.value.isStatusActionBlocked
             ) state.update { it.copy(showStatusConfirmation = true) }
 
@@ -106,24 +105,17 @@ class OrderDetailsViewModel @Inject constructor(
 
     private fun submitStatusAction() {
         val order = state.value.order ?: return
-        if (!order.status.canAdvanceManually || statusSubmissionInFlight || state.value.isStatusActionBlocked) return
+        val transition = order.statusTransition() ?: return
+        if (statusSubmissionInFlight || state.value.isStatusActionBlocked) return
         statusSubmissionInFlight = true
         viewModelScope.launch {
             try {
                 state.update { it.copy(showStatusConfirmation = false, isUpdatingStatus = true) }
-                val result = when (order.status) {
-                    PharmacyOrderStatus.Preparing -> markOrderReady(
-                        order.id
-                    )
-
-                    PharmacyOrderStatus.ReadyForDelivery ->
-                        markOrderOutForDelivery(order.id)
-
-                    PharmacyOrderStatus.ReadyForPickup,
-                    PharmacyOrderStatus.OutForDelivery ->
-                        markOrderDelivered(order.id)
-
-                    else -> return@launch
+                val result = when (transition) {
+                    OrderStatusTransition.MarkReady -> markOrderReady(order.id)
+                    OrderStatusTransition.StartDelivery -> markOrderOutForDelivery(order.id)
+                    OrderStatusTransition.MarkCollected,
+                    OrderStatusTransition.MarkDelivered -> markOrderDelivered(order.id)
                 }
                 result
                     .onSuccess {

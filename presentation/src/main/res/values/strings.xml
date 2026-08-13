@@ -4,7 +4,6 @@
     <string name="splash_app_name">Medsy Pharmacy</string>
     <string name="splash_tagline">Your pharmacy, with ease.</string>
     <string name="splash_logo_description">Medsy Pharmacy logo</string>
-    <string name="view_order_details">View Order Details</string>
 
 
     <string name="onboarding_title_1">Nearby requests, moment by moment</string>
@@ -252,8 +251,9 @@
     <string name="orders_timeline_preparing">Preparing</string>
     <string name="orders_timeline_on_the_way">On the way</string>
     <string name="orders_timeline_delivered">Delivered</string>
-    <string name="orders_timeline_placed">Placed</string>
     <string name="orders_timeline_ready">Ready</string>
+    <string name="orders_timeline_waiting_for_customer">Waiting for customer</string>
+    <string name="orders_timeline_collected">Collected</string>
     <string name="orders_empty">No items in this filter.</string>
     <string name="orders_load_error">Could not load orders.</string>
     <string name="orders_customer_pending">Customer details pending</string>
@@ -311,6 +311,8 @@
     <string name="requests_status_offer_submitted">Offer Submitted</string>
     <string name="requests_status_pending">Can offer</string>
     <string name="requests_status_offer_created">Offer created</string>
+    <string name="requests_status_completed">Completed</string>
+    <string name="requests_status_cancelled">Cancelled</string>
     <string name="requests_status_unavailable">Unavailable</string>
     <!--  Requests — card  -->
     <string name="requests_status_in_progress">In Progress</string>
@@ -323,7 +325,7 @@
 
 
     <!--  Request Details  -->
-    <string name="request_details_title">Order Details</string>
+    <string name="request_details_title">Request Details</string>
     <string name="request_details_new_badge">New</string>
     <string name="request_details_back_desc">Back</string>
     <string name="request_details_call_desc">Call customer</string>
@@ -342,6 +344,8 @@
     <string name="request_details_accepted_message">Order accepted</string>
     <string name="request_details_offer_submitted_message">Offer submitted successfully</string>
     <string name="request_details_offer_already_submitted">An offer has already been submitted for this request</string>
+    <string name="request_details_request_completed">This request has been completed</string>
+    <string name="request_details_request_cancelled">This request was cancelled</string>
     <string name="request_details_request_expired">This request has expired</string>
     <string name="request_details_request_unavailable">This request is unavailable for offers</string>
     <string name="request_details_rejected_message">Order rejected</string>
