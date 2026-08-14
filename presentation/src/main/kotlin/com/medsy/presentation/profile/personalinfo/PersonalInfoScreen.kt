@@ -19,6 +19,10 @@ import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Store
+import androidx.compose.material.icons.outlined.Phone
+import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -87,9 +91,6 @@ fun PersonalInfoScreen(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var showDatePicker by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState()
-
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
@@ -129,136 +130,123 @@ fun PersonalInfoScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             
-            // Pharmacy Info Card (Read-only)
+            // Pharmacy Info Section
             if (state.pharmacy != null) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
+                if (state.pharmacy.isAdmin) {
+                    Text(
+                        text = stringResource(R.string.profile_pharmacy_information),
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onSurface
                     )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+
+                    OutlinedTextField(
+                        value = state.pharmacyName,
+                        onValueChange = { onIntent(PersonalInfoUIIntent.PharmacyNameChanged(it)) },
+                        label = { Text(stringResource(R.string.profile_pharmacy_name)) },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Outlined.Store, contentDescription = null)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        singleLine = true
+                    )
+
+                    OutlinedTextField(
+                        value = state.pharmacyAddress,
+                        onValueChange = { onIntent(PersonalInfoUIIntent.PharmacyAddressChanged(it)) },
+                        label = { Text(stringResource(R.string.profile_pharmacy_address)) },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Outlined.Home, contentDescription = null)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        singleLine = true
+                    )
+
+                    OutlinedTextField(
+                        value = state.pharmacyPhoneNumber,
+                        onValueChange = { onIntent(PersonalInfoUIIntent.PharmacyPhoneChanged(it)) },
+                        label = { Text(stringResource(R.string.profile_pharmacy_phone)) },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Outlined.Phone, contentDescription = null)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                        singleLine = true
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Outlined.Store,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.size(8.dp))
-                            Text(
-                                text = state.pharmacy.name,
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                        Text(
-                            text = state.pharmacy.address ?: "",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(start = 28.dp)
+                        OutlinedTextField(
+                            value = state.pharmacyLatitude,
+                            onValueChange = { onIntent(PersonalInfoUIIntent.PharmacyLatitudeChanged(it)) },
+                            label = { Text(stringResource(R.string.profile_pharmacy_latitude)) },
+                            leadingIcon = {
+                                Icon(imageVector = Icons.Outlined.LocationOn, contentDescription = null)
+                            },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                            singleLine = true
+                        )
+
+                        OutlinedTextField(
+                            value = state.pharmacyLongitude,
+                            onValueChange = { onIntent(PersonalInfoUIIntent.PharmacyLongitudeChanged(it)) },
+                            label = { Text(stringResource(R.string.profile_pharmacy_longitude)) },
+                            leadingIcon = {
+                                Icon(imageVector = Icons.Outlined.LocationOn, contentDescription = null)
+                            },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                            singleLine = true
                         )
                     }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // Editable Form
-            Text(
-                text = stringResource(R.string.profile_pharmacist_information),
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            OutlinedTextField(
-                value = state.firstName,
-                onValueChange = { onIntent(PersonalInfoUIIntent.FirstNameChanged(it)) },
-                label = { Text(stringResource(R.string.profile_first_name)) },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Outlined.Person, contentDescription = null)
-                },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true
-            )
-
-            OutlinedTextField(
-                value = state.lastName,
-                onValueChange = { onIntent(PersonalInfoUIIntent.LastNameChanged(it)) },
-                label = { Text(stringResource(R.string.profile_last_name)) },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Outlined.Person, contentDescription = null)
-                },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true
-            )
-
-            OutlinedTextField(
-                value = state.homeAddress,
-                onValueChange = { onIntent(PersonalInfoUIIntent.HomeAddressChanged(it)) },
-                label = { Text(stringResource(R.string.profile_home_address)) },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Outlined.Home, contentDescription = null)
-                },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true
-            )
-
-            OutlinedTextField(
-                value = state.dob,
-                onValueChange = { },
-                label = { Text(stringResource(R.string.profile_date_of_birth)) },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Outlined.CalendarToday, contentDescription = null)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showDatePicker = true },
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                enabled = false,
-                colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                    disabledBorderColor = MaterialTheme.colorScheme.outline,
-                    disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            )
-
-            if (showDatePicker) {
-                DatePickerDialog(
-                    onDismissRequest = { showDatePicker = false },
-                    confirmButton = {
-                        TextButton(
-                            onClick = {
-                                datePickerState.selectedDateMillis?.let { millis ->
-                                    val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date(millis))
-                                    onIntent(PersonalInfoUIIntent.DobChanged(formattedDate))
-                                }
-                                showDatePicker = false
-                            }
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                } else {
+                    // Pharmacy Info Card (Read-only for non-admins)
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Text(stringResource(R.string.dialog_ok))
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = { showDatePicker = false }) {
-                            Text(stringResource(R.string.dialog_cancel))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Store,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.size(8.dp))
+                                Text(
+                                    text = state.pharmacy.name,
+                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                            Text(
+                                text = state.pharmacy.address ?: "",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(start = 28.dp)
+                            )
                         }
                     }
-                ) {
-                    DatePicker(state = datePickerState)
                 }
             }
+
+
 
             if (state.saveError != null) {
                 Text(

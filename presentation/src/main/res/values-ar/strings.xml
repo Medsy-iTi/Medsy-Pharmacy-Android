@@ -361,8 +361,16 @@
     <string name="profile_experience_years">خبرة %1$s سنوات</string>
     <string name="profile_my_personal_info">بياناتي الشخصية</string>
     <string name="profile_pharmacists_in_pharmacy">الصيادلة في الصيدلية</string>
-    <string name="profile_pharmacists_count">%1$s صيدلي</string>
+    <string name="profile_pharmacists_count">الصيادلة (%1$d)</string>
     <string name="profile_invite_pharmacist">دعوة صيدلي</string>
+    <string name="profile_pharmacy_information">معلومات الصيدلية</string>
+    <string name="profile_pharmacy_name">اسم الصيدلية</string>
+    <string name="profile_pharmacy_address">عنوان الصيدلية</string>
+    <string name="profile_pharmacy_phone">رقم هاتف الصيدلية</string>
+    <string name="profile_pharmacy_latitude">خط العرض</string>
+    <string name="profile_pharmacy_longitude">خط الطول</string>
+
+    <string name="profile_invite_pharmacist_title">دعوة صيدلي</string>
     <string name="profile_edit_profile">تعديل الملف الشخصي</string>
     <string name="profile_dummy_name">د. أحمد محمد</string>
     <string name="profile_dummy_experience">7</string>

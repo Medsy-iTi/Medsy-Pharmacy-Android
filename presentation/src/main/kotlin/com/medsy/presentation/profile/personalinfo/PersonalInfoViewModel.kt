@@ -3,9 +3,9 @@ package com.medsy.presentation.profile.personalinfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medsy.domain.common.MedsyResult
-import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
-import com.medsy.domain.pharmacist.usecase.UpdateCurrentPharmacistUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
+import com.medsy.domain.pharmacy.usecase.UpdatePharmacyUseCase
+import com.medsy.domain.pharmacy.model.UpdatePharmacyParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
@@ -18,9 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PersonalInfoViewModel @Inject constructor(
-    private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
-    private val updateCurrentPharmacist: UpdateCurrentPharmacistUseCase
+    private val updatePharmacyUseCase: UpdatePharmacyUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PersonalInfoState())
@@ -40,37 +39,25 @@ class PersonalInfoViewModel @Inject constructor(
                 _state.update { it.copy(isLoading = true, error = null) }
             }
             
-            val pharmacistDeferred = async { getCurrentPharmacist() }
-            val pharmacyDeferred = async { getMyPharmacy() }
-            
-            val pharmacistResult = pharmacistDeferred.await()
-            val pharmacyResult = pharmacyDeferred.await()
+            val pharmacyResult = async { getMyPharmacy() }.await()
             loadingJob.cancel()
             
             var hasError = false
             
-            when (pharmacistResult) {
-                is MedsyResult.Success -> {
-                    _state.update {
-                        it.copy(
-                            pharmacist = pharmacistResult.data,
-                            firstName = pharmacistResult.data.firstName,
-                            lastName = pharmacistResult.data.lastName,
-                            homeAddress = pharmacistResult.data.homeAddress ?: "",
-                            dob = pharmacistResult.data.dob ?: ""
-                        )
-                    }
-                }
-                is MedsyResult.Error -> {
-                    hasError = true
-                    _state.update { it.copy(error = pharmacistResult.error) }
-                }
-            }
-            
             if (!hasError) {
                 when (pharmacyResult) {
                     is MedsyResult.Success -> {
-                        _state.update { it.copy(pharmacy = pharmacyResult.data) }
+                        val p = pharmacyResult.data
+                        _state.update { 
+                            it.copy(
+                                pharmacy = p,
+                                pharmacyName = p.name,
+                                pharmacyAddress = p.address ?: "",
+                                pharmacyPhoneNumber = p.phoneNumber ?: "",
+                                pharmacyLatitude = p.latitude.toString(),
+                                pharmacyLongitude = p.longitude.toString()
+                            ) 
+                        }
                     }
                     is MedsyResult.Error -> {
                         _state.update { it.copy(error = pharmacyResult.error) }
@@ -84,17 +71,20 @@ class PersonalInfoViewModel @Inject constructor(
 
     fun onIntent(intent: PersonalInfoUIIntent) {
         when (intent) {
-            is PersonalInfoUIIntent.FirstNameChanged -> {
-                _state.update { it.copy(firstName = intent.name) }
+            is PersonalInfoUIIntent.PharmacyNameChanged -> {
+                _state.update { it.copy(pharmacyName = intent.name) }
             }
-            is PersonalInfoUIIntent.LastNameChanged -> {
-                _state.update { it.copy(lastName = intent.name) }
+            is PersonalInfoUIIntent.PharmacyAddressChanged -> {
+                _state.update { it.copy(pharmacyAddress = intent.address) }
             }
-            is PersonalInfoUIIntent.HomeAddressChanged -> {
-                _state.update { it.copy(homeAddress = intent.address) }
+            is PersonalInfoUIIntent.PharmacyPhoneChanged -> {
+                _state.update { it.copy(pharmacyPhoneNumber = intent.phone) }
             }
-            is PersonalInfoUIIntent.DobChanged -> {
-                _state.update { it.copy(dob = intent.dob) }
+            is PersonalInfoUIIntent.PharmacyLatitudeChanged -> {
+                _state.update { it.copy(pharmacyLatitude = intent.latitude) }
+            }
+            is PersonalInfoUIIntent.PharmacyLongitudeChanged -> {
+                _state.update { it.copy(pharmacyLongitude = intent.longitude) }
             }
             PersonalInfoUIIntent.SaveProfile -> saveProfile()
             PersonalInfoUIIntent.ClearError -> {
@@ -110,26 +100,31 @@ class PersonalInfoViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isSaving = true, saveError = null) }
             
-            val result = updateCurrentPharmacist(
-                firstName = currentState.firstName.takeIf { it.isNotBlank() },
-                lastName = currentState.lastName.takeIf { it.isNotBlank() },
-                homeAddress = currentState.homeAddress.takeIf { it.isNotBlank() },
-                dob = currentState.dob.takeIf { it.isNotBlank() }
-            )
-            
-            when (result) {
-                is MedsyResult.Success -> {
-                    _state.update { 
-                        it.copy(
-                            isSaving = false,
-                            pharmacist = result.data
-                        )
+            if (currentState.pharmacy?.isAdmin == true) {
+                val pharmacyResult = updatePharmacyUseCase(
+                    UpdatePharmacyParams(
+                        pharmacyId = currentState.pharmacy.id,
+                        name = currentState.pharmacyName.takeIf { it.isNotBlank() },
+                        latitude = currentState.pharmacyLatitude.toDoubleOrNull(),
+                        longitude = currentState.pharmacyLongitude.toDoubleOrNull(),
+                        address = currentState.pharmacyAddress.takeIf { it.isNotBlank() },
+                        phoneNumber = currentState.pharmacyPhoneNumber.takeIf { it.isNotBlank() }
+                    )
+                )
+                when (pharmacyResult) {
+                    is MedsyResult.Success -> {
+                        _state.update { 
+                            it.copy(isSaving = false, pharmacy = pharmacyResult.data) 
+                        }
+                        mutableEffect.send(PersonalInfoUIEffect.ProfileSaved)
                     }
-                    mutableEffect.send(PersonalInfoUIEffect.ProfileSaved)
+                    is MedsyResult.Error -> {
+                        _state.update { it.copy(isSaving = false, saveError = pharmacyResult.error) }
+                    }
                 }
-                is MedsyResult.Error -> {
-                    _state.update { it.copy(isSaving = false, saveError = result.error) }
-                }
+            } else {
+                _state.update { it.copy(isSaving = false) }
+                mutableEffect.send(PersonalInfoUIEffect.ProfileSaved)
             }
         }
     }
