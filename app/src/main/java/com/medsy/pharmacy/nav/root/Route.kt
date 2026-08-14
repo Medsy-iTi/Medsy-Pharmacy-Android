@@ -47,6 +47,9 @@ sealed interface Route : NavKey {
     data object Notifications : Route
 
     @Serializable
+    data object AiChat : Route
+
+    @Serializable
     data class RequestDetails(val requestId: Long) : Route
 
     @Serializable
