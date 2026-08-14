@@ -9,6 +9,7 @@ import com.medsy.domain.dashboard.usecase.GetPharmacyDashboardUseCase
 import com.medsy.domain.notifications.usecase.GetUnreadCountUseCase
 import com.medsy.domain.orders.usecase.GetPharmacyOrdersUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
+import com.medsy.domain.pharmacy.usecase.ObserveMyPharmacyUseCase
 import com.medsy.presentation.common.util.toMessageRes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -25,6 +26,7 @@ class HomeViewModel @Inject constructor(
     private val getMyPharmacy: GetMyPharmacyUseCase,
     private val getDashboard: GetPharmacyDashboardUseCase,
     private val getPharmacyOrders: GetPharmacyOrdersUseCase,
+    private val observeMyPharmacy: ObserveMyPharmacyUseCase,
     private val getUnreadCount: GetUnreadCountUseCase,
 ) : ViewModel() {
     private val mutableState = MutableStateFlow(HomeUIState())
@@ -36,6 +38,13 @@ class HomeViewModel @Inject constructor(
     private var loadJob: Job? = null
 
     init {
+        viewModelScope.launch {
+            observeMyPharmacy().collect { pharmacy ->
+                if (pharmacy != null) {
+                    mutableState.update { it.copy(pharmacy = pharmacy) }
+                }
+            }
+        }
         loadHomeData(userRefresh = false)
     }
 

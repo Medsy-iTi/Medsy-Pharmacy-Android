@@ -27,9 +27,10 @@ import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacist.usecase.SetPharmacistPresenceUseCase
 import com.medsy.domain.common.preferences.usecase.SetReceivingOrdersPreferenceUseCase
 import com.medsy.domain.common.preferences.usecase.SetReceivingNotificationsPreferenceUseCase
-import com.medsy.domain.pharmacy.model.MyPharmacy
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
+import com.medsy.domain.pharmacy.usecase.ObserveMyPharmacyUseCase
 import android.util.Log
+import com.medsy.domain.pharmacy.model.MyPharmacy
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -42,6 +43,7 @@ class ProfileViewModel @Inject constructor(
     private val getCurrentPharmacist: GetCurrentPharmacistUseCase,
     private val setPharmacistPresence: SetPharmacistPresenceUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
+    private val observeMyPharmacy: ObserveMyPharmacyUseCase,
     private val setReceivingOrdersPreference: SetReceivingOrdersPreferenceUseCase,
     private val setReceivingNotificationsPreference: SetReceivingNotificationsPreferenceUseCase,
 ) : ViewModel() {
@@ -50,7 +52,6 @@ class ProfileViewModel @Inject constructor(
     private val isPresenceSwitchLoadingFlow = MutableStateFlow(false)
     private val isNotificationSwitchLoadingFlow = MutableStateFlow(false)
     private val pharmacistFlow = MutableStateFlow<Pharmacist?>(null)
-    private val pharmacyFlow = MutableStateFlow<MyPharmacy?>(null)
     private val errorFlow = MutableStateFlow<MedsyError?>(null)
     private val isLoggingOutFlow = MutableStateFlow(false)
     private val isAvatarSheetOpenFlow = MutableStateFlow(false)
@@ -59,7 +60,7 @@ class ProfileViewModel @Inject constructor(
     private val dataFlow = combine(
         isLoadingFlow,
         pharmacistFlow,
-        pharmacyFlow,
+        observeMyPharmacy(),
         errorFlow
     ) { isLoading, pharmacist, pharmacy, error ->
         DataState(isLoading, pharmacist, pharmacy, error)
@@ -123,7 +124,7 @@ class ProfileViewModel @Inject constructor(
             loadingJob.cancel()
             
             pharmacyResult.fold(
-                onSuccess = { pharmacyFlow.value = it },
+                onSuccess = { /* Data flows through observeMyPharmacy */ },
                 onError = { errorFlow.value = it }
             )
 
