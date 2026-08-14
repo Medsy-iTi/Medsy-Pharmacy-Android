@@ -1,9 +1,14 @@
 package com.medsy.presentation.aichat
 
+import com.medsy.domain.aichat.model.AiAnalyticsPreset
+
 sealed interface AiChatUIIntent {
     data class InputChanged(val value: String) : AiChatUIIntent
     data object SendClicked : AiChatUIIntent
-    data class QuickActionClicked(val question: String) : AiChatUIIntent
+    data class QuickActionClicked(
+        val question: String,
+        val analyticsPreset: AiAnalyticsPreset? = null,
+    ) : AiChatUIIntent
     data object RetrySend : AiChatUIIntent
     data object RetryHistory : AiChatUIIntent
     data object VoiceClicked : AiChatUIIntent

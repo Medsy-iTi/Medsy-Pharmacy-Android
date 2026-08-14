@@ -57,7 +57,11 @@ fun AiChatConversation(state: AiChatState, onIntent: (AiChatUIIntent) -> Unit) {
         items(state.messages, key = AiChatMessage::id) { message ->
             when (val content = message.content) {
                 is AiChatContent.UserText -> UserBubble(content)
-                is AiChatContent.AssistantMessage -> AssistantMessage(content, onIntent)
+                is AiChatContent.AssistantMessage -> AssistantMessage(
+                    content = content,
+                    availablePharmacistIds = state.pharmacyMembers.map { it.id }.toSet(),
+                    onIntent = onIntent,
+                )
             }
         }
         if (state.isResponding) item(key = "typing") { AiChatTypingIndicator() }
@@ -105,6 +109,7 @@ private fun UserBubble(content: AiChatContent.UserText) {
 @Composable
 private fun AssistantMessage(
     content: AiChatContent.AssistantMessage,
+    availablePharmacistIds: Set<Long>,
     onIntent: (AiChatUIIntent) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -138,6 +143,11 @@ private fun AssistantMessage(
         content.categories.forEach { AiChatCategoryCard(it) }
         content.pharmacistRankings.forEach { ranking ->
             AiChatRankingCard(ranking) {
+                onIntent(AiChatUIIntent.PharmacistClicked(it))
+            }
+        }
+        content.analytics?.let { analytics ->
+            AiChatAnalyticsCard(analytics, availablePharmacistIds) {
                 onIntent(AiChatUIIntent.PharmacistClicked(it))
             }
         }

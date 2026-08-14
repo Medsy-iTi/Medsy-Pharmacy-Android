@@ -50,7 +50,12 @@ class AiChatRepositoryImpl @Inject constructor(
         }
         val generation = session.beginQuestion(content)
         val result = when (message) {
-            is AiChatOutgoingMessage.Text -> remote.sendMessage(ChatMessageRequestDto(message.message))
+            is AiChatOutgoingMessage.Text -> remote.sendMessage(
+                ChatMessageRequestDto(
+                    message = message.message,
+                    analyticsPreset = message.analyticsPreset?.name,
+                ),
+            )
             is AiChatOutgoingMessage.Image -> {
                 val file = images.getFile(message.image)
                 if (!file.exists()) {

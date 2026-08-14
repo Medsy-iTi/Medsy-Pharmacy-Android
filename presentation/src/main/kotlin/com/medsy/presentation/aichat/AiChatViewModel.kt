@@ -70,7 +70,9 @@ class AiChatViewModel @Inject constructor(
                 it.copy(input = intent.value.take(MAX_MESSAGE_LENGTH))
             }
             AiChatUIIntent.SendClicked -> sendCurrentInput()
-            is AiChatUIIntent.QuickActionClicked -> submit(AiChatOutgoingMessage.Text(intent.question))
+            is AiChatUIIntent.QuickActionClicked -> submit(
+                AiChatOutgoingMessage.Text(intent.question, intent.analyticsPreset),
+            )
             AiChatUIIntent.RetrySend -> mutableState.value.failedSubmission?.let(::submit)
             AiChatUIIntent.RetryHistory -> fetchHistory()
             AiChatUIIntent.VoiceClicked -> sendEffect(AiChatUIEffect.LaunchVoiceInput)

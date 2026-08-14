@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.medsy.presentation.R
 import com.medsy.presentation.aichat.AiChatUIIntent
+import com.medsy.domain.aichat.model.AiAnalyticsPreset
 
 @Composable
 fun AiChatWelcome(isAdmin: Boolean, onIntent: (AiChatUIIntent) -> Unit) {
@@ -82,6 +83,7 @@ private data class QuickAction(
     @param:StringRes val label: Int,
     @param:StringRes val question: Int?,
     val icon: ImageVector,
+    val analyticsPreset: AiAnalyticsPreset? = null,
 )
 
 @Composable
@@ -94,7 +96,7 @@ private fun QuickActionCard(
     Card(
         modifier = modifier.clickable {
             if (question == null) onIntent(AiChatUIIntent.AttachClicked)
-            else onIntent(AiChatUIIntent.QuickActionClicked(question))
+            else onIntent(AiChatUIIntent.QuickActionClicked(question, action.analyticsPreset))
         },
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
@@ -114,15 +116,21 @@ private fun QuickActionCard(
 }
 
 private fun adminActions() = listOf(
-    QuickAction(R.string.ai_chat_quick_top_team, R.string.ai_chat_quick_top_team_question, Icons.Outlined.Analytics),
-    QuickAction(R.string.ai_chat_quick_low_team, R.string.ai_chat_quick_low_team_question, Icons.Outlined.Groups),
-    QuickAction(R.string.ai_chat_quick_ingredient, R.string.ai_chat_quick_ingredient_question, Icons.Outlined.Biotech),
-    QuickAction(R.string.ai_chat_quick_photo, null, Icons.Outlined.AddAPhoto),
+    QuickAction(R.string.ai_chat_quick_month_overview, R.string.ai_chat_quick_month_overview_question,
+        Icons.Outlined.Analytics, AiAnalyticsPreset.PHARMACY_MONTH_OVERVIEW),
+    QuickAction(R.string.ai_chat_quick_acceptance, R.string.ai_chat_quick_acceptance_question,
+        Icons.Outlined.Groups, AiAnalyticsPreset.PHARMACY_MONTH_ACCEPTANCE),
+    QuickAction(R.string.ai_chat_quick_top_employee, R.string.ai_chat_quick_top_employee_question,
+        Icons.Outlined.Analytics, AiAnalyticsPreset.PHARMACY_MONTH_TOP_EMPLOYEE),
+    QuickAction(R.string.ai_chat_quick_largest_order, R.string.ai_chat_quick_largest_order_question,
+        Icons.Outlined.Medication, AiAnalyticsPreset.PHARMACY_MONTH_LARGEST_ORDER),
 )
 
 private fun pharmacistActions() = listOf(
+    QuickAction(R.string.ai_chat_quick_my_overview, R.string.ai_chat_quick_my_overview_question,
+        Icons.Outlined.Analytics, AiAnalyticsPreset.SELF_MONTH_OVERVIEW),
+    QuickAction(R.string.ai_chat_quick_my_orders, R.string.ai_chat_quick_my_orders_question,
+        Icons.Outlined.Groups, AiAnalyticsPreset.SELF_MONTH_ORDERS),
     QuickAction(R.string.ai_chat_quick_ingredient, R.string.ai_chat_quick_ingredient_question, Icons.Outlined.Biotech),
-    QuickAction(R.string.ai_chat_quick_alternative, R.string.ai_chat_quick_alternative_question, Icons.Outlined.Medication),
-    QuickAction(R.string.ai_chat_quick_categories, R.string.ai_chat_quick_categories_question, Icons.Outlined.Category),
     QuickAction(R.string.ai_chat_quick_photo, null, Icons.Outlined.AddAPhoto),
 )

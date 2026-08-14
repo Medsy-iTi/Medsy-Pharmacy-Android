@@ -4,10 +4,22 @@ import com.medsy.data.aichat.remote.ChatCategoryDto
 import com.medsy.data.aichat.remote.ChatHistoryMessageDto
 import com.medsy.data.aichat.remote.ChatMessageResponseDto
 import com.medsy.data.aichat.remote.ChatProductDto
+import com.medsy.data.aichat.remote.ChatAnalyticsDto
+import com.medsy.data.aichat.remote.AnalyticsBreakdownDto
+import com.medsy.data.aichat.remote.AnalyticsMetricDto
+import com.medsy.data.aichat.remote.AnalyticsOrderHighlightDto
+import com.medsy.data.aichat.remote.AnalyticsRankingEntryDto
+import com.medsy.data.aichat.remote.AnalyticsTopProductDto
 import com.medsy.data.aichat.remote.EmergencyNumberDto
 import com.medsy.data.aichat.remote.PharmacistPerformanceEntryDto
 import com.medsy.data.aichat.remote.PharmacistRankingDto
 import com.medsy.domain.aichat.model.AiCatalogProduct
+import com.medsy.domain.aichat.model.AiChatAnalytics
+import com.medsy.domain.aichat.model.AiAnalyticsBreakdown
+import com.medsy.domain.aichat.model.AiAnalyticsMetric
+import com.medsy.domain.aichat.model.AiAnalyticsOrderHighlight
+import com.medsy.domain.aichat.model.AiAnalyticsRankingEntry
+import com.medsy.domain.aichat.model.AiAnalyticsTopProduct
 import com.medsy.domain.aichat.model.AiChatCategory
 import com.medsy.domain.aichat.model.AiChatContent
 import com.medsy.domain.aichat.model.AiChatIntent
@@ -33,6 +45,7 @@ fun ChatMessageResponseDto.toDomain() = AiChatContent.AssistantMessage(
     emergencyNumbers = emergencyNumbers.orEmpty().mapNotNull(EmergencyNumberDto::toDomain),
     categories = categories.orEmpty().mapNotNull(ChatCategoryDto::toDomain),
     pharmacistRankings = pharmacistRankings.orEmpty().mapNotNull(PharmacistRankingDto::toDomain),
+    analytics = analytics?.toDomain(),
     disclaimer = disclaimer?.takeIf(String::isNotBlank),
 )
 
@@ -60,6 +73,7 @@ fun ChatHistoryMessageDto.toDomain(): AiChatMessage? {
                 categories = categories.orEmpty().mapNotNull(ChatCategoryDto::toDomain),
                 pharmacistRankings = pharmacistRankings.orEmpty()
                     .mapNotNull(PharmacistRankingDto::toDomain),
+                analytics = analytics?.toDomain(),
                 disclaimer = null,
             ),
         )
@@ -131,3 +145,60 @@ private fun PharmacistPerformanceEntryDto.toDomain(): AiPharmacistPerformanceEnt
         lastName = lastName.orEmpty(),
         count = count?.takeIf { it >= 0 } ?: return null,
     )
+
+private fun ChatAnalyticsDto.toDomain(): AiChatAnalytics? {
+    val resolvedScope = scope?.takeIf(String::isNotBlank) ?: return null
+    val resolvedPeriod = period?.takeIf(String::isNotBlank) ?: return null
+    val resolvedStart = start?.takeIf(String::isNotBlank) ?: return null
+    val resolvedEnd = end?.takeIf(String::isNotBlank) ?: return null
+    return AiChatAnalytics(
+        schemaVersion = schemaVersion?.takeIf { it > 0 } ?: 1,
+        scope = resolvedScope,
+        period = resolvedPeriod,
+        start = resolvedStart,
+        end = resolvedEnd,
+        metrics = metrics.orEmpty().mapNotNull(AnalyticsMetricDto::toDomain),
+        breakdowns = breakdowns.orEmpty().mapNotNull(AnalyticsBreakdownDto::toDomain),
+        rankings = rankings.orEmpty().mapNotNull(AnalyticsRankingEntryDto::toDomain),
+        orderHighlights = orderHighlights.orEmpty().mapNotNull(AnalyticsOrderHighlightDto::toDomain),
+        topProducts = topProducts.orEmpty().mapNotNull(AnalyticsTopProductDto::toDomain),
+    )
+}
+
+private fun AnalyticsMetricDto.toDomain(): AiAnalyticsMetric? = AiAnalyticsMetric(
+    key = key?.takeIf(String::isNotBlank) ?: return null,
+    value = value ?: return null,
+    unit = unit?.takeIf(String::isNotBlank) ?: "COUNT",
+    previousValue = previousValue,
+    deltaPercent = deltaPercent,
+)
+
+private fun AnalyticsBreakdownDto.toDomain(): AiAnalyticsBreakdown? = AiAnalyticsBreakdown(
+    group = group?.takeIf(String::isNotBlank) ?: return null,
+    key = key?.takeIf(String::isNotBlank) ?: return null,
+    count = count?.takeIf { it >= 0 } ?: return null,
+)
+
+private fun AnalyticsRankingEntryDto.toDomain(): AiAnalyticsRankingEntry? = AiAnalyticsRankingEntry(
+    rank = rank?.takeIf { it > 0 } ?: return null,
+    pharmacistId = pharmacistId?.takeIf { it > 0 } ?: return null,
+    firstName = firstName?.takeIf(String::isNotBlank) ?: return null,
+    lastName = lastName.orEmpty(),
+    count = count?.takeIf { it >= 0 } ?: return null,
+)
+
+private fun AnalyticsOrderHighlightDto.toDomain(): AiAnalyticsOrderHighlight? =
+    AiAnalyticsOrderHighlight(
+        orderId = orderId?.takeIf { it > 0 } ?: return null,
+        status = status?.takeIf(String::isNotBlank) ?: return null,
+        totalPrice = totalPrice ?: return null,
+        date = date?.takeIf(String::isNotBlank) ?: return null,
+    )
+
+private fun AnalyticsTopProductDto.toDomain(): AiAnalyticsTopProduct? = AiAnalyticsTopProduct(
+    productId = productId?.takeIf { it > 0 } ?: return null,
+    productName = productName?.takeIf(String::isNotBlank) ?: return null,
+    quantity = quantity?.takeIf { it >= 0 } ?: return null,
+    orderCount = orderCount?.takeIf { it >= 0 } ?: return null,
+    revenue = revenue ?: return null,
+)

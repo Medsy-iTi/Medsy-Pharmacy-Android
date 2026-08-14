@@ -3,7 +3,10 @@ package com.medsy.data.aichat.remote
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class ChatMessageRequestDto(val message: String)
+data class ChatMessageRequestDto(
+    val message: String,
+    val analyticsPreset: String? = null,
+)
 
 @JsonClass(generateAdapter = true)
 data class ChatMessageResponseDto(
@@ -16,6 +19,7 @@ data class ChatMessageResponseDto(
     val emergencyNumbers: List<EmergencyNumberDto>? = null,
     val categories: List<ChatCategoryDto>? = null,
     val pharmacistRankings: List<PharmacistRankingDto>? = null,
+    val analytics: ChatAnalyticsDto? = null,
     val disclaimer: String? = null,
 )
 
@@ -37,6 +41,7 @@ data class ChatHistoryMessageDto(
     val emergencyNumbers: List<EmergencyNumberDto>? = null,
     val categories: List<ChatCategoryDto>? = null,
     val pharmacistRankings: List<PharmacistRankingDto>? = null,
+    val analytics: ChatAnalyticsDto? = null,
 )
 
 @JsonClass(generateAdapter = true)
@@ -76,4 +81,60 @@ data class PharmacistPerformanceEntryDto(
     val firstName: String? = null,
     val lastName: String? = null,
     val count: Long? = null,
+)
+
+@JsonClass(generateAdapter = true)
+data class ChatAnalyticsDto(
+    val schemaVersion: Int? = null,
+    val scope: String? = null,
+    val period: String? = null,
+    val start: String? = null,
+    val end: String? = null,
+    val metrics: List<AnalyticsMetricDto>? = null,
+    val breakdowns: List<AnalyticsBreakdownDto>? = null,
+    val rankings: List<AnalyticsRankingEntryDto>? = null,
+    val orderHighlights: List<AnalyticsOrderHighlightDto>? = null,
+    val topProducts: List<AnalyticsTopProductDto>? = null,
+)
+
+@JsonClass(generateAdapter = true)
+data class AnalyticsMetricDto(
+    val key: String? = null,
+    val value: Double? = null,
+    val unit: String? = null,
+    val previousValue: Double? = null,
+    val deltaPercent: Double? = null,
+)
+
+@JsonClass(generateAdapter = true)
+data class AnalyticsBreakdownDto(
+    val group: String? = null,
+    val key: String? = null,
+    val count: Long? = null,
+)
+
+@JsonClass(generateAdapter = true)
+data class AnalyticsRankingEntryDto(
+    val rank: Int? = null,
+    val pharmacistId: Long? = null,
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val count: Long? = null,
+)
+
+@JsonClass(generateAdapter = true)
+data class AnalyticsOrderHighlightDto(
+    val orderId: Long? = null,
+    val status: String? = null,
+    val totalPrice: Double? = null,
+    val date: String? = null,
+)
+
+@JsonClass(generateAdapter = true)
+data class AnalyticsTopProductDto(
+    val productId: Long? = null,
+    val productName: String? = null,
+    val quantity: Long? = null,
+    val orderCount: Long? = null,
+    val revenue: Double? = null,
 )
