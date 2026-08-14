@@ -22,6 +22,7 @@ class UserPreferencesLocalDataSource @Inject constructor(
         val IS_ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("is_onboarding_completed")
         val IS_AVATAR_FEMALE_KEY = booleanPreferencesKey("is_avatar_female")
         val IS_RECEIVING_ORDERS_KEY = booleanPreferencesKey("is_receiving_orders")
+        val IS_RECEIVING_NOTIFICATIONS_KEY = booleanPreferencesKey("is_receiving_notifications")
         val REGISTERED_FCM_TOKEN_KEY = stringPreferencesKey("registered_fcm_token")
     }
 
@@ -40,6 +41,10 @@ class UserPreferencesLocalDataSource @Inject constructor(
     val isReceivingOrders: Flow<Boolean> = dataStore.data
         .catch { emit(emptyPreferences()) }
         .map { preferences -> preferences[IS_RECEIVING_ORDERS_KEY] ?: false }
+
+    val isReceivingNotifications: Flow<Boolean> = dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { preferences -> preferences[IS_RECEIVING_NOTIFICATIONS_KEY] ?: true }
 
     val registeredFcmToken: Flow<String?> = dataStore.data
         .catch { emit(emptyPreferences()) }
@@ -78,6 +83,15 @@ class UserPreferencesLocalDataSource @Inject constructor(
         try {
             dataStore.edit { preferences ->
                 preferences[IS_RECEIVING_ORDERS_KEY] = isReceivingOrders
+            }
+        } catch (_: IOException) {
+        }
+    }
+
+    suspend fun setReceivingNotifications(isReceiving: Boolean) {
+        try {
+            dataStore.edit { preferences ->
+                preferences[IS_RECEIVING_NOTIFICATIONS_KEY] = isReceiving
             }
         } catch (_: IOException) {
         }

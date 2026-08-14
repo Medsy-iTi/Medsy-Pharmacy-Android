@@ -9,6 +9,7 @@ interface UserPreferencesRepository {
 
     suspend fun setThemeMode(themeMode: ThemeMode)
     suspend fun setReceivingOrders(isReceivingOrders: Boolean)
+    suspend fun setReceivingNotifications(isReceiving: Boolean)
     suspend fun setOnboardingCompleted()
     suspend fun setAvatarFemale(isFemale: Boolean)
     suspend fun setRegisteredFcmToken(token: String?)

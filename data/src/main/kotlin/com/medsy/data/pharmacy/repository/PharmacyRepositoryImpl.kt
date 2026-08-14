@@ -12,6 +12,9 @@ import com.medsy.domain.pharmacy.model.MyPharmacy
 import com.medsy.domain.pharmacy.model.RegisterPharmacyParams
 import com.medsy.domain.pharmacy.repository.PharmacyRepository
 import com.squareup.moshi.Moshi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -26,7 +29,14 @@ class PharmacyRepositoryImpl @Inject constructor(
 ) : PharmacyRepository {
     private val createPharmacyAdapter = moshi.adapter(CreatePharmacyRequestDto::class.java)
 
-    private var cachedPharmacy: MyPharmacy? = null
+    private val _pharmacyFlow = MutableStateFlow<MyPharmacy?>(null)
+    override val pharmacyFlow: StateFlow<MyPharmacy?> = _pharmacyFlow.asStateFlow()
+
+    private var cachedPharmacy: MyPharmacy?
+        get() = _pharmacyFlow.value
+        set(value) {
+            _pharmacyFlow.value = value
+        }
 
     override suspend fun getMyPharmacy(forceRefresh: Boolean): MedsyResult<MyPharmacy, MedsyError> {
         if (!forceRefresh && cachedPharmacy != null) {
@@ -73,6 +83,29 @@ class PharmacyRepositoryImpl @Inject constructor(
                 license = licensePart,
             )
         }.map { it.toDomain() }
+    }
+
+    override suspend fun updatePharmacy(
+        params: com.medsy.domain.pharmacy.model.UpdatePharmacyParams,
+    ): MedsyResult<MyPharmacy, MedsyError.Remote> {
+        val request = com.medsy.data.pharmacy.remote.dto.UpdatePharmacyRequestDto(
+            name = params.name?.trim()?.takeIf(String::isNotEmpty),
+            latitude = params.latitude,
+            longitude = params.longitude,
+            address = params.address?.trim()?.takeIf(String::isNotEmpty),
+            phoneNumber = params.phoneNumber?.trim()?.takeIf(String::isNotEmpty)
+        )
+
+        return safeApiCall {
+            api.updatePharmacy(
+                id = params.pharmacyId,
+                request = request
+            )
+        }.map {
+            val domainPharmacy = it.toDomain()
+            cachedPharmacy = domainPharmacy
+            domainPharmacy
+        }
     }
 
     override fun clearCache() {

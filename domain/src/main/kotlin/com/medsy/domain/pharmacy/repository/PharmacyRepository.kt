@@ -10,5 +10,9 @@ interface PharmacyRepository {
     suspend fun registerPharmacy(
         params: RegisterPharmacyParams,
     ): MedsyResult<MyPharmacy, MedsyError.Remote>
+    suspend fun updatePharmacy(
+        params: com.medsy.domain.pharmacy.model.UpdatePharmacyParams,
+    ): MedsyResult<MyPharmacy, MedsyError.Remote>
+    val pharmacyFlow: kotlinx.coroutines.flow.Flow<MyPharmacy?>
     fun clearCache()
 }

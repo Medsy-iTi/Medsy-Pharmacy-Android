@@ -23,6 +23,9 @@ import com.medsy.pharmacy.fcm.FcmTokenManager
 import com.medsy.pharmacy.firebase.FCMTokenService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -107,9 +110,24 @@ class MainViewModel @Inject constructor(
 
     private fun observeSessionAndRegisterToken() {
         viewModelScope.launch {
-            observeSession().collect { session ->
+            val sessionFlow = observeSession()
+            val notificationsPrefFlow = observePreferences()
+                .map { it.isReceivingNotifications }
+                .distinctUntilChanged()
+
+            combine(sessionFlow, notificationsPrefFlow) { session, isReceivingNotifications ->
+                Pair(session, isReceivingNotifications)
+            }.collect { (session, isReceivingNotifications) ->
                 if (session != null && session.account.approvalStatus == PharmacyApprovalStatus.Approved) {
-                    fcmTokenManager.registerDeviceToken()
+                    if (isReceivingNotifications) {
+                        fcmTokenManager.registerDeviceToken()
+                    } else {
+                        // We need the token to unregister, fetch latest preference once
+                        val prefs = observePreferences().first()
+                        prefs.registeredFcmToken?.let { token ->
+                            fcmTokenManager.unregisterDeviceToken(token)
+                        }
+                    }
                 }
             }
         }

@@ -285,6 +285,9 @@
     <string name="profile_receiving_status">Order receiving status</string>
     <string name="profile_status_open">Open</string>
     <string name="profile_status_closed">Closed</string>
+    <string name="profile_receiving_notifications">Receiving notifications</string>
+    <string name="profile_notifications_on">On</string>
+    <string name="profile_notifications_off">Off</string>
     <string name="profile_theme">Appearance</string>
     <string name="profile_theme_system">System</string>
     <string name="profile_theme_light">Light</string>
@@ -371,8 +374,17 @@
     <string name="profile_experience_years">%1$s years experience</string>
     <string name="profile_my_personal_info">My Personal Info</string>
     <string name="profile_pharmacists_in_pharmacy">Pharmacists in Pharmacy</string>
-    <string name="profile_pharmacists_count">%1$s Pharmacists</string>
+
+    <string name="profile_pharmacists_count">Pharmacists (%1$d)</string>
     <string name="profile_invite_pharmacist">Invite Pharmacist</string>
+    <string name="profile_pharmacy_information">Pharmacy Information</string>
+    <string name="profile_pharmacy_name">Pharmacy Name</string>
+    <string name="profile_pharmacy_address">Pharmacy Address</string>
+    <string name="profile_pharmacy_phone">Pharmacy Phone</string>
+    <string name="profile_pharmacy_latitude">Latitude</string>
+    <string name="profile_pharmacy_longitude">Longitude</string>
+
+    <string name="profile_invite_pharmacist_title">Invite Pharmacist</string>
     <string name="profile_edit_profile">Edit Profile</string>
     <string name="profile_dummy_name">Dr. Ahmed Mohamed</string>
     <string name="profile_dummy_experience">7</string>
