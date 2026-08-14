@@ -6,6 +6,7 @@ import com.medsy.domain.common.onError
 import com.medsy.domain.common.onSuccess
 import com.medsy.domain.dashboard.model.DashboardPeriod
 import com.medsy.domain.dashboard.usecase.GetPharmacyDashboardUseCase
+import com.medsy.domain.dashboard.usecase.GetAiDashboardSummaryUseCase
 import com.medsy.domain.notifications.usecase.GetUnreadCountUseCase
 import com.medsy.domain.orders.usecase.GetPharmacyOrdersUseCase
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
@@ -26,6 +27,7 @@ class HomeViewModel @Inject constructor(
     private val getDashboard: GetPharmacyDashboardUseCase,
     private val getPharmacyOrders: GetPharmacyOrdersUseCase,
     private val getUnreadCount: GetUnreadCountUseCase,
+    private val getAiDashboardSummary: GetAiDashboardSummaryUseCase,
 ) : ViewModel() {
     private val mutableState = MutableStateFlow(HomeUIState())
     val state = mutableState.asStateFlow()
@@ -45,6 +47,7 @@ class HomeViewModel @Inject constructor(
             is HomeUIIntent.OnOrderClicked -> sendEffect(HomeUIEffect.NavigateToOrderDetails(intent.orderId))
             HomeUIIntent.OnViewAllOrdersClicked -> sendEffect(HomeUIEffect.NavigateToViewAllOrders)
             HomeUIIntent.OnNotificationsClicked -> sendEffect(HomeUIEffect.OpenNotifications)
+            HomeUIIntent.RetryAiSummary -> loadAiSummary()
         }
     }
 
@@ -61,10 +64,12 @@ class HomeViewModel @Inject constructor(
                 }
             }
             getMyPharmacy(forceRefresh = true)
-                .onSuccess { pharmacy ->
-                    val pharmacy = pharmacy
-                    mutableState.update { it.copy(pharmacy = pharmacy) }
-                    if (pharmacy.isAdmin) loadAdminDashboard() else loadRecentOrders(pharmacy.id)
+                .onSuccess { pharmacyData ->
+                    mutableState.update { it.copy(pharmacy = pharmacyData) }
+                    if (pharmacyData.isAdmin) {
+                        loadAiSummary()
+                        loadAdminDashboard()
+                    } else loadRecentOrders(pharmacyData.id)
 
                 }.onError { error ->
                     mutableState.update { current ->
@@ -126,6 +131,31 @@ class HomeViewModel @Inject constructor(
                 }
             }
 
+    }
+
+    private fun loadAiSummary() {
+        if (mutableState.value.isAiSummaryLoading || mutableState.value.pharmacy?.isAdmin != true) return
+        mutableState.update { it.copy(isAiSummaryLoading = true, aiSummaryErrorRes = null) }
+        viewModelScope.launch {
+            getAiDashboardSummary(DashboardPeriod.LastMonth)
+                .onSuccess { summary ->
+                    mutableState.update {
+                        it.copy(
+                            aiSummary = summary,
+                            isAiSummaryLoading = false,
+                            aiSummaryErrorRes = null,
+                        )
+                    }
+                }
+                .onError { error ->
+                    mutableState.update {
+                        it.copy(
+                            isAiSummaryLoading = false,
+                            aiSummaryErrorRes = error.toMessageRes(),
+                        )
+                    }
+                }
+        }
     }
 
 

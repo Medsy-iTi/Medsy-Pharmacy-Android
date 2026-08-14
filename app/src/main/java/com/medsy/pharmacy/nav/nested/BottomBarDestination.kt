@@ -8,6 +8,7 @@ enum class BottomBarDestination(
     val icon: Int,
     val selectedIcon: Int,
     val route: Route,
+    val isProminent: Boolean = false,
 ) {
     Home(
         title = PresentationR.string.home_nav_home,
@@ -20,6 +21,13 @@ enum class BottomBarDestination(
         icon = PresentationR.drawable.orderlist,
         selectedIcon = PresentationR.drawable.orderlist,
         route = Route.NestedNav.Requests,
+    ),
+    AiChat(
+        title = PresentationR.string.ai_chat_title,
+        icon = PresentationR.drawable.home,
+        selectedIcon = PresentationR.drawable.home,
+        route = Route.AiChat,
+        isProminent = true,
     ),
     Orders(
         title = PresentationR.string.home_nav_orders,

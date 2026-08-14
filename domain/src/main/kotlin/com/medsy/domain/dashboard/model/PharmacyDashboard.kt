@@ -19,6 +19,13 @@ data class TopSellingProduct(
     val totalOrderValue: Double,
 )
 
+data class AiDashboardSummary(
+    val period: DashboardPeriod,
+    val summary: String,
+    val generatedAt: String,
+    val cached: Boolean,
+)
+
 enum class DashboardPeriod(val apiValue: String) {
     LastMonth("LAST_MONTH"),
 }

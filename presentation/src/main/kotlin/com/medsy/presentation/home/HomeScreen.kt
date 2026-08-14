@@ -41,6 +41,7 @@ import com.medsy.presentation.R
 import com.medsy.presentation.home.components.HomeShimmer
 import com.medsy.presentation.home.components.LatestOrdersSection
 import com.medsy.presentation.home.components.OverviewSection
+import com.medsy.presentation.home.components.AiDashboardInsightCard
 import com.medsy.presentation.home.components.PharmacyMainCard
 
 @Composable
@@ -146,6 +147,17 @@ fun HomeScreen(state: HomeUIState, onIntent: (HomeUIIntent) -> Unit) {
                             item {
                                 Spacer(Modifier.height(12.dp))
                                 OverviewSection(dashboard)
+                            }
+                        }
+                        if (state.pharmacy?.isAdmin == true) {
+                            item {
+                                Spacer(Modifier.height(12.dp))
+                                AiDashboardInsightCard(
+                                    summary = state.aiSummary,
+                                    isLoading = state.isAiSummaryLoading,
+                                    errorRes = state.aiSummaryErrorRes,
+                                    onRetry = { onIntent(HomeUIIntent.RetryAiSummary) },
+                                )
                             }
                         }
                         item {

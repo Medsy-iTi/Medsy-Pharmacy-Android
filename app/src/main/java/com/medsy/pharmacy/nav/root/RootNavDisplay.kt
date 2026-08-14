@@ -18,6 +18,7 @@ import com.medsy.pharmacy.nav.nested.NestedNavDisplay
 import com.medsy.pharmacy.nav.openDialer
 import com.medsy.pharmacy.nav.openLocation
 import com.medsy.presentation.auth.approval.ApprovalRoot
+import com.medsy.presentation.aichat.AiChatRoot
 import com.medsy.presentation.auth.approval.ApprovalScreenStatus
 import com.medsy.presentation.auth.login.LoginRoot
 import com.medsy.presentation.auth.nopharmacy.NoPharmacyRoot
@@ -168,7 +169,14 @@ fun RootNavDisplay(
                     openInvitePharmacist = { backStack.push(Route.InvitePharmacist) },
                     openPharmacistsList = { backStack.push(Route.PharmacistsList) },
                     openPersonalInfo = { backStack.push(Route.PersonalInfo) },
-                    openNotifications = { backStack.push(Route.Notifications) }
+                    openNotifications = { backStack.push(Route.Notifications) },
+                    openAiChat = { backStack.push(Route.AiChat) },
+                )
+            }
+            entry<Route.AiChat> {
+                AiChatRoot(
+                    onNavigateBack = { backStack.pop() },
+                    onDial = LocalContext.current::openDialer,
                 )
             }
             entry<Route.Notifications> {

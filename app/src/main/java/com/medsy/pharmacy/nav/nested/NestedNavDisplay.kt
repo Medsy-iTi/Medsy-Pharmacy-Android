@@ -41,7 +41,8 @@ fun NestedNavDisplay(
     openInvitePharmacist: () -> Unit,
     openPharmacistsList: () -> Unit,
     openPersonalInfo: () -> Unit,
-    openNotifications: () -> Unit
+    openNotifications: () -> Unit,
+    openAiChat: () -> Unit,
 ) {
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration {
@@ -70,16 +71,26 @@ fun NestedNavDisplay(
                 ) {
                     BottomBarDestination.entries.forEach { destination ->
                         val selected = backStack.lastOrNull() == destination.route
-                        BottomNavigationButton(
-                            onClick = {
-                                backStack.setRoot(Route.NestedNav.Home)
-                                backStack.push(destination.route)
-                            },
-                            icon = if (selected) destination.selectedIcon else destination.icon,
-                            label = destination.title,
-                            selected = selected,
-                            modifier = Modifier.weight(1f),
-                        )
+                        if (destination.isProminent) {
+                            AiChatNavigationButton(
+                                onClick = openAiChat,
+                                label = destination.title,
+                                modifier = Modifier.weight(1f),
+                            )
+                        } else {
+                            BottomNavigationButton(
+                                onClick = {
+                                    backStack.setRoot(Route.NestedNav.Home)
+                                    if (destination.route != Route.NestedNav.Home) {
+                                        backStack.push(destination.route)
+                                    }
+                                },
+                                icon = if (selected) destination.selectedIcon else destination.icon,
+                                label = destination.title,
+                                selected = selected,
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
                     }
                 }
             }

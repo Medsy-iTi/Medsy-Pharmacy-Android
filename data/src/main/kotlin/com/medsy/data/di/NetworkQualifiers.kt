@@ -16,4 +16,12 @@ annotation class AuthenticatedRetrofit
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class AiAuthenticatedClient
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class AiAuthenticatedRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class RefreshRetrofit

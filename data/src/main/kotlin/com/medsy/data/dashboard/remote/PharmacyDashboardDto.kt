@@ -21,3 +21,11 @@ data class TopSellingProductDto(
     val totalQuantitySold: Long? = null,
     val totalRevenue: Double? = null,
 )
+
+@JsonClass(generateAdapter = true)
+data class AiDashboardSummaryDto(
+    val period: String? = null,
+    val summary: String? = null,
+    val generatedAt: String? = null,
+    val cached: Boolean = false,
+)

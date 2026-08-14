@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.library)
@@ -15,14 +15,18 @@ android {
     defaultConfig {
         minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        
+
         val localProperties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
             localProperties.load(FileInputStream(localPropertiesFile))
         }
         val baseUrl = localProperties.getProperty("BASE_URL") ?: "\"\""
-        buildConfigField("String", "BASE_URL", if (baseUrl.startsWith("\"")) baseUrl else "\"$baseUrl\"")
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            if (baseUrl.startsWith("\"")) baseUrl else "\"$baseUrl\""
+        )
     }
 
     compileOptions {
@@ -59,7 +63,9 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     debugImplementation(libs.androidx.compose.ui.tooling)
-
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.coil.compose.v300rc01)
     implementation(libs.coil.network.okhttp.v300rc01)

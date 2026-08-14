@@ -11,3 +11,10 @@ interface DashboardApi {
         @Query("period") period: String,
     ): Response<ApiResponse<PharmacyDashboardDto>>
 }
+
+interface AiDashboardApi {
+    @GET("api/v1/ai/dashboard/summary")
+    suspend fun getSummary(
+        @Query("period") period: String,
+    ): Response<ApiResponse<AiDashboardSummaryDto>>
+}
