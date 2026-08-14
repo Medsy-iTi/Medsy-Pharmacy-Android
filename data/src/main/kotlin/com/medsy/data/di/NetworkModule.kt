@@ -16,6 +16,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -75,6 +76,26 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @AiAuthenticatedClient
+    fun provideAiAuthenticatedClient(
+        @AuthenticatedClient client: OkHttpClient,
+    ): OkHttpClient = client.newBuilder()
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(90, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
+        .callTimeout(2, TimeUnit.MINUTES)
+        .build()
+
+    @Provides
+    @Singleton
+    @AiAuthenticatedRetrofit
+    fun provideAiAuthenticatedRetrofit(
+        moshi: Moshi,
+        @AiAuthenticatedClient client: OkHttpClient,
+    ): Retrofit = retrofit(moshi, client)
+
+    @Provides
+    @Singleton
     fun provideApiService(
         @AuthenticatedRetrofit retrofit: Retrofit,
     ): ApiService = retrofit.create(ApiService::class.java)
@@ -90,7 +111,9 @@ object NetworkModule {
         if (BuildConfig.DEBUG) {
             addInterceptor(
                 HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BODY
+                    level = HttpLoggingInterceptor.Level.HEADERS
+                    redactHeader("Authorization")
+                    redactHeader("X-AI-Api-Key")
                     redactHeader("Cookie")
                     redactHeader("Set-Cookie")
                 },
