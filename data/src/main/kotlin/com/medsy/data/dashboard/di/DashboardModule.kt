@@ -3,8 +3,10 @@ package com.medsy.data.dashboard.di
 import com.medsy.data.dashboard.datasource.DashboardRemoteDataSource
 import com.medsy.data.dashboard.datasource.DashboardRemoteDataSourceImpl
 import com.medsy.data.dashboard.remote.DashboardApi
+import com.medsy.data.dashboard.remote.AiDashboardApi
 import com.medsy.data.dashboard.repository.DashboardRepositoryImpl
 import com.medsy.data.di.AuthenticatedRetrofit
+import com.medsy.data.di.AiAuthenticatedRetrofit
 import com.medsy.domain.dashboard.repository.DashboardRepository
 import dagger.Binds
 import dagger.Module
@@ -32,5 +34,11 @@ abstract class DashboardModule {
         fun provideDashboardApi(
             @AuthenticatedRetrofit retrofit: Retrofit,
         ): DashboardApi = retrofit.create(DashboardApi::class.java)
+
+        @Provides
+        @JvmStatic
+        fun provideAiDashboardApi(
+            @AiAuthenticatedRetrofit retrofit: Retrofit,
+        ): AiDashboardApi = retrofit.create(AiDashboardApi::class.java)
     }
 }

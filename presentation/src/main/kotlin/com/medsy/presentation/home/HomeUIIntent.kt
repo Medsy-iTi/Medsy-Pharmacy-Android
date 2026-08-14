@@ -5,4 +5,5 @@ sealed interface HomeUIIntent {
     data class OnOrderClicked(val orderId: Long) : HomeUIIntent
     data object OnViewAllOrdersClicked : HomeUIIntent
     data object OnNotificationsClicked : HomeUIIntent
+    data object RetryAiSummary : HomeUIIntent
 }
