@@ -1,8 +1,7 @@
-package com.example.medsypahrm
-
-import org.junit.Test
+package com.medsy.pharmacy
 
 import org.junit.Assert.*
+import org.junit.Test
 
 /**
  * Example local unit test, which will execute on the development machine (host).
