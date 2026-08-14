@@ -21,4 +21,10 @@ interface PharmacyApi {
         @Part("pharmacyRequest") pharmacyRequest: RequestBody,
         @Part license: MultipartBody.Part,
     ): Response<ApiResponse<PharmacyResponseDto>>
+
+    @retrofit2.http.PUT("api/v1/pharmacies/{id}")
+    suspend fun updatePharmacy(
+        @retrofit2.http.Path("id") id: Long,
+        @retrofit2.http.Body request: com.medsy.data.pharmacy.remote.dto.UpdatePharmacyRequestDto
+    ): Response<ApiResponse<PharmacyResponseDto>>
 }
