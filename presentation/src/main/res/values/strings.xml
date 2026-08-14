@@ -285,6 +285,9 @@
     <string name="profile_receiving_status">Order receiving status</string>
     <string name="profile_status_open">Open</string>
     <string name="profile_status_closed">Closed</string>
+    <string name="profile_receiving_notifications">Receiving notifications</string>
+    <string name="profile_notifications_on">On</string>
+    <string name="profile_notifications_off">Off</string>
     <string name="profile_theme">Appearance</string>
     <string name="profile_theme_system">System</string>
     <string name="profile_theme_light">Light</string>

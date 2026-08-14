@@ -285,6 +285,9 @@
     <string name="profile_receiving_status">حالة استقبال الطلبات</string>
     <string name="profile_status_open">مفتوح</string>
     <string name="profile_status_closed">مغلق</string>
+    <string name="profile_receiving_notifications">استقبال الإشعارات</string>
+    <string name="profile_notifications_on">مفعل</string>
+    <string name="profile_notifications_off">معطل</string>
     <string name="profile_theme">المظهر</string>
     <string name="profile_theme_system">النظام</string>
     <string name="profile_theme_light">فاتح</string>

@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,6 +26,7 @@ import com.medsy.domain.pharmacist.model.Pharmacist
 import com.medsy.domain.pharmacist.usecase.GetCurrentPharmacistUseCase
 import com.medsy.domain.pharmacist.usecase.SetPharmacistPresenceUseCase
 import com.medsy.domain.common.preferences.usecase.SetReceivingOrdersPreferenceUseCase
+import com.medsy.domain.common.preferences.usecase.SetReceivingNotificationsPreferenceUseCase
 import com.medsy.domain.pharmacy.model.MyPharmacy
 import com.medsy.domain.pharmacy.usecase.GetMyPharmacyUseCase
 import android.util.Log
@@ -41,10 +43,12 @@ class ProfileViewModel @Inject constructor(
     private val setPharmacistPresence: SetPharmacistPresenceUseCase,
     private val getMyPharmacy: GetMyPharmacyUseCase,
     private val setReceivingOrdersPreference: SetReceivingOrdersPreferenceUseCase,
+    private val setReceivingNotificationsPreference: SetReceivingNotificationsPreferenceUseCase,
 ) : ViewModel() {
 
     private val isLoadingFlow = MutableStateFlow(false)
     private val isPresenceSwitchLoadingFlow = MutableStateFlow(false)
+    private val isNotificationSwitchLoadingFlow = MutableStateFlow(false)
     private val pharmacistFlow = MutableStateFlow<Pharmacist?>(null)
     private val pharmacyFlow = MutableStateFlow<MyPharmacy?>(null)
     private val errorFlow = MutableStateFlow<MedsyError?>(null)
@@ -65,9 +69,10 @@ class ProfileViewModel @Inject constructor(
         isLoggingOutFlow,
         isAvatarSheetOpenFlow,
         showLogoutDialogFlow,
-        isPresenceSwitchLoadingFlow
-    ) { isLoggingOut, isAvatarSheetOpen, showLogoutDialog, isPresenceSwitchLoading ->
-        UiFlags(isLoggingOut, isAvatarSheetOpen, showLogoutDialog, isPresenceSwitchLoading)
+        isPresenceSwitchLoadingFlow,
+        isNotificationSwitchLoadingFlow
+    ) { isLoggingOut, isAvatarSheetOpen, showLogoutDialog, isPresenceSwitchLoading, isNotificationSwitchLoading ->
+        UiFlags(isLoggingOut, isAvatarSheetOpen, showLogoutDialog, isPresenceSwitchLoading, isNotificationSwitchLoading)
     }
 
     val state = combine(
@@ -78,6 +83,7 @@ class ProfileViewModel @Inject constructor(
         ProfileState(
             themeMode = prefs.themeMode,
             isReceivingOrders = prefs.isReceivingOrders,
+            isReceivingNotifications = prefs.isReceivingNotifications,
             isLoading = data.isLoading,
             pharmacist = data.pharmacist,
             pharmacy = data.pharmacy,
@@ -86,7 +92,8 @@ class ProfileViewModel @Inject constructor(
             isLoggingOut = uiFlags.isLoggingOut,
             isAvatarSheetOpen = uiFlags.isAvatarSheetOpen,
             showLogoutDialog = uiFlags.showLogoutDialog,
-            isPresenceSwitchLoading = uiFlags.isPresenceSwitchLoading
+            isPresenceSwitchLoading = uiFlags.isPresenceSwitchLoading,
+            isNotificationSwitchLoading = uiFlags.isNotificationSwitchLoading
         )
     }.stateIn(
         scope = viewModelScope,
@@ -154,6 +161,14 @@ class ProfileViewModel @Inject constructor(
                 )
                 isPresenceSwitchLoadingFlow.value = false
             }
+            is ProfileUIIntent.ReceivingNotificationsChanged -> viewModelScope.launch {
+                isNotificationSwitchLoadingFlow.value = true
+                setReceivingNotificationsPreference(intent.isReceiving)
+                
+                // Small delay to make the switch feel responsive but indicate work is done
+                delay(200.milliseconds)
+                isNotificationSwitchLoadingFlow.value = false
+            }
             is ProfileUIIntent.OpenAvatarSheet -> {
                 isAvatarSheetOpenFlow.value = true
             }
@@ -199,6 +214,7 @@ class ProfileViewModel @Inject constructor(
         val isLoggingOut: Boolean,
         val isAvatarSheetOpen: Boolean,
         val showLogoutDialog: Boolean,
-        val isPresenceSwitchLoading: Boolean
+        val isPresenceSwitchLoading: Boolean,
+        val isNotificationSwitchLoading: Boolean
     )
 }

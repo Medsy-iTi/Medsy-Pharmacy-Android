@@ -6,6 +6,7 @@ sealed interface ProfileUIIntent {
     data class ThemeChanged(val themeMode: ThemeMode) : ProfileUIIntent
     data class LanguageChanged(val languageTag: String) : ProfileUIIntent
     data class ReceivingStatusChanged(val isReceiving: Boolean) : ProfileUIIntent
+    data class ReceivingNotificationsChanged(val isReceiving: Boolean) : ProfileUIIntent
     data class ToggleAvatarGender(val isFemale: Boolean) : ProfileUIIntent
     data object OpenAvatarSheet : ProfileUIIntent
     data object CloseAvatarSheet : ProfileUIIntent

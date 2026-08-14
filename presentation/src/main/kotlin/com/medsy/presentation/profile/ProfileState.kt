@@ -8,6 +8,7 @@ import com.medsy.domain.pharmacy.model.MyPharmacy
 data class ProfileState(
     val themeMode: ThemeMode = ThemeMode.System,
     val isReceivingOrders: Boolean = false,
+    val isReceivingNotifications: Boolean = true,
     val isLoading: Boolean = false,
     val pharmacist: Pharmacist? = null,
     val pharmacy: MyPharmacy? = null,
@@ -17,4 +18,5 @@ data class ProfileState(
     val isAvatarSheetOpen: Boolean = false,
     val showLogoutDialog: Boolean = false,
     val isPresenceSwitchLoading: Boolean = false,
+    val isNotificationSwitchLoading: Boolean = false,
 )

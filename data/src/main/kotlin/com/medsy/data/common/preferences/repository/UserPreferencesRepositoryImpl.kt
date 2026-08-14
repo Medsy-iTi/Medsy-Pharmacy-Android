@@ -5,6 +5,7 @@ import com.medsy.domain.common.preferences.model.ThemeMode
 import com.medsy.domain.common.preferences.model.UserPreferences
 import com.medsy.domain.common.preferences.repository.UserPreferencesRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -18,18 +19,26 @@ class UserPreferencesRepositoryImpl @Inject constructor(
         const val THEME_MODE_DARK = "dark"
     }
 
-    override val preferences: Flow<UserPreferences> = kotlinx.coroutines.flow.combine(
+    override val preferences: Flow<UserPreferences> = combine(
         localDataSource.themeMode,
         localDataSource.isOnboardingCompleted,
         localDataSource.isAvatarFemale,
         localDataSource.isReceivingOrders,
-        localDataSource.registeredFcmToken
-    ) { storedMode, isOnboardingCompleted, isAvatarFemale, isReceivingOrders, registeredFcmToken ->
+        localDataSource.isReceivingNotifications
+    ) { storedMode, isOnboardingCompleted, isAvatarFemale, isReceivingOrders, isReceivingNotifications ->
+        // Intermediate holder or tuple
+        Triple(storedMode, isOnboardingCompleted, isAvatarFemale) to arrayOf(isReceivingOrders, isReceivingNotifications)
+    }.combine(localDataSource.registeredFcmToken) { firstPart, registeredFcmToken ->
+        val (storedMode, isOnboardingCompleted, isAvatarFemale) = firstPart.first
+        val isReceivingOrders = firstPart.second[0]
+        val isReceivingNotifications = firstPart.second[1]
+
         UserPreferences(
             themeMode = storedMode.toThemeMode(),
             isOnboardingCompleted = isOnboardingCompleted,
             isAvatarFemale = isAvatarFemale,
             isReceivingOrders = isReceivingOrders,
+            isReceivingNotifications = isReceivingNotifications,
             registeredFcmToken = registeredFcmToken
         )
     }
@@ -40,6 +49,10 @@ class UserPreferencesRepositoryImpl @Inject constructor(
 
     override suspend fun setReceivingOrders(isReceivingOrders: Boolean) {
         localDataSource.setReceivingOrders(isReceivingOrders)
+    }
+
+    override suspend fun setReceivingNotifications(isReceiving: Boolean) {
+        localDataSource.setReceivingNotifications(isReceiving)
     }
 
     override suspend fun setOnboardingCompleted() {

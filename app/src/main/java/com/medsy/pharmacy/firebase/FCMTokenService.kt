@@ -14,10 +14,12 @@ import com.medsy.pharmacy.MainActivity
 import com.medsy.pharmacy.fcm.FcmTokenManager
 import com.medsy.presentation.R
 import com.medsy.presentation.notifications.NotificationLocalizer
+import com.medsy.domain.common.preferences.usecase.ObserveUserPreferencesUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,6 +28,9 @@ class FCMTokenService : FirebaseMessagingService() {
 
     @Inject
     lateinit var fcmTokenManager: FcmTokenManager
+
+    @Inject
+    lateinit var observePreferences: ObserveUserPreferencesUseCase
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.IO + job)
@@ -82,7 +87,14 @@ class FCMTokenService : FirebaseMessagingService() {
         val recipientIdStr = message.data[KEY_RECIPIENT_ID]
         val recipientId = recipientIdStr?.toLongOrNull()
 
-        showNotification(title, body, requestId, orderId, recipientId)
+        scope.launch {
+            val prefs = observePreferences().first()
+            if (prefs.isReceivingNotifications) {
+                showNotification(title, body, requestId, orderId, recipientId)
+            } else {
+                Log.d("FCMTokenService", "Notifications are disabled. Dropping message display.")
+            }
+        }
     }
 
     private fun showNotification(

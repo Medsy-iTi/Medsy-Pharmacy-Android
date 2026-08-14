@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ExitToApp
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.PeopleOutline
@@ -99,6 +100,63 @@ fun ProfileSettingsSection(
                             checked = state.isReceivingOrders,
                             onCheckedChange = { onIntent(ProfileUIIntent.ReceivingStatusChanged(it)) },
                             enabled = !state.isPresenceSwitchLoading,
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = Color.White,
+                                checkedTrackColor = MaterialTheme.colorScheme.primary,
+                                uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                                uncheckedBorderColor = MaterialTheme.colorScheme.outline
+                            )
+                        )
+                    }
+                }
+            )
+
+            HorizontalDivider(
+                color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
+            // Notifications switch
+            ProfileItemRow(
+                icon = Icons.Default.Notifications,
+                title = stringResource(R.string.profile_receiving_notifications),
+                subtitle = null,
+                showChevron = false,
+                trailing = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = if (state.isReceivingNotifications) {
+                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                                    } else {
+                                        if (isDark) Color.White.copy(alpha = 0.1f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)
+                                    },
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                        ) {
+                            Text(
+                                text = stringResource(
+                                    if (state.isReceivingNotifications) R.string.profile_notifications_on
+                                    else R.string.profile_notifications_off
+                                ),
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (state.isReceivingNotifications) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                    }
+                                )
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Switch(
+                            checked = state.isReceivingNotifications,
+                            onCheckedChange = { onIntent(ProfileUIIntent.ReceivingNotificationsChanged(it)) },
+                            enabled = !state.isNotificationSwitchLoading,
                             colors = SwitchDefaults.colors(
                                 checkedThumbColor = Color.White,
                                 checkedTrackColor = MaterialTheme.colorScheme.primary,
