@@ -37,6 +37,11 @@ private fun MedsyError.Validation.toMessageRes(): Int = when (this) {
     MedsyError.Validation.INVALID_LICENSE_DOCUMENT -> R.string.error_invalid_document
     MedsyError.Validation.PDF_TOO_LARGE -> R.string.pharmacy_registration_error_pdf_too_large
     MedsyError.Validation.INVALID_OTP -> R.string.auth_error_invalid_otp
+    MedsyError.Validation.INVALID_NAME -> R.string.auth_error_invalid_name
+    MedsyError.Validation.INVALID_EMAIL -> R.string.auth_error_invalid_email
+    MedsyError.Validation.INVALID_PASSWORD_MAX_LENGTH -> R.string.auth_error_password_max_15
+    MedsyError.Validation.INVALID_PASSWORD_SPACES -> R.string.auth_error_password_spaces
+    MedsyError.Validation.INVALID_PASSWORD_MISSING_LETTER -> R.string.auth_error_password_letter
 }
 
 @StringRes

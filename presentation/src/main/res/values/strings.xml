@@ -75,6 +75,11 @@
     <string name="auth_error_pharmacists_only">This app is for pharmacist accounts only</string>
     <string name="auth_error_invalid_phone">Enter a valid phone number</string>
     <string name="auth_error_invalid_otp">Enter a valid verification code</string>
+    <string name="auth_error_invalid_name">Enter a valid name (letters only)</string>
+    <string name="auth_error_invalid_email">Enter a valid email address</string>
+    <string name="auth_error_password_max_15">Password cannot exceed 15 characters</string>
+    <string name="auth_error_password_spaces">Password cannot contain spaces</string>
+    <string name="auth_error_password_letter">Password must contain at least one letter</string>
     <string name="auth_placeholder_notice">This is a navigable placeholder. Backend submission will be added after the pharmacy API contract is frozen.</string>
 
     <string name="no_pharmacy_title">No pharmacy assigned</string>

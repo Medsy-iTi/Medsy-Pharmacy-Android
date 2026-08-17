@@ -117,7 +117,7 @@ fun AiChatRoot(
 
     Box(Modifier.fillMaxSize()) {
         AiChatScreen(state, onNavigateBack, viewModel::onIntent)
-        MedsySnackbarHost(snackbar, Modifier.align(Alignment.BottomCenter))
+        MedsySnackbarHost(snackbar)
     }
 }
 
