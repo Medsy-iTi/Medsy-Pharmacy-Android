@@ -105,6 +105,8 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             )
             {
+                Spacer(modifier = Modifier.height(55.dp))
+
                 Image(
                     painter = painterResource(id = DesignR.drawable.ic_logo_transparent),
                     contentDescription = stringResource(R.string.medsy_logo_content_desc),
@@ -178,7 +180,7 @@ fun LoginScreen(
                     }
                 }
 
-
+                Spacer(modifier = Modifier.height(32.dp))
 
                 DontHaveAccount(openRegistration)
             }

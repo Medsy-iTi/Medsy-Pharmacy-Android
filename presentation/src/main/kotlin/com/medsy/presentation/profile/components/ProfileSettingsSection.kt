@@ -2,7 +2,7 @@ package com.medsy.presentation.profile.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,10 +47,10 @@ fun ProfileSettingsSection(
     onShowThemeSheet: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isDark = isSystemInDarkTheme()
+
     val cardBorder = BorderStroke(
         width = 1.dp,
-        color = if (isDark) Color.White.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+        color = MaterialTheme.colorScheme.outline
     )
 
     Card(
@@ -74,7 +74,7 @@ fun ProfileSettingsSection(
                                     color = if (state.isReceivingOrders) {
                                         MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
                                     } else {
-                                        if (isDark) Color.White.copy(alpha = 0.1f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)
+                                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)
                                     },
                                     shape = RoundedCornerShape(8.dp)
                                 )
@@ -113,7 +113,7 @@ fun ProfileSettingsSection(
             )
 
             HorizontalDivider(
-                color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                color = MaterialTheme.colorScheme.outlineVariant,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
@@ -131,7 +131,7 @@ fun ProfileSettingsSection(
                                     color = if (state.isReceivingNotifications) {
                                         MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
                                     } else {
-                                        if (isDark) Color.White.copy(alpha = 0.1f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)
+                                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)
                                     },
                                     shape = RoundedCornerShape(8.dp)
                                 )
@@ -170,7 +170,7 @@ fun ProfileSettingsSection(
             )
 
             HorizontalDivider(
-                color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                color = MaterialTheme.colorScheme.outlineVariant,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
@@ -183,7 +183,7 @@ fun ProfileSettingsSection(
             )
 
             HorizontalDivider(
-                color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                color = MaterialTheme.colorScheme.outlineVariant,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
@@ -196,7 +196,7 @@ fun ProfileSettingsSection(
             )
 
             HorizontalDivider(
-                color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                color = MaterialTheme.colorScheme.outlineVariant,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
@@ -209,7 +209,7 @@ fun ProfileSettingsSection(
             )
 
             HorizontalDivider(
-                color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                color = MaterialTheme.colorScheme.outlineVariant,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
@@ -228,7 +228,7 @@ fun ProfileSettingsSection(
             )
 
             HorizontalDivider(
-                color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                color = MaterialTheme.colorScheme.outlineVariant,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
@@ -247,7 +247,7 @@ fun ProfileSettingsSection(
             )
 
             HorizontalDivider(
-                color = if (isDark) Color.White.copy(alpha = 0.15f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                color = MaterialTheme.colorScheme.outlineVariant,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 

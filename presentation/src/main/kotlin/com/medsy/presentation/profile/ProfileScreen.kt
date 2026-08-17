@@ -3,7 +3,7 @@ package com.medsy.presentation.profile
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -101,12 +101,12 @@ fun ProfileScreen(
 ) {
     var showLanguageSheet by remember { mutableStateOf(false) }
     var showThemeSheet by remember { mutableStateOf(false) }
-    val isDark = isSystemInDarkTheme()
+
 
     // Transparent cards with high-contrast borders (white in dark theme)
     val cardBorder = BorderStroke(
         width = 1.dp,
-        color = if (isDark) Color.White.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+        color = MaterialTheme.colorScheme.outline
     )
 
     Scaffold(
