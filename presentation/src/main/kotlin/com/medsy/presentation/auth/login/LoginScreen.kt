@@ -178,17 +178,7 @@ fun LoginScreen(
                     }
                 }
 
-                OrDivider()
 
-                LoginSocialButton(
-                    iconResId = DesignR.drawable.ic_google,
-                    text = stringResource(R.string.login_google),
-                    enabled = !state.isLoading,
-                    onClick = {
-                        focusManager.clearFocus()
-                        onIntent(LoginUIIntent.LoginWithGoogle)
-                    },
-                )
 
                 DontHaveAccount(openRegistration)
             }

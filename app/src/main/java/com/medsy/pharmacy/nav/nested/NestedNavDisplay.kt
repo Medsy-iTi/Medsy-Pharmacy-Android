@@ -61,10 +61,7 @@ fun NestedNavDisplay(
     Scaffold(
         bottomBar = {
             Column {
-                HorizontalDivider(
-                    color = MaterialTheme.colorScheme.outline,
-                    thickness = 1.dp
-                )
+
                 NavigationBar(
                     containerColor = MaterialTheme.colorScheme.background,
                     tonalElevation = 0.dp
