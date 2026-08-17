@@ -87,7 +87,7 @@ fun OrderDetailsScreen(
                 onConfirmStatus = { onIntent(OrderDetailsUIIntent.ConfirmStatusAction) },
                 onDismissStatus = { onIntent(OrderDetailsUIIntent.DismissStatusConfirmation) },
             )
-            MedsySnackbarHost(snackbarHostState, Modifier.align(Alignment.BottomCenter))
+            MedsySnackbarHost(snackbarHostState)
         }
         return
     }

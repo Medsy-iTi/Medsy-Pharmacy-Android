@@ -95,11 +95,12 @@ fun RequestDetailsScreen(
                 onAddSubstitute = { onIntent(RequestDetailsUIIntent.AddSubstituteClicked(it)) },
                 onSendOffer = { onIntent(RequestDetailsUIIntent.SendOfferClicked) },
             )
-            MedsySnackbarHost(snackbarHostState, Modifier.align(Alignment.BottomCenter))
+            MedsySnackbarHost(snackbarHostState)
         }
         return
     }
-    Scaffold(snackbarHost = { MedsySnackbarHost(snackbarHostState) }) { padding ->
+    Box(Modifier.fillMaxSize()) {
+        Scaffold() { padding ->
         when {
             state.isLoading -> Box(
                 Modifier
@@ -125,5 +126,7 @@ fun RequestDetailsScreen(
                 }
             }
         }
+        }
+        MedsySnackbarHost(snackbarHostState)
     }
 }

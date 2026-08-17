@@ -74,6 +74,11 @@
     <string name="auth_error_pharmacists_only">هذا التطبيق مخصص لحسابات الصيادلة فقط</string>
     <string name="auth_error_invalid_phone">أدخل رقم هاتف صحيح</string>
     <string name="auth_error_invalid_otp">أدخل رمز تحقق صحيح</string>
+    <string name="auth_error_invalid_name">أدخل اسم صحيح (حروف فقط)</string>
+    <string name="auth_error_invalid_email">أدخل بريد إلكتروني صحيح</string>
+    <string name="auth_error_password_max_15">لا يمكن أن تتجاوز كلمة المرور 15 حرفاً</string>
+    <string name="auth_error_password_spaces">لا يمكن أن تحتوي كلمة المرور على مسافات</string>
+    <string name="auth_error_password_letter">يجب أن تحتوي كلمة المرور على حرف واحد على الأقل</string>
     <string name="auth_placeholder_notice">هذه واجهة مؤقتة قابلة للتنقل. ستتم إضافة الاتصال بالخادم بعد تثبيت عقد واجهة الصيدليات.</string>
 
     <string name="no_pharmacy_title">لا توجد صيدلية مرتبطة</string>
@@ -270,7 +275,7 @@
     <string name="offer_details_customer_unavailable">بيانات العميل والعنوان والدفع غير متاحة لهذا العرض.</string>
     <string name="no_customer_notes">لا توجد ملاحظات من العميل</string>
 
-    <string name="profile_title">الملف الشخصي</string>
+    <string name="profile_title">حسابي</string>
     <string name="profile_supporting">إدارة إعدادات وبيانات الصيدلية.</string>
     <string name="profile_verified_pharmacy">صيدلية معتمدة</string>
     <string name="profile_ratings_count">(128 تقييم)</string>

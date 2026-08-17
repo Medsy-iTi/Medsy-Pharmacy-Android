@@ -28,6 +28,11 @@ sealed interface MedsyError {
         INVALID_LICENSE_DOCUMENT,
         PDF_TOO_LARGE,
         INVALID_OTP,
+        INVALID_NAME,
+        INVALID_EMAIL,
+        INVALID_PASSWORD_MAX_LENGTH,
+        INVALID_PASSWORD_SPACES,
+        INVALID_PASSWORD_MISSING_LETTER,
     }
 
     enum class Local : MedsyError {

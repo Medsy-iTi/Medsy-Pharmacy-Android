@@ -105,6 +105,8 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             )
             {
+                Spacer(modifier = Modifier.height(55.dp))
+
                 Image(
                     painter = painterResource(id = DesignR.drawable.ic_logo_transparent),
                     contentDescription = stringResource(R.string.medsy_logo_content_desc),
@@ -178,17 +180,7 @@ fun LoginScreen(
                     }
                 }
 
-                OrDivider()
-
-                LoginSocialButton(
-                    iconResId = DesignR.drawable.ic_google,
-                    text = stringResource(R.string.login_google),
-                    enabled = !state.isLoading,
-                    onClick = {
-                        focusManager.clearFocus()
-                        onIntent(LoginUIIntent.LoginWithGoogle)
-                    },
-                )
+                Spacer(modifier = Modifier.height(32.dp))
 
                 DontHaveAccount(openRegistration)
             }

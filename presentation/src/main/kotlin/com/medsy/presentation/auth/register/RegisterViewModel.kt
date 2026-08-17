@@ -16,9 +16,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import com.medsy.domain.auth.usecase.ValidateNameUseCase
+import com.medsy.domain.auth.usecase.ValidateEmailUseCase
+import com.medsy.domain.auth.usecase.ValidatePasswordUseCase
+
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val registerUseCase: RegisterUseCase,
+    private val validateNameUseCase: ValidateNameUseCase,
+    private val validateEmailUseCase: ValidateEmailUseCase,
+    private val validatePasswordUseCase: ValidatePasswordUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RegisterUIState())
@@ -74,24 +81,30 @@ class RegisterViewModel @Inject constructor(
 
         val firstNameError = if (state.firstName.isBlank()) {
             R.string.auth_error_required_field
-        } else {
-            null
-        }
+        } else if (!validateNameUseCase(state.firstName)) {
+            R.string.auth_error_invalid_name
+        } else null
+
         val lastNameError = if (state.lastName.isBlank()) {
             R.string.auth_error_required_field
-        } else {
-            null
-        }
-        val emailError = if (state.email.isBlank()) R.string.auth_error_required_field else null
+        } else if (!validateNameUseCase(state.lastName)) {
+            R.string.auth_error_invalid_name
+        } else null
+
+        val emailError = if (state.email.isBlank()) {
+            R.string.auth_error_required_field
+        } else if (!validateEmailUseCase(state.email)) {
+            R.string.auth_error_invalid_email
+        } else null
+
         val phoneError = if (state.phoneNumber.isBlank()) {
             R.string.auth_error_required_field
+        } else null
+
+        val passwordError = if (state.password.isBlank()) {
+            R.string.auth_error_required_field
         } else {
-            null
-        }
-        val passwordError = when {
-            state.password.isBlank() -> R.string.auth_error_required_field
-            state.password.length < 6 -> R.string.auth_error_password_min_6
-            else -> null
+            validatePasswordUseCase(state.password)?.toMessageRes()
         }
 
         if (
